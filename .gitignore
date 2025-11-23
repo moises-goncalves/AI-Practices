@@ -115,3 +115,6 @@ temp/
 .env.local
 secrets.yaml
 credentials.json
+
+# Claude Code
+.claude/
