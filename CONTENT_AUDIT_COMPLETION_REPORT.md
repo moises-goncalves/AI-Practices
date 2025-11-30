@@ -174,10 +174,10 @@
 
 | 笔记 | 质量评分 | 评价 |
 |------|---------|------|
-| `第四章笔记.md` (Training Models) | 92/100 | ⭐⭐⭐⭐⭐ 优秀的"作者精讲"风格 |
-| `第五章笔记.md` (SVM) | 90/100 | ⭐⭐⭐⭐⭐ Why/What/When/How框架完整 |
+| `训练模型全流程指南.md` (Training Models) | 92/100 | ⭐⭐⭐⭐⭐ 优秀的"作者精讲"风格 |
+| `支持向量机完整指南.md` (SVM) | 90/100 | ⭐⭐⭐⭐⭐ Why/What/When/How框架完整 |
 | `Decision Tree 笔记.md` | 88/100 | ⭐⭐⭐⭐ 清晰的概念解释 |
-| `第七章笔记.md` (Ensemble Learning) | 95/100 | ⭐⭐⭐⭐⭐ 集成学习全面覆盖 |
+| `集成学习与随机森林指南.md` (Ensemble Learning) | 95/100 | ⭐⭐⭐⭐⭐ 集成学习全面覆盖 |
 | `降维.md` (Dimensionality Reduction) | 93/100 | ⭐⭐⭐⭐⭐ PCA/LLE/t-SNE详解 |
 | `无监督学习.md` (Unsupervised Learning) | 91/100 | ⭐⭐⭐⭐⭐ K-Means/DBSCAN/异常检测 |
 | `classification-algorithms.md` (新创建) | 95/100 | ⭐⭐⭐⭐⭐ 完整的分类算法体系 |
