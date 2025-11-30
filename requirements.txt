@@ -39,3 +39,4 @@ jupyterlab>=4.0.0
 # 实用工具
 tqdm>=4.65.0
 h5py>=3.9.0
+requests>=2.31.0
