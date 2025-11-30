@@ -1,204 +1,196 @@
-# AI-Practices · 机器学习与深度学习研究路线图
+# AI-Practices · 中文 AI 全栈实验室
 
 <div align="center">
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-3C78D8?style=flat-square)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?style=flat-square)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.13%2B-FF6F00?style=flat-square)
-![Notebooks](https://img.shields.io/badge/Notebooks-113%2B-6A5ACD?style=flat-square)
-![License](https://img.shields.io/badge/License-MIT-00A98F?style=flat-square)
-![Status](https://img.shields.io/badge/Status-Continuously%20Updated-7C3AED?style=flat-square)
+[English](./README_EN.md) | 简体中文
+
+[![License](https://img.shields.io/github/license/zimingttkx/AI-Practices?style=for-the-badge)](./LICENSE)
+[![Stars](https://img.shields.io/github/stars/zimingttkx/AI-Practices?style=for-the-badge&logo=github)](https://github.com/zimingttkx/AI-Practices/stargazers)
+[![Forks](https://img.shields.io/github/forks/zimingttkx/AI-Practices?style=for-the-badge&logo=github)](https://github.com/zimingttkx/AI-Practices/network/members)
+[![Issues](https://img.shields.io/github/issues/zimingttkx/AI-Practices?style=for-the-badge)](https://github.com/zimingttkx/AI-Practices/issues)
+[![Last Commit](https://img.shields.io/github/last-commit/zimingttkx/AI-Practices?style=for-the-badge)](https://github.com/zimingttkx/AI-Practices/commits/main)
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-2.13%2B-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
+![Jupyter](https://img.shields.io/badge/Jupyter-Notebooks-F37626?style=for-the-badge&logo=jupyter&logoColor=white)
+![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.3%2B-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
+
+![Notebooks](https://img.shields.io/badge/Notebooks-113%2B-9061F9?style=for-the-badge)
+![Projects](https://img.shields.io/badge/Practical_Projects-19-14B8A6?style=for-the-badge)
+![Lines of Code](https://img.shields.io/badge/Lines_of_Code-149k%2B-0A84FF?style=for-the-badge)
+[![Contributors](https://img.shields.io/github/contributors/zimingttkx/AI-Practices?style=for-the-badge)](https://github.com/zimingttkx/AI-Practices/graphs/contributors)
 
 </div>
 
-<div align="center">
+> 这是我本人在科研、竞赛与教学中逐步沉淀的 AI 实践库，涵盖**机器学习**、**深度学习**、**计算机视觉**、**自然语言处理**、**序列建模**、**生成式 AI** 与 **Kaggle 竞赛方案**复盘，所有笔记与脚本均由我亲自编写与调试。
 
-[![Lines of Code](https://img.shields.io/badge/Lines_of_Code-149k-0A84FF?style=for-the-badge)](#-代码脉搏-code-pulse)
-[![Python Share](https://img.shields.io/badge/Python-43%25-FF7B00?style=for-the-badge)](#-代码脉搏-code-pulse)
-[![Jupyter Share](https://img.shields.io/badge/Jupyter-31%25-FFCA28?style=for-the-badge)](#-代码脉搏-code-pulse)
-[![Docs Share](https://img.shields.io/badge/Docs-17%25-34C759?style=for-the-badge)](#-代码脉搏-code-pulse)
-
-</div>
-
-> **AI-Practices** 是我为自己科研与教学所搭建的全栈式学习体系：覆盖机器学习、深度学习、计算机视觉、NLP、时间序列、推荐系统与生成式 AI，既可做系统课程，也能作为研究备忘录。
-
-[快速导航](#快速导航) · [学习地图](#学习地图) · [模块概览](#模块概览) · [实战项目](#实战项目) · [环境配置](#环境配置) · [质量保障](#质量保障) · [致谢](#致谢)
+**关键词**: Machine Learning · Deep Learning · Computer Vision · NLP · PyTorch · TensorFlow · Keras · Jupyter Notebooks · Kaggle · 中文教程 · AI Tutorial · Neural Networks · CNN · RNN · Transformer · GAN
 
 ---
 
-## 快速导航
+## 📌 项目快照
 
-| 📂 顶层目录 | 说明 | 推荐切入 |
-|-------------|------|----------|
-| `01-foundations/` | 经典机器学习八大模块 | 回归/分类/集成学习/无监督 |
-| `02-neural-networks/` | Keras & TensorFlow 深度学习基础 | 从零搭建 NN、训练技巧 |
-| `03-computer-vision/` | CNN、目标检测、分割、可视化 | 图像方向研究/竞赛 |
-| `04-sequence-models/` | RNN、LSTM、Transformer | NLP 与时间序列 |
-| `05-advanced-topics/` | Functional API、回调、调参 | 工程化/优化 |
-| `06-generative-models/` | AutoEncoder、GAN、VAE、文本生成 | 生成式 AI 与艺术创作 |
-| `08-theory-notes/` | 激活函数、损失函数、架构理论 | 快速查阅公式与最佳实践 |
-| `09-practical-projects/` | 端到端 Kaggle/科研项目 19+ | 直接复现/迁移 |
-| `docs/` | 指南、审计报告、质量手册 | 了解策略与制度 | 
-| `激活函数与损失函数/` | 中文图谱 + Notebook | 快速演示与课堂使用 |
+| 维度 | 数据 |
+|------|------|
+| 📒 Jupyter Notebooks | **113+**（含可复现实验、课堂 DEMO） |
+| 🧠 主要模块 | **8 个分册**（01-foundations ~ 08-theory-notes） |
+| 🧾 辅助文档 | **30+ Markdown**（教程、日志、审计报告） |
+| 🚀 实战项目 | **19 个端到端案例**（分类、CV、NLP、时间序列、推荐、生成式 AI） |
+| 🧪 质量记录 | `CONTENT_AUDIT_*`、`NOTEBOOK_QUALITY_REPORT.md`、`migration_log.json` |
 
 ---
 
-## 研究概况
+## 🗂️ 目录速览
 
-| 指标 | 数量 | 说明 |
-|------|------|------|
-| 📒 Jupyter Notebooks | **113+** | 完整可运行的实验记录 |
-| 📘 Markdown 文档 | **30+** | 体系化理论与操作手册 |
-| 🧠 主要板块 | **8** | Foundations → Generative |
-| 🚀 实战项目 | **19** | 真实数据 + 训练脚本 + 可视化 |
-| 🧾 质量报告 | **4** | `CONTENT_AUDIT_*`, `NOTEBOOK_QUALITY_REPORT` 等 |
-
-> 📌 **Maintainer's note**：所有内容均由我亲自整理、测试与审阅，不依赖任何自动化脚本；每次大规模变更都会同步在 `migration_log.json` 与质量报告中留档。
-
----
-
-## 📊 代码脉搏 (Code Pulse)
-
-| 语言/介质 | 行数 | 占比 | 典型用途 |
-|-----------|------|------|----------|
-| Python (`.py`) | **64,692** | **43%** | 训练脚本、工具模块、推理代码 |
-| Jupyter (`.ipynb`) | **46,787** | **31%** | 可复现实验与课堂 Demo |
-| Markdown (`.md`) | **25,749** | **17%** | 理论笔记、实验记录、质量报告 |
-| YAML (`.yml / .yaml`) | **12,673** | **9%** | 环境配置、Kaggle workflow、CI blueprint |
-
-```text
-Python      ██████████████████ 43%
-Notebooks   ████████████       31%
-Markdown    ██████             17%
-YAML        ███                09%
-```
-
-> 统计时间：2025-11，基于仓库全量扫描（排除 `.git`/临时缓存）。随着新项目合入将持续刷新。
+| 目录 | 说明 | 示例内容 |
+|------|------|----------|
+| `01-foundations/` | 机器学习基础八章 | 训练模型、集成学习、无监督、端到端项目 |
+| `02-neural-networks/` | 深度学习基石 | Keras/TensorFlow 框架、训练技巧、自定义 Loop |
+| `03-computer-vision/` | 视觉专题 | CNN 基础、经典架构、迁移学习、可视化 |
+| `04-sequence-models/` | 序列与 NLP | RNN/LSTM/Transformer、词嵌入、序列到序列 |
+| `05-advanced-topics/` | 工程与优化 | Functional API、回调、TensorBoard、超参调优 |
+| `06-generative-models/` | 生成式 AI | AutoEncoder、GAN、VAE、文本生成、DeepDream |
+| `08-theory-notes/` | 理论图谱 | 激活函数全集、损失函数全集、架构/优化器笔记 |
+| `09-practical-projects/` | 项目工坊 | Kaggle / 产业项目脚本，含数据下载与训练管线 |
+| `docs/` | 操作文档 | CODE_STYLE、NOTEBOOK_GUIDE、OPTIMIZATION_REPORT 等 |
+| `utils/` | 工具模块 | `common.py`、`visualization.py`、`paths.py` |
 
 ---
 
-## 学习地图
+## 🧭 学习 / 研发路线
 
 ```mermaid
 graph LR
-    A((Step 0: Math & Python)) --> B[Phase 1 · 01-foundations]
-    B --> C[Phase 2 · 02-neural-networks]
-    C --> D[Phase 3 · 03/04 专项]
-    D --> E[Phase 4 · 05-advanced-topics]
-    E --> F[Phase 5 · 06-generative-models]
-    F --> G[Phase 6 · 09-practical-projects]
-    G --> H((Research/Deployment))
-
-    B --> B1{监督学习}
-    B --> B2{无监督}
-    B --> B3{集成}
-    D --> D1{CV}
-    D --> D2{NLP}
-    D --> D3{Time Series}
-    G --> G1{Kaggle}
-    G --> G2{Industry}
+    A(Math & Python) --> B[01-foundations\n监督/无监督/集成]
+    B --> C[02-neural-networks\nKeras & TensorFlow]
+    C --> D[03-computer-vision]
+    C --> E[04-sequence-models]
+    D --> F[05-advanced-topics\n工程化/调参]
+    E --> F
+    F --> G[06-generative-models]
+    G --> H[09-practical-projects\n竞赛/科研/部署]
 ```
 
-- **阶段化目标**：每一阶段都附有 README、notes、notebooks；全部采用 Why → What → When → How → Watch Out 的写作模板。
-- **任务追踪**：`SESSION_COMPLETION_REPORT.md`、`NOTEBOOK_OPTIMIZATION_GUIDE.md` 记录每周推进与修复策略。
+每一章节都包含：
+- `README.md`：目标、知识图谱、依赖
+- `notes/`：Why / What / When / How / Watch Out 结构
+- `notebooks/`：可运行示例（含 GPU / CPU 版本）
+- `code/` 或 `src/`：模块化训练脚本
 
 ---
 
-## 模块概览
+## 📊 代码与文档统计
 
-<details>
-<summary><strong>01 · Foundations（8 章）</strong></summary>
+| 文件类型 | 行数 | 占比 | 主要角色 |
+|----------|------|------|----------|
+| Python (`.py`) | **64,692** | **43%** | 训练脚本、工具库、评估与部署 |
+| Notebook (`.ipynb`) | **46,787** | **31%** | 课堂 Demo、实验记录、Kaggle 复盘 |
+| Markdown (`.md`) | **25,749** | **17%** | 理论笔记、报告、日志 |
+| YAML (`.yml/.yaml`) | **12,673** | **9%** | 环境、流水线、超参配置 |
 
-- 线性/逻辑回归、正则化、梯度下降
-- 决策树、随机森林、XGBoost、SVM、降维、聚类
-- 每章包含：`notes/` 理论 + `notebooks/` 实验 + `projects/` 小型案例
-</details>
+> 统计时间：2025-11（排除 `.git` 与缓存目录）。后续更新会同步在 README。
 
-<details>
-<summary><strong>02 · Neural Networks（4 章）</strong></summary>
+```mermaid
+pie title 行数占比
+    "Python" : 64692
+    "Jupyter Notebooks" : 46787
+    "Markdown" : 25749
+    "YAML" : 12673
+```
 
-- Sequential/Functional API、回调、TensorBoard、tf.data
-- 手写自定义 Layer/Loss/Training Loop
-- 提供 `utils/common.py`、`utils/visualization.py` 等快速复用模块
-</details>
+## 📈 GitHub 趋势监控
 
-<details>
-<summary><strong>03 · Computer Vision（5 章）</strong></summary>
+> 下图由自动化脚本抓取 GitHub API（Stars/Forks）并每日更新一次，方便追踪仓库热度随时间的变化。数据快照可在 `docs/assets/github-trends.json` 中查阅。
 
-- CNN 基础、经典架构（LeNet, AlexNet, VGG, ResNet, Inception）
-- 迁移学习、目标检测、语义分割、可视化（Grad-CAM、Filter Visualization）
-</details>
-
-<details>
-<summary><strong>04 · Sequence Models（5 章）</strong></summary>
-
-- RNN/LSTM/GRU、Attention、seq2seq、Transformer、文本预处理与嵌入
-- 包含中文 IMDB 数据、词嵌入、语言模型案例
-</details>
-
-<details>
-<summary><strong>05 · Advanced Topics（5 章）</strong></summary>
-
-- Functional API 高级用法、多输入多输出 DAG
-- 回调、TensorBoard 监控、超参调优、部署思路
-</details>
-
-<details>
-<summary><strong>06 · Generative Models（5 章）</strong></summary>
-
-- AutoEncoder, Variational AutoEncoder, GAN, DCGAN, Style Transfer, 文本生成
-- 配套 `激活函数与损失函数/` 中的可视化笔记
-</details>
-
-<details>
-<summary><strong>08 · Theory Notes</strong></summary>
-
-- `activation-functions/` & `loss-functions/`：30+ 激活函数 & 全栈损失函数图谱
-- `architectures/`：网络拓扑、优化器、正则化对照表
-</details>
-
-<details>
-<summary><strong>09 · Practical Projects（19 套）</strong></summary>
-
-- 机器学习 4 项、计算机视觉 4 项、NLP 4 项、时间序列 3 项、推荐 1 项、生成式 AI 3 项
-- 每套均自带 `src/` 模块化代码、`data/` 下载脚本、`train.py`、`evaluate.py`
-</details>
+![GitHub Stars & Forks Trend](docs/assets/github-trends.svg)
 
 ---
 
-## 实战项目
+## 🧩 模块解剖
 
-| 类别 | 代表项目 | 技术栈 | 亮点 |
-|------|----------|--------|------|
-| 机器学习基础 | Titanic 生存预测、Otto 分类 | Scikit-learn, XGBoost | 全流程特征工程 + 模型对比 |
-| 计算机视觉 | MNIST、猫狗分类、RSNA 系列 | TensorFlow, Keras, Albumentations | 从入门到 Kaggle 金牌方案拆解 |
-| NLP | 情感分析、Transformer 文本分类、NER | LSTM, Transformer, HuggingFace | 多语言语料 + 注意力机制 |
-| 时间序列 | 温度/股票预测 | LSTM, Prophet | 滑动窗口、技术指标、可扩展评估 |
-| 推荐系统 | MovieLens NCF | Matrix Factorization, NeuMF | 多策略融合、冷启动处理 |
-| 生成式 AI | DCGAN, Text Generation, Style Transfer | GAN, VAE, Attention | 潜空间插值、推理脚本 |
+### 01 · Foundations  
+- 线性与逻辑回归、梯度下降、正则化  
+- 决策树、随机森林、XGBoost、SVM、聚类、降维  
+- `08-end-to-end-project/` 包含完整的 ML 管道（数据→特征→模型→部署建议）
 
-> 所有项目集中在 `09-practical-projects/`，并保持与 `requirements.txt`、`environment.yml` 同步。
+### 02 · Neural Networks  
+- Sequential vs Functional API、回调体系、TensorBoard  
+- `03-custom-models-training/` 展示自定义 Layer/Loss 及训练循环  
+- `04-data-loading-preprocessing/` 专注 `tf.data`、数据增强与混合精度
+
+### 03 · Computer Vision  
+- `01-cnn-basics/`：卷积/池化/BN/正则  
+- `02-classic-architectures/`：LeNet→AlexNet→VGG→ResNet→Inception  
+- `03-transfer-learning/` & `04-object-detection/`：含迁移、检测、可视化、Grad-CAM
+
+### 04 · Sequence Models  
+- `01-rnn-basics/`：RNN/LSTM/GRU 核心  
+- `03-text-processing/`：IMDB 中文情感分析、词嵌入、注意力  
+- `05-sequence-to-sequence/`：Transformer、机器翻译、CTC
+
+### 05 · Advanced Topics  
+- Functional API DAG、多输入多输出  
+- 回调与 TensorBoard 监控策略  
+- Hyper-parameter 搜索、模型压缩、部署思路
+
+### 06 · Generative Models  
+- AutoEncoder / VAE / GAN / DCGAN / 风格迁移 / Text Generation  
+- `激活函数与损失函数/` 中配套的图谱与 Notebook 可直接调用
+
+### 08 · Theory Notes  
+- `activation-functions/activation-functions-complete.md`：30+ 激活函数逐项比较  
+- `loss-functions/loss-functions-complete.md`：回归/分类/排序/高级 loss 全景  
+- `architectures/`：网络拓扑、Regularization、Optimizer 速查
+
+### 09 · Practical Projects  
+- **ML 基础**：Titanic、生存预测、Otto 分类、客户分群  
+- **CV**：MNIST CNN、猫狗分类、CIFAR10、目标检测、RSNA 影像  
+- **NLP**：LSTM 情感分析、Transformer 文本分类/NER、聊天机器人  
+- **时间序列**：温度、销量、股票预测（LSTM + Prophet）  
+- **推荐系统**：MovieLens NCF、协同过滤、混合策略  
+- **生成式 AI**：DCGAN 图像生成、LSTM 文本生成、风格迁移  
+- **Kaggle 方案**：RSNA 2023/2024、Feedback-Prize、American Express
 
 ---
 
-## 研究工具箱
+## 🔧 工具与质量体系
 
-- 📄 `CONTENT_AUDIT_COMPLETION_REPORT.md`：记录结构重构、笔记补全、质量得分。
-- 📄 `CONTENT_AUDIT_PLAN.md`：未来章节规划与任务优先级。
-- 📄 `NOTEBOOK_QUALITY_REPORT.md`：运行性、可重复性、注释、资源使用等指标。
-- 📄 `NOTEBOOK_OPTIMIZATION_GUIDE.md`：针对 TensorFlow 2.x/Torch 2.x 的 API 更新手册。
-- 📄 `OPTIMIZATION_REPORT.md` & `项目结构优化报告.md`：记录每次大规模调整的目标与结果。
+- `utils/common.py`：随机种子、设备检测、计时器、数据集切分  
+- `utils/visualization.py`：训练曲线、混淆矩阵、错误案例可视化  
+- `docs/NOTEBOOK_QUALITY_REPORT.md`：记录每个 Notebook 的运行状态、依赖版本、输出截图  
+- `docs/CONTENT_AUDIT_COMPLETION_REPORT.md` & `migration_log.json`：追踪从中文目录到英文结构的映射  
+- `docs/OPTIMIZATION_REPORT.md`：列出每次大规模重构与得分
 
-配合 `utils/` 模块即可快速进行：
+---
 
-```python
-from utils.common import set_seed, Timer
-from utils.visualization import plot_training_history
+## 🚀 快速启动
 
-set_seed(1024)
-with Timer("Training"):
-    history = model.fit(train_ds, validation_data=val_ds, epochs=20)
-plot_training_history(history.history)
+```bash
+# 克隆
+git clone https://github.com/yourusername/AI-Practices.git
+cd AI-Practices
+
+# 创建与激活环境
+conda create -n ai-practices python=3.10 -y
+conda activate ai-practices
+
+# 安装核心依赖
+pip install -r requirements.txt
+
+# 若需 GPU / Kaggle 方案
+python -m pip install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+pip install tensorflow==2.13.1
+pip install -r 09-practical-projects/requirements.txt
+```
+
+### 示例：运行 MNIST CNN
+
+```bash
+cd 09-practical-projects/02_计算机视觉项目/01_MNIST手写数字识别_CNN入门
+python src/data.py --download
+python src/train.py --model improved_cnn --epochs 20
+python src/evaluate.py --checkpoint runs/improved_cnn.best.pt
 ```
 
 ---
@@ -208,77 +200,30 @@ plot_training_history(history.history)
 ```mermaid
 timeline
     title 发布与演进
-    2023-Q4 : 基础章节成形 · Foundations v1.0
-    2024-Q1 : 深度学习与CV模块上线
+    2023-Q4 : Foundations v1 · 建立 Python/ML 基础八章
+    2024-Q1 : 深度学习 & CV 模块上线
     2024-Q3 : 实战项目扩展至 15+
-    2025-Q1 : 全面英文结构重构
-    2025-Q3 : Kaggle 竞赛方案合流
+    2025-Q1 : 全仓重构为英文目录，迁移日志上线
+    2025-Q3 : Kaggle 金牌方案入库，质量审计体系完成
     2025-Q4 : README 2.0 + 代码统计仪表板
 ```
 
-> 未来规划：补全 `optimizers/`、`classic-architectures/`、2024-2025 最新 Kaggle 方案，并加入部署/Serving 实践。
+**近期待办**  
+- [ ] `08-theory-notes/optimizers/` 完成优化器对照表  
+- [ ] `03-computer-vision/02-classic-architectures/` 增补训练日志、性能曲线  
+- [ ] `04-sequence-models/05-sequence-to-sequence/` 添加 Transformer 推理脚本  
+- [ ] `09-practical-projects/05_Kaggle竞赛项目/` 更新 2024-2025 最新比赛复盘
 
 ---
 
-## 环境配置
+## 🙌 致谢 & 参考仓库
 
-```bash
-# 1. 创建虚拟环境
-conda create -n ai-practices python=3.10 -y
-conda activate ai-practices
+- [PyTorch](https://github.com/pytorch/pytorch) / [TensorFlow](https://github.com/tensorflow/tensorflow) / [Keras](https://github.com/keras-team/keras) / [JAX](https://github.com/google/jax)：深度学习实验主力框架  
+- [scikit-learn](https://github.com/scikit-learn/scikit-learn) / [XGBoost](https://github.com/dmlc/xgboost) / [LightGBM](https://github.com/microsoft/LightGBM) / [CatBoost](https://github.com/catboost/catboost)：经典 ML 基线  
+- [Hugging Face Transformers](https://github.com/huggingface/transformers) ：NLP 模型与 tokenizer 复现基础  
+- [Albumentations](https://github.com/albumentations-team/albumentations) / [OpenMMLab MMDetection](https://github.com/open-mmlab/mmdetection)：计算机视觉增强与检测参考实作  
+- [Kaggle 官方仓库](https://github.com/Kaggle/kaggle-api) 及社区 Kernel：提供真实数据集与竞赛脚本灵感  
+- [Matplotlib](https://github.com/matplotlib/matplotlib) / [Seaborn](https://github.com/mwaskom/seaborn) / [Plotly](https://github.com/plotly/plotly.py)：可视化主力工具
 
-# 2. 安装核心依赖
-pip install -r requirements.txt
-
-# 3. 可选：安装 GPU / 竞赛依赖
-python -m pip install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-pip install tensorflow==2.13.1
-pip install -r 09-practical-projects/requirements.txt        # 如需 Kaggle/竞赛项目
-```
-
-```bash
-# 4. 运行示例 Notebook（以 MNIST 项目为例）
-cd 09-practical-projects/02_计算机视觉项目/01_MNIST手写数字识别_CNN入门
-python src/train.py --model improved_cnn --epochs 20
-python src/evaluate.py --checkpoint runs/improved_cnn.best.pt
-```
-
----
-
-## 质量保障
-
-- ✅ `NOTEBOOK_QUALITY_REPORT.md`：逐条列出运行状态 / 依赖 / 结果截图
-- ✅ `SESSION_COMPLETION_REPORT.md`：追踪每次学习/调试的完成情况
-- ✅ `CONTENT_AUDIT_*`：保证目录、命名、缺失笔记及时补齐
-- ✅ `migration_log.json`：映射每一个从中文到英文路径的历史，以便追溯
-
-### 研发待办（节选）
-- [ ] `08-theory-notes/optimizers/` 完成剩余笔记
-- [ ] `03-computer-vision/02-classic-architectures/` 对比表格 + 训练日志
-- [ ] `04-sequence-models/05-sequence-to-sequence/` 增补 Transformer 推理脚本
-- [ ] `09-practical-projects/05_Kaggle竞赛项目/` 新增 2024 赛题复盘
-
----
-
-## 贡献方式
-
-目前项目以科研自用为主，如需讨论或协同：
-1. 提交 Issue 描述需求或漏洞（推荐附 notebooks 运行信息）。
-2. Fork → 提交 PR，遵循 `CODE_STYLE.md` 与 `CONTRIBUTING.md`。
-3. 所有 PR 均需附最小可复现示例或实验截图。
-
----
-
-## 致谢
-
-- **PyTorch / TensorFlow / Keras / JAX**：本项目中的所有深度学习实验依赖这些优秀的开源框架。
-- **Scikit-learn / XGBoost / LightGBM / CatBoost**：提供稳定的经典机器学习基线。
-- **Hugging Face Transformers**：使 NLP 模型的复现更加简单高效。
-- **Kaggle 社区**：项目中的多个实践案例改编自我在竞赛中的真实代码与经验。
-- **Matplotlib / Seaborn / Plotly**：用于可视化的主力工具。
-
-> 感谢所有开源社区的贡献者。若你在使用本仓库时完成了科研或竞赛成果，欢迎在 Issue 中分享。
-
----
-
-**AI-Practices** · Maintained with ❤️ & curiosity.
+如你在学习或研究中使用了 AI-Practices，欢迎在 Issue 中分享成果或提出改进建议。  
+**AI-Practices · Maintained with ❤️ + curiosity.**

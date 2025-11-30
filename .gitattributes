@@ -1,3 +1,55 @@
+# Git LFS Configuration
 *.h5 filter=lfs diff=lfs merge=lfs -text
 glove.840B.300d.txt filter=lfs diff=lfs merge=lfs -text
 *.pkl filter=lfs diff=lfs merge=lfs -text
+
+# Language Detection Configuration
+# Exclude generated files and vendor code from language statistics
+
+# Documentation
+*.md linguist-documentation
+*.txt linguist-documentation
+
+# Data files (exclude from language stats)
+*.csv linguist-generated=true
+*.json linguist-generated=true
+*.xml linguist-generated=true
+*.yaml linguist-language=YAML
+*.yml linguist-language=YAML
+
+# Jupyter Notebooks (mark as detectable)
+*.ipynb linguist-detectable=true linguist-language=Jupyter-Notebook
+
+# Python files (ensure proper detection)
+*.py linguist-detectable=true linguist-language=Python
+
+# Exclude specific directories from language statistics
+docs/archived/** linguist-documentation
+**/migrations/** linguist-generated=true
+**/node_modules/** linguist-vendored
+**/vendor/** linguist-vendored
+**/__pycache__/** linguist-generated=true
+**/.ipynb_checkpoints/** linguist-generated=true
+
+# Model weights and data files
+*.pth linguist-generated=true
+*.pt linguist-generated=true
+*.ckpt linguist-generated=true
+*.weights linguist-generated=true
+*.npy linguist-generated=true
+*.npz linguist-generated=true
+*.hdf5 linguist-generated=true
+
+# Image files
+*.png linguist-generated=true
+*.jpg linguist-generated=true
+*.jpeg linguist-generated=true
+*.gif linguist-generated=true
+*.svg linguist-generated=true
+*.ico linguist-generated=true
+
+# Archive files
+*.zip linguist-generated=true
+*.tar linguist-generated=true
+*.gz linguist-generated=true
+*.rar linguist-generated=true
