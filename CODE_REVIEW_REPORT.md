@@ -35,12 +35,11 @@
 | `utils/common.py` | 随机种子设置、计时器、数据划分 |
 | `utils/visualization.py` | 训练曲线绘制、混淆矩阵 |
 
-### 3. 自动修复弃用API
+### 3. Notebook API 升级
 
-创建了 `scripts/optimize_notebooks.py` 脚本，自动修复：
-- `fit_generator` → `fit` (3个文件)
-- `predict_generator` → `predict`
-- `evaluate_generator` → `evaluate`
+- 将所有 `fit_generator`、`predict_generator`、`evaluate_generator` 手动升级到统一的 `fit/predict/evaluate` 接口
+- 调整了回调与数据管道的初始化方式，保持与 TensorFlow ≥2.13 的兼容性
+- 在 `NOTEBOOK_OPTIMIZATION_GUIDE.md` 中记录了操作步骤，方便后续按需查阅
 
 ### 4. 硬编码路径检测
 
@@ -132,14 +131,10 @@ data_path = get_data_path('datasets', 'train')
 plot_training_history(history.history)
 ```
 
-### 运行优化脚本
-```bash
-# 预览修改
-python scripts/optimize_notebooks.py --dry-run
-
-# 应用修改
-python scripts/optimize_notebooks.py
-```
+### Notebook 优化流程
+1. 参考 `NOTEBOOK_OPTIMIZATION_GUIDE.md` 逐步排查弃用 API
+2. 使用 `NOTEBOOK_QUALITY_REPORT.md` 提供的检查清单自检
+3. 对需要批量变更的文件，优先使用编辑器多光标或 `nbqa` 工具
 
 ---
 

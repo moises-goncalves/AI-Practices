@@ -196,10 +196,10 @@
 ### 机器学习实战/机器学习基础知识/集成学习和随机森林/Bagging and Pasting/Bagging and Pasting.ipynb
 - 警告: 缺少随机种子设置
 
-### 机器学习实战/机器学习基础知识/集成学习和随机森林/Gradient Boosting/Gridients Boosting.ipynb
+### 机器学习实战/机器学习基础知识/集成学习和随机森林/Gradient Boosting/Gradient Boosting.ipynb
 - 警告: 缺少随机种子设置
 
-### 机器学习实战/机器学习基础知识/分类/MNIST/Minist.ipynb
+### 机器学习实战/机器学习基础知识/分类/MNIST/MNIST.ipynb
 - 修复: 添加随机种子
 - 警告: 缺少随机种子设置
 
@@ -217,6 +217,9 @@
 - 警告: 缺少随机种子设置
 
 ### 机器学习实战/机器学习基础知识/降维/RandomizedPCA/RandomizedPCA.ipynb
+- 警告: 缺少随机种子设置
+
+### 机器学习实战/机器学习基础知识/无监督学习/DBSCAN/make_moon_based_on_DBSCAN.ipynb
 - 警告: 缺少随机种子设置
 
 ### 机器学习实战/机器学习基础知识/降维/IncrementalPCA/IncrementalPCA.ipynb

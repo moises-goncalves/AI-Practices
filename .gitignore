@@ -115,6 +115,4 @@ temp/
 .env.local
 secrets.yaml
 credentials.json
-
-# Claude Code
-.claude/
+04-sequence-models/03-text-processing/使用词嵌入/imdb数据集/
