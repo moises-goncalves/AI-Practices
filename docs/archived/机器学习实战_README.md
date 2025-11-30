@@ -106,7 +106,7 @@ plot_confusion_matrix(y_true, y_pred, classes)
 | Kaggle | 房价预测比赛 | [kaggle.com/c/house-prices](https://www.kaggle.com/c/house-prices-advanced-regression-techniques) |
 | GitHub | Scikit-learn官方示例 | [scikit-learn/scikit-learn](https://github.com/scikit-learn/scikit-learn/tree/main/examples) |
 
-📄 [详细笔记](机器学习基础知识/训练模型/第四章笔记.md)
+📄 [详细笔记](机器学习基础知识/训练模型/训练模型全流程指南.md)
 
 ---
 
@@ -170,7 +170,7 @@ plot_confusion_matrix(y_true, y_pred, classes)
 | GitHub | SVM教程 | [jakevdp/PythonDataScienceHandbook](https://github.com/jakevdp/PythonDataScienceHandbook/blob/master/notebooks/05.07-Support-Vector-Machines.ipynb) |
 | 官方文档 | Scikit-learn SVM | [scikit-learn.org/stable/modules/svm](https://scikit-learn.org/stable/modules/svm.html) |
 
-📄 [详细笔记](机器学习基础知识/Support%20Vector%20Machine/第五章笔记.md)
+📄 [详细笔记](机器学习基础知识/Support%20Vector%20Machine/支持向量机完整指南.md)
 
 ---
 
@@ -272,7 +272,7 @@ plot_confusion_matrix(y_true, y_pred, classes)
 | GitHub | CatBoost官方仓库 | [catboost/catboost](https://github.com/catboost/catboost) |
 | Kaggle | Stacking集成示例 | [kaggle.com/code/serigne/stacked-regressions](https://www.kaggle.com/code/serigne/stacked-regressions-top-4-on-leaderboard) |
 
-📄 [详细笔记](机器学习基础知识/集成学习和随机森林/第七章笔记.md)
+📄 [详细笔记](机器学习基础知识/集成学习和随机森林/集成学习与随机森林指南.md)
 
 ---
 
