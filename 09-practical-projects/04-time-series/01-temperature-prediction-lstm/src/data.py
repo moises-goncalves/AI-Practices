@@ -1,13 +1,11 @@
 """
 时间序列数据处理模块
 
-本模块负责：
+功能：
 1. 加载Jena气候数据集
 2. 数据预处理和归一化
 3. 创建滑动窗口序列
 4. 数据集划分
-
-每个步骤都有详细的注释说明。
 """
 
 import numpy as np
@@ -21,16 +19,16 @@ class TimeSeriesDataProcessor:
     """
     时间序列数据处理器
 
-    【是什么】：处理时间序列数据的工具类
-    【做什么】：
-        - 加载和清洗数据
-        - 特征工程
-        - 创建滑动窗口
-        - 数据归一化
-    【为什么】：
-        - 时间序列需要特殊的处理方式
-        - 滑动窗口是时间序列预测的核心
-        - 归一化提高模型性能
+    功能：
+        - 加载和清洗时间序列数据
+        - 特征工程（特征选择、降采样）
+        - 创建滑动窗口序列
+        - 数据标准化
+
+    时间序列数据的特殊性：
+        - 必须保持时间顺序，不能随机打乱
+        - 需要创建滑动窗口来捕获时间依赖关系
+        - 标准化基于训练集统计量，防止数据泄露
     """
 
     def __init__(self, data_path, target_column='T (degC)',
@@ -73,7 +71,8 @@ class TimeSeriesDataProcessor:
         self.df = pd.read_csv(self.data_path)
 
         print(f"  原始数据形状: {self.df.shape}")
-        print(f"  时间跨度: {self.df['Date Time'].iloc[0]} 到 {self.df['Date Time'].iloc[-1]}")
+        if 'Date Time' in self.df.columns:
+            print(f"  时间跨度: {self.df['Date Time'].iloc[0]} 到 {self.df['Date Time'].iloc[-1]}")
 
         # ============================================
         # 步骤2: 处理日期时间
@@ -116,17 +115,15 @@ class TimeSeriesDataProcessor:
         # ============================================
         # 步骤5: 处理缺失值
         # ============================================
-        # 【是什么】：检查并处理NaN值
-        # 【为什么】：
-        #   - 缺失值会导致模型训练失败
-        #   - 时间序列常用前向填充
+        # 检查并处理NaN值
+        # 时间序列通常使用前向填充（用前一个值填充），保持时序连续性
         missing_count = self.df.isnull().sum().sum()
         if missing_count > 0:
             print(f"  发现缺失值: {missing_count}")
-            # 前向填充：用前一个值填充
-            self.df.fillna(method='ffill', inplace=True)
-            # 后向填充：处理开头的缺失值
-            self.df.fillna(method='bfill', inplace=True)
+            # 前向填充
+            self.df = self.df.ffill()
+            # 后向填充（处理开头的缺失值）
+            self.df = self.df.bfill()
             print(f"  缺失值已处理")
 
         return self.df
@@ -135,6 +132,12 @@ class TimeSeriesDataProcessor:
         """
         归一化数据
 
+        重要：只在训练集上fit scaler
+        原因：
+            - 防止数据泄露（测试集信息不应影响训练）
+            - 模拟真实预测场景
+            - 测试集使用训练集的统计量进行转换
+
         Args:
             train_split: 训练集比例（用于fit scaler）
 
@@ -142,15 +145,6 @@ class TimeSeriesDataProcessor:
             归一化后的数据
         """
         print("\n归一化数据...")
-
-        # ============================================
-        # 重要：只在训练集上fit scaler
-        # ============================================
-        # 【是什么】：StandardScaler标准化
-        # 【为什么只用训练集】：
-        #   - 防止数据泄露
-        #   - 测试集应该用训练集的统计量
-        #   - 模拟真实预测场景
 
         train_size = int(len(self.df) * train_split)
         train_data = self.df.iloc[:train_size].values
@@ -162,8 +156,8 @@ class TimeSeriesDataProcessor:
         normalized_data = self.scaler.transform(self.df.values)
 
         print(f"  归一化完成")
-        print(f"  均值: {self.scaler.mean_[:3]}")  # 显示前3个特征的均值
-        print(f"  标准差: {self.scaler.scale_[:3]}")  # 显示前3个特征的标准差
+        print(f"  均值: {self.scaler.mean_[:3]}")
+        print(f"  标准差: {self.scaler.scale_[:3]}")
 
         return normalized_data
 
@@ -171,29 +165,29 @@ class TimeSeriesDataProcessor:
         """
         创建滑动窗口序列
 
-        【是什么】：将时间序列转换为监督学习问题
-        【做什么】：
-            - 输入：过去lookback个时间步的数据
-            - 输出：未来forecast_horizon个时间步的目标值
-        【为什么】：
-            - LSTM需要固定长度的输入
-            - 滑动窗口捕获时间依赖关系
+        将时间序列转换为监督学习问题：
+            - 输入X：过去lookback个时间步的所有特征
+            - 输出y：未来forecast_horizon个时间步的目标值
+
+        滑动窗口原理：
+            时刻t: 使用[t-lookback, t]的数据预测[t+1, t+forecast_horizon]
+            时刻t+step: 滑动窗口继续
 
         Args:
-            data: 归一化后的数据
+            data: 归一化后的数据，形状(n_samples, n_features)
             lookback: 回看窗口大小（输入序列长度）
             forecast_horizon: 预测时间范围（输出序列长度）
             step: 滑动步长
 
         Returns:
-            X, y: 输入序列和目标值
+            X: 输入序列，形状(n_sequences, lookback, n_features)
+            y: 目标值，形状(n_sequences, forecast_horizon)
 
         示例：
             lookback=168 (7天 * 24小时)
             forecast_horizon=24 (预测未来24小时)
-
-            输入: 过去7天的[温度, 湿度, 气压, ...]
-            输出: 未来24小时的温度
+            输入X：过去7天的[温度, 湿度, 气压, 风速, 风向]
+            输出y：未来24小时的温度
         """
         print("\n创建滑动窗口序列...")
         print(f"  回看窗口: {lookback} 小时")
@@ -202,32 +196,24 @@ class TimeSeriesDataProcessor:
 
         X, y = [], []
 
-        # ============================================
-        # 滑动窗口算法
-        # ============================================
-        # 【原理】：
-        #   时刻t: 使用 [t-lookback, t] 预测 [t+1, t+forecast_horizon]
-        #   时刻t+step: 使用 [t+step-lookback, t+step] 预测 [t+step+1, t+step+forecast_horizon]
-
         # 找到目标列的索引
         target_idx = self.feature_names.index(self.target_column)
 
+        # 滑动窗口生成序列
         for i in range(0, len(data) - lookback - forecast_horizon + 1, step):
-            # 输入序列：过去lookback个时间步的所有特征
-            # 【形状】：(lookback, num_features)
+            # 输入序列：过去lookback个时间步的所有特征，形状(lookback, n_features)
             X.append(data[i:i+lookback])
 
-            # 输出序列：未来forecast_horizon个时间步的目标值
-            # 【形状】：(forecast_horizon,)
-            # 【注意】：只预测目标列（温度）
+            # 输出序列：未来forecast_horizon个时间步的目标值，形状(forecast_horizon,)
+            # 注意：只预测目标列（温度），不预测其他特征
             y.append(data[i+lookback:i+lookback+forecast_horizon, target_idx])
 
         X = np.array(X)
         y = np.array(y)
 
         print(f"  生成序列数: {len(X)}")
-        print(f"  输入形状: {X.shape}")  # (samples, lookback, features)
-        print(f"  输出形状: {y.shape}")  # (samples, forecast_horizon)
+        print(f"  输入形状: {X.shape}")
+        print(f"  输出形状: {y.shape}")
 
         return X, y
 
@@ -235,11 +221,9 @@ class TimeSeriesDataProcessor:
         """
         划分数据集
 
-        【重要】：时间序列不能随机划分！
-        【为什么】：
-            - 必须保持时间顺序
-            - 训练集在前，验证集在中，测试集在后
-            - 模拟真实预测场景
+        重要：时间序列不能随机划分！
+        必须保持时间顺序：训练集→验证集→测试集
+        这样才能模拟真实的预测场景（用过去预测未来）
 
         Args:
             X: 输入序列
@@ -249,32 +233,27 @@ class TimeSeriesDataProcessor:
 
         Returns:
             (X_train, y_train), (X_val, y_val), (X_test, y_test)
+
+        示例：
+            总样本10000个
+            训练集: 0-7000 (70%)
+            验证集: 7000-8500 (15%)
+            测试集: 8500-10000 (15%)
         """
         print("\n划分数据集...")
 
         n_samples = len(X)
 
-        # ============================================
-        # 按时间顺序划分
-        # ============================================
-        # 【示例】：
-        #   总样本: 10000
-        #   训练集: 0-7000 (70%)
-        #   验证集: 7000-8500 (15%)
-        #   测试集: 8500-10000 (15%)
-
         train_size = int(n_samples * train_split)
         val_size = int(n_samples * val_split)
 
-        # 训练集
+        # 按时间顺序划分
         X_train = X[:train_size]
         y_train = y[:train_size]
 
-        # 验证集
         X_val = X[train_size:train_size+val_size]
         y_val = y[train_size:train_size+val_size]
 
-        # 测试集
         X_test = X[train_size+val_size:]
         y_test = y[train_size+val_size:]
 
@@ -288,10 +267,8 @@ class TimeSeriesDataProcessor:
         """
         反归一化目标值
 
-        【是什么】：将归一化的预测值转换回原始尺度
-        【为什么】：
-            - 评估时需要原始尺度的值
-            - 便于理解预测结果（如温度20°C）
+        将标准化的预测值转换回原始温度尺度
+        用于评估和结果展示（如将归一化值转换为实际温度20°C）
 
         Args:
             y: 归一化的目标值
@@ -306,7 +283,7 @@ class TimeSeriesDataProcessor:
         mean = self.scaler.mean_[target_idx]
         scale = self.scaler.scale_[target_idx]
 
-        # 反归一化：y_original = y_normalized * scale + mean
+        # 反标准化公式：y_original = y_normalized * scale + mean
         return y * scale + mean
 
     def save_scaler(self, filepath):
@@ -317,7 +294,7 @@ class TimeSeriesDataProcessor:
                 'feature_names': self.feature_names,
                 'target_column': self.target_column
             }, f)
-        print(f"✓ 归一化器已保存: {filepath}")
+        print(f"归一化器已保存: {filepath}")
 
     def load_scaler(self, filepath):
         """加载归一化器"""
@@ -326,7 +303,7 @@ class TimeSeriesDataProcessor:
             self.scaler = data['scaler']
             self.feature_names = data['feature_names']
             self.target_column = data['target_column']
-        print(f"✓ 归一化器已加载: {filepath}")
+        print(f"归一化器已加载: {filepath}")
 
 
 def prepare_temperature_data(data_path='data/jena_climate_2009_2016.csv',
@@ -451,7 +428,7 @@ if __name__ == '__main__':
             sampling_rate=1
         )
 
-        print("\n✓ 数据处理测试通过！")
+        print("\n数据处理测试通过！")
 
         # 测试反归一化
         print("\n测试反归一化...")
@@ -465,4 +442,4 @@ if __name__ == '__main__':
         if os.path.exists(temp_path):
             os.remove(temp_path)
 
-    print("\n✓ 所有测试通过！")
+    print("\n所有测试通过！")

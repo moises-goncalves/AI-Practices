@@ -1,12 +1,12 @@
 """
 LSTM温度预测模型
 
-本模块实现三种LSTM架构：
-1. 简单LSTM（单层）
-2. 堆叠LSTM（多层）
-3. GRU模型（对比）
+实现三种LSTM架构：
+1. 简单LSTM（单层）- 适用于快速实验
+2. 堆叠LSTM（多层）- 适用于复杂时序模式
+3. GRU模型 - 参数更少，训练更快
 
-每个模型都有详细的注释说明设计思路和参数选择。
+每个模型都有详细的架构说明和参数选择依据。
 """
 
 import numpy as np
@@ -20,12 +20,17 @@ class TemperatureLSTMPredictor:
     """
     LSTM温度预测器
 
-    【是什么】：基于LSTM的时间序列预测模型
-    【做什么】：预测未来24小时的温度
-    【为什么】：
-        - LSTM能捕获长期依赖关系
-        - 适合处理时间序列数据
-        - 可以同时考虑多个气象特征
+    基于LSTM的时间序列预测模型，用于预测未来时段的温度。
+
+    特点：
+        - 支持多变量输入（温度、湿度、气压等）
+        - 捕获长期时间依赖关系
+        - 提供三种架构选择（simple/stacked/gru）
+
+    架构说明：
+        - simple: 单层LSTM，适合简单任务
+        - stacked: 多层LSTM，学习多层次时序特征
+        - gru: GRU变体，参数更少，训练更快
     """
 
     def __init__(self,
@@ -65,79 +70,40 @@ class TemperatureLSTMPredictor:
         """
         configs = {
             'simple': {
-                # ============================================
                 # 简单LSTM配置（单层）
-                # ============================================
-                # 【适用场景】：
-                #   - 快速实验
-                #   - 简单的时间序列模式
-                #   - 计算资源有限
-
-                'lstm_units': [64],     # 单层LSTM
-                # 【为什么=64】：
-                #   - 单层需要足够的容量
-                #   - 64个单元是常见的起点
-                #   - 平衡性能和速度
-
-                'dropout': 0.2,         # Dropout比率
-                # 【为什么=0.2】：
-                #   - 轻度正则化
-                #   - 防止过拟合
-
-                'dense_units': [32],    # 全连接层
-                # 【为什么需要】：
-                #   - LSTM输出需要映射到预测范围
-                #   - 增加非线性能力
+                # 适用场景：快速实验、简单时序模式、资源有限
+                'lstm_units': [64],
+                'dropout': 0.2,
+                'dense_units': [32],
             },
 
             'stacked': {
-                # ============================================
                 # 堆叠LSTM配置（多层）
-                # ============================================
-                # 【适用场景】：
-                #   - 复杂的时间序列模式
-                #   - 需要捕获多层次特征
-                #   - 追求更好性能
-
-                'lstm_units': [128, 64, 32],  # 三层LSTM
-                # 【为什么逐层递减】：
-                #   - 第1层(128)：学习低级时间特征
-                #     * 捕获小时级波动
-                #     * 需要大容量记住细节
-                #   - 第2层(64)：学习中级时间特征
-                #     * 捕获日级变化
-                #     * 特征更抽象，容量减半
-                #   - 第3层(32)：学习高级时间特征
-                #     * 捕获周级趋势
-                #     * 最抽象，容量最小
-
-                'dropout': 0.3,         # Dropout比率
-                # 【为什么=0.3】：
-                #   - 深层网络需要更强正则化
-                #   - 防止过拟合
-
-                'dense_units': [64, 32],  # 两层全连接
-                # 【为什么需要两层】：
-                #   - 第1层：整合LSTM特征
-                #   - 第2层：映射到预测范围
+                # 适用场景：复杂时序模式、多层次特征
+                #
+                # 层次递减设计：
+                #   第1层(128): 学习低级时间特征（小时级波动）
+                #   第2层(64):  学习中级时间特征（日级变化）
+                #   第3层(32):  学习高级时间特征（周级趋势）
+                #
+                # 递减原因：特征逐层抽象，高层需要的容量更小
+                'lstm_units': [128, 64, 32],
+                'dropout': 0.3,
+                'dense_units': [64, 32],
             },
 
             'gru': {
-                # ============================================
                 # GRU配置（对比LSTM）
-                # ============================================
-                # 【GRU vs LSTM】：
-                #   - GRU：2个门（更新门、重置门）
-                #   - LSTM：3个门（遗忘门、输入门、输出门）
-                #   - GRU参数更少，训练更快
-                #   - LSTM表达能力更强
-
-                'gru_units': [128, 64],  # 两层GRU
-                # 【为什么用GRU】：
-                #   - 参数量少30%
-                #   - 训练速度快
-                #   - 在某些任务上效果相当
-
+                #
+                # GRU vs LSTM：
+                #   GRU: 2个门（更新门、重置门），参数少30%
+                #   LSTM: 3个门（遗忘门、输入门、输出门）
+                #
+                # 选择建议：
+                #   数据量小 → GRU（不易过拟合）
+                #   数据量大 → LSTM（表达能力强）
+                #   快速训练 → GRU
+                'gru_units': [128, 64],
                 'dropout': 0.3,
                 'dense_units': [32],
             }
@@ -152,52 +118,38 @@ class TemperatureLSTMPredictor:
         Returns:
             Keras模型
         """
-        # ============================================
-        # 输入层
-        # ============================================
-        # 【形状】：(batch, lookback, num_features)
+        # 输入层，形状(batch, lookback, num_features)
         # 例如：(32, 168, 5) = 32个样本，168小时，5个特征
         inputs = layers.Input(shape=self.input_shape, name='input')
 
         x = inputs
 
-        # ============================================
         # LSTM/GRU层
-        # ============================================
         if self.model_type == 'gru':
             # GRU模型
             gru_units = self.config['gru_units']
 
             for i, units in enumerate(gru_units):
-                # 【return_sequences】：
-                #   - True: 返回所有时间步（用于堆叠）
-                #   - False: 只返回最后一个时间步
+                # return_sequences: True表示返回所有时间步（用于堆叠）
+                #                   False表示只返回最后一个时间步
                 return_sequences = (i < len(gru_units) - 1)
 
                 x = layers.GRU(
                     units,
                     return_sequences=return_sequences,
                     dropout=self.config['dropout'],
-                    recurrent_dropout=0.0,  # 循环dropout（可选）
+                    recurrent_dropout=0.0,
                     name=f'gru_{i+1}'
                 )(x)
-
-                # 【为什么不用recurrent_dropout】：
-                #   - 会显著降低训练速度
-                #   - 普通dropout通常就够了
 
         else:
             # LSTM模型（simple或stacked）
             lstm_units = self.config['lstm_units']
 
             for i, units in enumerate(lstm_units):
-                # ============================================
-                # LSTM层详解
-                # ============================================
-                # 【return_sequences】：
-                #   - 最后一层：False（只返回最后的输出）
-                #   - 其他层：True（返回序列给下一层）
-
+                # return_sequences设置：
+                #   最后一层: False（只返回最后的输出）
+                #   其他层: True（返回序列给下一层）
                 return_sequences = (i < len(lstm_units) - 1)
 
                 x = layers.LSTM(
@@ -208,29 +160,12 @@ class TemperatureLSTMPredictor:
                     name=f'lstm_{i+1}'
                 )(x)
 
-                # ============================================
-                # Dropout层
-                # ============================================
-                # 【是什么】：随机丢弃神经元
-                # 【为什么】：
-                #   - 防止过拟合
-                #   - 增加泛化能力
-                #   - 类似于集成学习
+                # 中间层添加额外的Dropout
                 if i < len(lstm_units) - 1:
-                    # 只在中间层添加额外的Dropout
                     x = layers.Dropout(self.config['dropout'], name=f'dropout_{i+1}')(x)
 
-        # ============================================
         # 全连接层
-        # ============================================
-        # 【是什么】：Dense层
-        # 【做什么】：
-        #   - 整合LSTM/GRU的输出
-        #   - 映射到预测范围
-        # 【为什么】：
-        #   - LSTM输出是固定维度（如32）
-        #   - 需要映射到forecast_horizon（如24）
-
+        # 作用：整合LSTM/GRU输出并映射到预测范围
         dense_units = self.config['dense_units']
 
         for i, units in enumerate(dense_units):
@@ -240,18 +175,10 @@ class TemperatureLSTMPredictor:
                 name=f'dense_{i+1}'
             )(x)
 
-            # Dropout
             x = layers.Dropout(self.config['dropout'], name=f'dense_dropout_{i+1}')(x)
 
-        # ============================================
-        # 输出层
-        # ============================================
-        # 【是什么】：线性层（无激活函数）
-        # 【为什么无激活】：
-        #   - 回归任务，输出可以是任意实数
-        #   - 温度可以是负数，不能用ReLU
-        #   - 不需要限制范围，不用sigmoid/tanh
-
+        # 输出层（线性激活，适用于回归任务）
+        # 温度可以是任意实数，因此不使用激活函数
         outputs = layers.Dense(
             self.forecast_horizon,
             activation='linear',
@@ -271,38 +198,26 @@ class TemperatureLSTMPredictor:
         """
         编译模型
 
+        优化器选择：Adam
+            - 自适应学习率
+            - 对超参数不敏感
+            - 时序预测的常用选择
+
+        损失函数选择：
+            - MSE (Mean Squared Error): 对大误差惩罚更重
+            - MAE (Mean Absolute Error): 对异常值更鲁棒
+
         Args:
             learning_rate: 学习率
             loss: 损失函数
         """
-        # ============================================
-        # 优化器
-        # ============================================
-        # 【是什么】：Adam优化器
-        # 【为什么】：
-        #   - 自适应学习率
-        #   - 对超参数不敏感
-        #   - 时间序列预测的标准选择
         optimizer = keras.optimizers.Adam(learning_rate=learning_rate)
 
-        # ============================================
-        # 损失函数
-        # ============================================
-        # 【MSE vs MAE】：
-        #   - MSE (Mean Squared Error)：
-        #     * 对大误差惩罚更重
-        #     * 适合关注极端值
-        #   - MAE (Mean Absolute Error)：
-        #     * 对所有误差一视同仁
-        #     * 对异常值更鲁棒
-
-        # ============================================
         # 评估指标
-        # ============================================
         metrics = [
-            'mae',  # 平均绝对误差
-            'mse',  # 均方误差
-            keras.metrics.RootMeanSquaredError(name='rmse')  # 均方根误差
+            'mae',
+            'mse',
+            keras.metrics.RootMeanSquaredError(name='rmse')
         ]
 
         self.model.compile(
@@ -386,7 +301,7 @@ class TemperatureLSTMPredictor:
             y_pred: 预测值
 
         Returns:
-            指标字典
+            指标字典，包含MAE、MSE、RMSE、MAPE
         """
         # 展平数组（如果是多步预测）
         y_true_flat = y_true.flatten()
@@ -398,8 +313,7 @@ class TemperatureLSTMPredictor:
             'rmse': np.sqrt(mean_squared_error(y_true_flat, y_pred_flat)),
         }
 
-        # 计算MAPE（平均绝对百分比误差）
-        # 【注意】：避免除以0
+        # 计算MAPE（平均绝对百分比误差），避免除以0
         mask = y_true_flat != 0
         if mask.sum() > 0:
             mape = np.mean(np.abs((y_true_flat[mask] - y_pred_flat[mask]) / y_true_flat[mask])) * 100
@@ -415,7 +329,7 @@ class TemperatureLSTMPredictor:
             filepath: 保存路径
         """
         self.model.save(filepath)
-        print(f"✓ 模型已保存: {filepath}")
+        print(f"模型已保存: {filepath}")
 
     def load_model(self, filepath):
         """
@@ -425,7 +339,7 @@ class TemperatureLSTMPredictor:
             filepath: 模型路径
         """
         self.model = keras.models.load_model(filepath)
-        print(f"✓ 模型已加载: {filepath}")
+        print(f"模型已加载: {filepath}")
 
     def summary(self):
         """打印模型摘要"""
@@ -493,4 +407,4 @@ if __name__ == '__main__':
         print(f"\n预测形状: {predictions.shape}")
         print(f"预测示例: {predictions[0][:5]}")
 
-    print("\n✓ 所有测试通过！")
+    print("\n所有测试通过！")

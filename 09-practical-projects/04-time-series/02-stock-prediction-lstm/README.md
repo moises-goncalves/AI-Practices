@@ -1,20 +1,20 @@
 # LSTM股票价格预测 - 高级项目
 
-**难度**: ⭐⭐⭐⭐☆ (高级)
+**难度**: ☆ (高级)
 
-## 📋 项目简介
+##  项目简介
 
 本项目使用高级LSTM技术进行股票价格预测，包括注意力机制、多任务学习、技术指标特征工程等。**注意：本项目仅供学习，不构成投资建议。**
 
-### 🎯 学习目标
+###  学习目标
 
-- ✅ 掌握金融时间序列的特征工程（技术指标）
-- ✅ 学习LSTM + Attention注意力机制
-- ✅ 掌握多任务学习（同时预测价格和趋势）
-- ✅ 理解为什么使用注意力机制
-- ✅ 学习模型集成和风险管理
+-  掌握金融时间序列的特征工程（技术指标）
+-  学习LSTM + Attention注意力机制
+-  掌握多任务学习（同时预测价格和趋势）
+-  理解为什么使用注意力机制
+-  学习模型集成和风险管理
 
-## 🧠 为什么使用注意力机制？
+##  为什么使用注意力机制？
 
 ### 问题背景
 
@@ -44,7 +44,7 @@ LSTM + Attention: 自动学习哪些时间点重要
 结果: 预测更准确，可解释性更强
 ```
 
-## 🏗️ 注意力机制原理详解
+##  注意力机制原理详解
 
 ### 什么是注意力机制？
 
@@ -105,7 +105,7 @@ LSTM: 记忆会衰减
 Attention: 可以直接关注很久以前的关键事件
 ```
 
-## 🏗️ 模型架构详解
+##  模型架构详解
 
 ### 架构：LSTM + Attention + 多任务学习
 
@@ -223,7 +223,7 @@ trend_loss = categorical_crossentropy(y_true_trend, y_pred_trend)
 # 为什么: 价格预测是主要任务
 ```
 
-## 📊 数据集
+##  数据集
 
 **数据来源**：
 - Yahoo Finance API
@@ -238,7 +238,7 @@ trend_loss = categorical_crossentropy(y_true_trend, y_pred_trend)
 4. 滑动窗口：60天预测1天
 ```
 
-## 📁 项目结构
+##  项目结构
 
 ```
 02_股票价格预测_LSTM高级/
@@ -248,10 +248,10 @@ trend_loss = categorical_crossentropy(y_true_trend, y_pred_trend)
 ├── notebooks/
 │   ├── 00_金融时间序列基础.ipynb      # 金融数据特点
 │   ├── 01_数据获取和探索.ipynb        # 下载和分析数据
-│   ├── 02_技术指标特征工程.ipynb      # ⭐ MA, RSI, MACD等
+│   ├── 02_技术指标特征工程.ipynb      #  MA, RSI, MACD等
 │   ├── 03_基础LSTM模型.ipynb          # 不带注意力
-│   ├── 04_LSTM_Attention模型.ipynb    # ⭐ 注意力机制详解
-│   ├── 05_多任务学习.ipynb            # ⭐ 价格+趋势
+│   ├── 04_LSTM_Attention模型.ipynb    #  注意力机制详解
+│   ├── 05_多任务学习.ipynb            #  价格+趋势
 │   ├── 06_模型集成.ipynb              # 集成多个模型
 │   ├── 07_回测和风险管理.ipynb        # 交易策略
 │   └── 08_模型可解释性.ipynb          # 注意力可视化
@@ -259,8 +259,8 @@ trend_loss = categorical_crossentropy(y_true_trend, y_pred_trend)
 ├── src/
 │   ├── __init__.py
 │   ├── data.py                         # 数据下载和预处理
-│   ├── features.py                     # ⭐ 技术指标计算
-│   ├── model.py                        # ⭐ 注意力LSTM模型
+│   ├── features.py                     #  技术指标计算
+│   ├── model.py                        #  注意力LSTM模型
 │   ├── train.py
 │   ├── evaluate.py
 │   └── backtest.py                     # 回测系统
@@ -270,7 +270,7 @@ trend_loss = categorical_crossentropy(y_true_trend, y_pred_trend)
 └── results/
 ```
 
-## 🚀 快速开始
+##  快速开始
 
 ```bash
 # 1. 安装依赖
@@ -286,7 +286,7 @@ python src/train.py --model attention_lstm --epochs 100
 python src/backtest.py --model models/best_model.h5
 ```
 
-## 📈 预期结果
+##  预期结果
 
 | 模型 | MAE | RMSE | 方向准确率 | 夏普比率 |
 |-----|-----|------|-----------|---------|
@@ -300,7 +300,7 @@ python src/backtest.py --model models/best_model.h5
 - 夏普比率 > 1.0表示策略可行
 - 实际交易需考虑交易成本
 
-## 🎓 学习要点
+##  学习要点
 
 ### 1. 技术指标的作用
 
@@ -333,10 +333,10 @@ Signal = EMA9(MACD)
 
 ### 2. 注意力机制的关键点
 
-- ✅ 使用Self-Attention（自注意力）
-- ✅ 可视化注意力权重，理解模型决策
-- ✅ 注意力权重可以发现关键事件
-- ✅ 结合LSTM的记忆能力和Attention的选择能力
+-  使用Self-Attention（自注意力）
+-  可视化注意力权重，理解模型决策
+-  注意力权重可以发现关键事件
+-  结合LSTM的记忆能力和Attention的选择能力
 
 ### 3. 多任务学习的优势
 
@@ -389,7 +389,7 @@ A:
 - 60天序列：可接受
 - 更长序列：考虑稀疏注意力
 
-## 🔧 进阶优化
+##  进阶优化
 
 ### 1. Transformer替代LSTM
 ```python
@@ -412,7 +412,7 @@ A:
 # 提高预测准确率
 ```
 
-## ⚠️ 风险提示
+##  风险提示
 
 1. **过拟合风险**：历史表现不代表未来
 2. **交易成本**：手续费、滑点会大幅降低收益
@@ -420,13 +420,13 @@ A:
 4. **黑天鹅事件**：极端事件无法预测
 5. **仅供学习**：不构成投资建议
 
-## 📚 参考资料
+##  参考资料
 
 - [Attention Is All You Need](https://arxiv.org/abs/1706.03762)
 - [Multi-Task Learning](https://arxiv.org/abs/1706.05098)
 - [Technical Analysis Library](https://github.com/bukosabino/ta)
 
-## 🎯 下一步
+##  下一步
 
 完成本项目后，可以尝试：
 1. **Transformer时间序列**：完全基于注意力
@@ -435,7 +435,7 @@ A:
 
 ---
 
-**难度等级**: ⭐⭐⭐⭐☆ (高级)
+**难度等级**: ☆ (高级)
 **预计学习时间**: 3-4周
 **前置知识**: LSTM、注意力机制、金融基础
 **风险提示**: 仅供学习，不构成投资建议

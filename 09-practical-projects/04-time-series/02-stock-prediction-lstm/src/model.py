@@ -1,14 +1,18 @@
 """
-LSTM股票预测模型
+LSTM-based stock prediction models.
 
-本模块实现：
-1. 基础LSTM模型
-2. LSTM + Attention模型
-3. 多任务学习模型（价格+趋势）
-4. 注意力机制可视化
+This module implements:
+1. Basic LSTM model
+2. LSTM with Attention mechanism
+3. Multi-task learning model (price + trend prediction)
+4. Attention weight visualization
 
-每个模型都有详细的注释说明设计思路和参数选择。
+The attention mechanism helps the model focus on important time steps,
+improving prediction accuracy and model interpretability.
 """
+
+import logging
+from typing import Tuple, Dict, Optional, Union
 
 import numpy as np
 import tensorflow as tf
@@ -16,17 +20,24 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from sklearn.metrics import mean_squared_error, mean_absolute_error, accuracy_score
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
 
 class AttentionLayer(layers.Layer):
     """
-    注意力层
+    Self-attention layer for sequence modeling.
 
-    【是什么】：自注意力机制
-    【做什么】：学习每个时间步的重要性权重
-    【为什么】：
-        - 突出关键时间点（如财报日）
-        - 提升预测准确性
-        - 增加可解释性
+    Computes attention weights for each time step, allowing the model
+    to focus on important historical points (e.g., earnings reports).
+
+    Process:
+    1. Calculate attention scores using learned weights
+    2. Apply softmax to get normalized weights
+    3. Compute weighted sum of inputs
     """
 
     def __init__(self, **kwargs):
@@ -34,7 +45,7 @@ class AttentionLayer(layers.Layer):
 
     def build(self, input_shape):
         """
-        构建层参数
+        Build layer parameters.
 
         Args:
             input_shape: (batch, time_steps, features)
@@ -55,160 +66,96 @@ class AttentionLayer(layers.Layer):
 
     def call(self, x):
         """
-        前向传播
-
-        【步骤】：
-        1. 计算注意力分数
-        2. Softmax归一化
-        3. 加权求和
+        Forward pass.
 
         Args:
-            x: 输入张量 (batch, time_steps, features)
+            x: Input tensor (batch, time_steps, features)
 
         Returns:
-            context: 上下文向量 (batch, features)
-            attention_weights: 注意力权重 (batch, time_steps)
+            context: Context vector (batch, features)
+            attention_weights: Attention weights (batch, time_steps)
         """
-        # ============================================
-        # 步骤1: 计算注意力分数
-        # ============================================
-        # 【是什么】：每个时间步的重要性分数
-        # 【公式】：score = tanh(x · W + b)
+        # Step 1: Compute attention scores
+        # Score indicates the importance of each time step
         e = tf.nn.tanh(tf.tensordot(x, self.W, axes=1) + self.b)
-        # 形状: (batch, time_steps, 1)
 
-        # ============================================
-        # 步骤2: Softmax归一化
-        # ============================================
-        # 【是什么】：将分数转换为概率分布
-        # 【为什么】：权重和为1，便于解释
+        # Step 2: Normalize with softmax
+        # Converts scores to probability distribution
         attention_weights = tf.nn.softmax(e, axis=1)
-        # 形状: (batch, time_steps, 1)
 
-        # ============================================
-        # 步骤3: 加权求和
-        # ============================================
-        # 【是什么】：用注意力权重对输入加权求和
-        # 【为什么】：重点关注重要的时间步
+        # Step 3: Weighted sum
+        # Focus on important time steps with higher weights
         context = x * attention_weights
         context = tf.reduce_sum(context, axis=1)
-        # 形状: (batch, features)
 
         return context, tf.squeeze(attention_weights, -1)
 
 
 class StockLSTMPredictor:
     """
-    LSTM股票预测器
+    LSTM-based stock price predictor.
 
-    【是什么】：基于LSTM的股票价格预测模型
-    【做什么】：预测未来股价和趋势
-    【为什么】：
-        - LSTM捕获时间依赖
-        - 注意力机制突出关键时刻
-        - 多任务学习提升泛化
+    Supports three model types:
+    1. lstm_basic: Standard LSTM architecture
+    2. lstm_attention: LSTM with attention mechanism
+    3. multitask: Joint prediction of price (regression) and trend (classification)
+
+    The attention mechanism improves accuracy by automatically learning
+    which historical time points are most relevant for prediction.
     """
 
-    def __init__(self,
-                 input_shape,
-                 model_type='lstm_attention',
-                 **kwargs):
+    def __init__(self, input_shape: Tuple[int, int],
+                 model_type: str = 'lstm_attention', **kwargs):
         """
-        初始化预测器
+        Initialize predictor.
 
         Args:
-            input_shape: 输入形状 (time_steps, features)
-            model_type: 模型类型
-                - 'lstm_basic': 基础LSTM
-                - 'lstm_attention': LSTM + Attention
-                - 'multitask': 多任务学习
-            **kwargs: 其他参数
+            input_shape: (time_steps, features)
+            model_type: Model architecture type
+            **kwargs: Additional model parameters
         """
         self.input_shape = input_shape
         self.model_type = model_type
 
-        # 配置
         self.config = self._get_model_config(model_type)
         self.config.update(kwargs)
 
-        # 模型
         self.model = self._build_model()
 
-    def _get_model_config(self, model_type):
-        """获取模型配置"""
+    def _get_model_config(self, model_type: str) -> Dict:
+        """Get default model configuration."""
         configs = {
             'lstm_basic': {
-                # ============================================
-                # 基础LSTM配置
-                # ============================================
                 'lstm_units': [128, 64],
-                # 【为什么两层】：
-                #   - 第1层：学习低级时间模式
-                #   - 第2层：学习高级时间模式
-
                 'dropout': 0.2,
-                # 【为什么=0.2】：
-                #   - 轻度正则化
-                #   - 防止过拟合
-
                 'dense_units': [32],
-                # 【为什么需要】：
-                #   - 整合LSTM特征
-                #   - 映射到输出
             },
 
             'lstm_attention': {
-                # ============================================
-                # LSTM + Attention配置
-                # ============================================
                 'lstm_units': [128, 64],
                 'dropout': 0.3,
-                # 【为什么=0.3】：
-                #   - 注意力机制增加了模型复杂度
-                #   - 需要更强的正则化
-
                 'use_attention': True,
-                # 【为什么使用注意力】：
-                #   - 自动学习重要时间点
-                #   - 提升预测准确性
-                #   - 增加可解释性
-
                 'dense_units': [64, 32],
             },
 
             'multitask': {
-                # ============================================
-                # 多任务学习配置
-                # ============================================
                 'lstm_units': [128, 64],
                 'dropout': 0.3,
                 'use_attention': True,
-
                 'multitask': True,
-                # 【是什么】：同时预测价格和趋势
-                # 【为什么】：
-                #   - 价格预测：回归任务
-                #   - 趋势预测：分类任务
-                #   - 共享特征提取，互相促进
-
                 'dense_units': [64, 32],
             }
         }
 
         return configs.get(model_type, configs['lstm_attention'])
 
-    def _build_model(self):
-        """构建模型"""
-        # ============================================
-        # 输入层
-        # ============================================
+    def _build_model(self) -> keras.Model:
+        """Build model architecture."""
         inputs = layers.Input(shape=self.input_shape, name='input')
 
         x = inputs
 
-        # ============================================
-        # LSTM层
-        # ============================================
+        # LSTM layers
         lstm_units = self.config['lstm_units']
 
         for i, units in enumerate(lstm_units):
@@ -224,45 +171,27 @@ class StockLSTMPredictor:
             if i < len(lstm_units) - 1:
                 x = layers.Dropout(self.config['dropout'], name=f'dropout_{i+1}')(x)
 
-        # ============================================
-        # 注意力层（可选）
-        # ============================================
+        # Attention layer (optional)
         if self.config.get('use_attention', False):
-            # 【是什么】：自注意力机制
-            # 【做什么】：学习每个时间步的重要性
-            # 【为什么】：
-            #   - 突出关键时间点
-            #   - 提升预测准确性
             context, attention_weights = AttentionLayer(name='attention')(x)
             x = context
 
-            # 保存注意力权重（用于可视化）
+            # Store attention model for visualization
             self.attention_model = keras.Model(inputs=inputs, outputs=attention_weights)
 
-        # ============================================
-        # 全连接层
-        # ============================================
+        # Dense layers
         dense_units = self.config['dense_units']
 
         for i, units in enumerate(dense_units):
             x = layers.Dense(units, activation='relu', name=f'dense_{i+1}')(x)
             x = layers.Dropout(self.config['dropout'], name=f'dense_dropout_{i+1}')(x)
 
-        # ============================================
-        # 输出层
-        # ============================================
+        # Output layer(s)
         if self.config.get('multitask', False):
-            # ============================================
-            # 多任务学习：价格 + 趋势
-            # ============================================
-
-            # 分支1：价格预测（回归）
+            # Multi-task: Price (regression) + Trend (classification)
             price_output = layers.Dense(1, activation='linear', name='price')(x)
-
-            # 分支2：趋势预测（分类）
             trend_output = layers.Dense(1, activation='sigmoid', name='trend')(x)
 
-            # 创建多输出模型
             model = keras.Model(
                 inputs=inputs,
                 outputs=[price_output, trend_output],
@@ -270,9 +199,7 @@ class StockLSTMPredictor:
             )
 
         else:
-            # ============================================
-            # 单任务：价格预测
-            # ============================================
+            # Single-task: Price prediction only
             output = layers.Dense(1, activation='linear', name='price')(x)
 
             model = keras.Model(
@@ -283,21 +210,21 @@ class StockLSTMPredictor:
 
         return model
 
-    def compile_model(self, learning_rate=0.001):
-        """编译模型"""
+    def compile_model(self, learning_rate: float = 0.001) -> None:
+        """Compile model with optimizer and loss functions."""
         optimizer = keras.optimizers.Adam(learning_rate=learning_rate)
 
         if self.config.get('multitask', False):
-            # 多任务学习
+            # Multi-task learning
             self.model.compile(
                 optimizer=optimizer,
                 loss={
-                    'price': 'mse',  # 价格：均方误差
-                    'trend': 'binary_crossentropy'  # 趋势：二分类交叉熵
+                    'price': 'mse',
+                    'trend': 'binary_crossentropy'
                 },
                 loss_weights={
-                    'price': 1.0,  # 价格损失权重
-                    'trend': 0.5   # 趋势损失权重（辅助任务）
+                    'price': 1.0,
+                    'trend': 0.5
                 },
                 metrics={
                     'price': ['mae', keras.metrics.RootMeanSquaredError(name='rmse')],
@@ -305,7 +232,7 @@ class StockLSTMPredictor:
                 }
             )
         else:
-            # 单任务
+            # Single-task learning
             self.model.compile(
                 optimizer=optimizer,
                 loss='mse',
@@ -313,29 +240,28 @@ class StockLSTMPredictor:
             )
 
     def train(self, X_train, y_train, X_val, y_val,
-              epochs=100, batch_size=32, learning_rate=0.001,
-              callbacks=None, verbose=1):
+              epochs: int = 100, batch_size: int = 32,
+              learning_rate: float = 0.001,
+              callbacks = None, verbose: int = 1) -> keras.callbacks.History:
         """
-        训练模型
+        Train the model.
 
         Args:
-            X_train: 训练特征
-            y_train: 训练标签（单任务）或 (y_price, y_trend)（多任务）
-            X_val: 验证特征
-            y_val: 验证标签
-            epochs: 训练轮数
-            batch_size: 批大小
-            learning_rate: 学习率
-            callbacks: 回调函数
-            verbose: 详细程度
+            X_train: Training features
+            y_train: Training labels (single or multi-task)
+            X_val: Validation features
+            y_val: Validation labels
+            epochs: Number of training epochs
+            batch_size: Batch size
+            learning_rate: Learning rate
+            callbacks: Training callbacks
+            verbose: Verbosity level
 
         Returns:
-            训练历史
+            Training history
         """
-        # 编译模型
         self.compile_model(learning_rate=learning_rate)
 
-        # 训练
         history = self.model.fit(
             X_train, y_train,
             validation_data=(X_val, y_val),
@@ -347,39 +273,58 @@ class StockLSTMPredictor:
 
         return history
 
-    def predict(self, X):
-        """预测"""
+    def predict(self, X: np.ndarray) -> Union[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
+        """
+        Make predictions.
+
+        Args:
+            X: Input features
+
+        Returns:
+            For single-task: price predictions
+            For multi-task: (price predictions, trend predictions)
+        """
         predictions = self.model.predict(X)
 
         if self.config.get('multitask', False):
-            # 多任务：返回价格和趋势
             price_pred, trend_pred = predictions
             return price_pred.flatten(), (trend_pred > 0.5).astype(int).flatten()
         else:
-            # 单任务：只返回价格
             return predictions.flatten()
 
-    def predict_with_attention(self, X):
+    def predict_with_attention(self, X: np.ndarray) -> Tuple:
         """
-        预测并返回注意力权重
+        Predict and return attention weights for visualization.
 
         Args:
-            X: 输入特征
+            X: Input features
 
         Returns:
-            predictions: 预测结果
-            attention_weights: 注意力权重
+            predictions: Model predictions
+            attention_weights: Attention weights for each sample
+
+        Raises:
+            ValueError: If model doesn't use attention
         """
         if not self.config.get('use_attention', False):
-            raise ValueError("模型未使用注意力机制")
+            raise ValueError("Model does not use attention mechanism")
 
         predictions = self.model.predict(X)
         attention_weights = self.attention_model.predict(X)
 
         return predictions, attention_weights
 
-    def evaluate(self, X, y):
-        """评估模型"""
+    def evaluate(self, X: np.ndarray, y) -> Dict[str, float]:
+        """
+        Evaluate model performance.
+
+        Args:
+            X: Input features
+            y: True labels
+
+        Returns:
+            Dictionary of evaluation metrics
+        """
         results = self.model.evaluate(X, y, verbose=0)
 
         metrics = {}
@@ -388,16 +333,16 @@ class StockLSTMPredictor:
 
         return metrics
 
-    def calculate_metrics(self, y_true, y_pred):
+    def calculate_metrics(self, y_true: np.ndarray, y_pred: np.ndarray) -> Dict[str, float]:
         """
-        计算详细评估指标
+        Calculate detailed evaluation metrics.
 
         Args:
-            y_true: 真实值
-            y_pred: 预测值
+            y_true: True values
+            y_pred: Predicted values
 
         Returns:
-            指标字典
+            Dictionary of metrics (MAE, MSE, RMSE, MAPE, direction accuracy)
         """
         metrics = {
             'mae': mean_absolute_error(y_true, y_pred),
@@ -411,7 +356,7 @@ class StockLSTMPredictor:
             mape = np.mean(np.abs((y_true[mask] - y_pred[mask]) / y_true[mask])) * 100
             metrics['mape'] = mape
 
-        # 方向准确率
+        # Direction accuracy
         if len(y_true) > 1:
             true_direction = np.diff(y_true) > 0
             pred_direction = np.diff(y_pred) > 0
@@ -420,35 +365,38 @@ class StockLSTMPredictor:
 
         return metrics
 
-    def save_model(self, filepath):
-        """保存模型"""
+    def save_model(self, filepath: str) -> None:
+        """Save model to file."""
         self.model.save(filepath)
-        print(f"✓ 模型已保存: {filepath}")
+        logger.info(f"Model saved: {filepath}")
 
-    def load_model(self, filepath):
-        """加载模型"""
-        self.model = keras.models.load_model(filepath, custom_objects={'AttentionLayer': AttentionLayer})
-        print(f"✓ 模型已加载: {filepath}")
+    def load_model(self, filepath: str) -> None:
+        """Load model from file."""
+        self.model = keras.models.load_model(
+            filepath,
+            custom_objects={'AttentionLayer': AttentionLayer}
+        )
+        logger.info(f"Model loaded: {filepath}")
 
-    def summary(self):
-        """打印模型摘要"""
+    def summary(self) -> None:
+        """Print model architecture summary."""
         self.model.summary()
 
 
 if __name__ == '__main__':
-    """测试模型"""
+    """Test model architectures."""
     print("="*60)
-    print("LSTM股票预测模型测试")
+    print("LSTM Stock Prediction Model Test")
     print("="*60)
 
-    # 测试参数
+    # Test parameters
     time_steps = 60
     n_features = 20
     batch_size = 32
 
     input_shape = (time_steps, n_features)
 
-    # 创建随机数据
+    # Generate random test data
     X_train = np.random.randn(1000, time_steps, n_features)
     y_price_train = np.random.randn(1000)
     y_trend_train = np.random.randint(0, 2, 1000)
@@ -457,23 +405,23 @@ if __name__ == '__main__':
     y_price_val = np.random.randn(200)
     y_trend_val = np.random.randint(0, 2, 200)
 
-    # 测试三种模型
+    # Test all three model types
     for model_type in ['lstm_basic', 'lstm_attention', 'multitask']:
         print(f"\n{'='*60}")
-        print(f"测试 {model_type} 模型")
+        print(f"Testing {model_type} model")
         print(f"{'='*60}")
 
-        # 创建模型
+        # Create model
         predictor = StockLSTMPredictor(
             input_shape=input_shape,
             model_type=model_type
         )
 
-        # 打印摘要
-        print(f"\n模型结构:")
+        # Print architecture
+        print(f"\nModel architecture:")
         predictor.summary()
 
-        # 准备训练数据
+        # Prepare training data
         if model_type == 'multitask':
             y_train = {'price': y_price_train, 'trend': y_trend_train}
             y_val = {'price': y_price_val, 'trend': y_trend_val}
@@ -481,8 +429,8 @@ if __name__ == '__main__':
             y_train = y_price_train
             y_val = y_price_val
 
-        # 训练
-        print(f"\n训练模型...")
+        # Train
+        print(f"\nTraining model...")
         history = predictor.train(
             X_train, y_train,
             X_val, y_val,
@@ -491,27 +439,27 @@ if __name__ == '__main__':
             verbose=0
         )
 
-        # 评估
+        # Evaluate
         metrics = predictor.evaluate(X_val, y_val)
-        print(f"\n验证集性能:")
+        print(f"\nValidation performance:")
         for name, value in metrics.items():
             print(f"  {name}: {value:.4f}")
 
-        # 预测
+        # Predict
         if model_type == 'multitask':
             price_pred, trend_pred = predictor.predict(X_val[:5])
-            print(f"\n预测示例:")
-            print(f"  价格: {price_pred}")
-            print(f"  趋势: {trend_pred}")
+            print(f"\nPrediction examples:")
+            print(f"  Prices: {price_pred}")
+            print(f"  Trends: {trend_pred}")
         else:
             predictions = predictor.predict(X_val[:5])
-            print(f"\n预测示例: {predictions}")
+            print(f"\nPrediction examples: {predictions}")
 
-        # 测试注意力权重
+        # Test attention weights
         if model_type in ['lstm_attention', 'multitask']:
-            print(f"\n测试注意力权重...")
+            print(f"\nTesting attention weights...")
             _, attention_weights = predictor.predict_with_attention(X_val[:1])
-            print(f"  注意力权重形状: {attention_weights.shape}")
-            print(f"  注意力权重示例: {attention_weights[0][:10]}")
+            print(f"  Attention shape: {attention_weights.shape}")
+            print(f"  Attention example: {attention_weights[0][:10]}")
 
-    print("\n✓ 所有测试通过！")
+    logger.info("All tests passed!")

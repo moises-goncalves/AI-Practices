@@ -59,7 +59,7 @@ def plot_predictions(y_true, y_pred, num_samples=200, save_path=None):
 
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        print(f"✓ 预测对比图已保存: {save_path}")
+        print(f"+ 预测对比图已保存: {save_path}")
 
 
 def plot_error_distribution(y_true, y_pred, save_path=None):
@@ -105,7 +105,7 @@ def plot_error_distribution(y_true, y_pred, save_path=None):
 
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        print(f"✓ 误差分布图已保存: {save_path}")
+        print(f"+ 误差分布图已保存: {save_path}")
 
 
 def plot_scatter(y_true, y_pred, save_path=None):
@@ -137,7 +137,7 @@ def plot_scatter(y_true, y_pred, save_path=None):
 
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        print(f"✓ 散点图已保存: {save_path}")
+        print(f"+ 散点图已保存: {save_path}")
 
 
 def plot_attention_weights(attention_weights, num_samples=5, save_path=None):
@@ -160,7 +160,7 @@ def plot_attention_weights(attention_weights, num_samples=5, save_path=None):
 
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        print(f"✓ 注意力权重图已保存: {save_path}")
+        print(f"+ 注意力权重图已保存: {save_path}")
 
 
 def main():
@@ -190,7 +190,7 @@ def main():
     with open(args.processor_path, 'rb') as f:
         processor_data = pickle.load(f)
 
-    print(f"✓ 数据处理器已加载")
+    print(f"+ 数据处理器已加载")
 
     # ============================================
     # 步骤2: 准备数据
@@ -206,7 +206,7 @@ def main():
             forecast_horizon=args.forecast_horizon
         )
     except FileNotFoundError as e:
-        print(f"\n✗ 数据文件不存在: {e}")
+        print(f"\n- 数据文件不存在: {e}")
         return
 
     X_test, y_price_test, y_trend_test = test_data
@@ -219,7 +219,7 @@ def main():
     print("="*60)
 
     model = keras.models.load_model(args.model_path, custom_objects={'AttentionLayer': AttentionLayer})
-    print(f"✓ 模型已加载")
+    print(f"+ 模型已加载")
 
     # ============================================
     # 步骤4: 预测
@@ -362,13 +362,13 @@ def main():
     print(f"  R²:   {r2:.4f}")
 
     if mape < 5:
-        print(f"\n  ✓✓ 模型性能优秀！")
+        print(f"\n  ++ 模型性能优秀！")
     elif mape < 10:
-        print(f"\n  ✓ 模型性能良好")
+        print(f"\n  + 模型性能良好")
     else:
-        print(f"\n  ⚠ 模型性能有待提升")
+        print(f"\n   模型性能有待提升")
 
-    print(f"\n⚠️  风险提示:")
+    print(f"\n  风险提示:")
     print(f"  本模型仅供学习使用，不构成投资建议。")
     print(f"  股票投资有风险，入市需谨慎。")
 

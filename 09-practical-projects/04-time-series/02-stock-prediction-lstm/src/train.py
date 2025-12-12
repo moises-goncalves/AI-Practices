@@ -137,7 +137,7 @@ def main():
             forecast_horizon=args.forecast_horizon
         )
     except FileNotFoundError as e:
-        print(f"\n✗ 数据文件不存在: {e}")
+        print(f"\n- 数据文件不存在: {e}")
         print("\n请先下载数据:")
         print("  cd data")
         print("  python download_data.py")
@@ -285,7 +285,7 @@ def main():
         history_path,
         **history.history
     )
-    print(f"✓ 训练历史已保存: {history_path}")
+    print(f"+ 训练历史已保存: {history_path}")
 
     # 保存评估结果
     results = {
@@ -308,7 +308,7 @@ def main():
     with open(results_path, 'w') as f:
         for key, value in results.items():
             f.write(f"{key}: {value}\n")
-    print(f"✓ 评估结果已保存: {results_path}")
+    print(f"+ 评估结果已保存: {results_path}")
 
     # 保存预测结果
     predictions_path = result_dir / f'{args.model_type}_predictions.npz'
@@ -321,7 +321,7 @@ def main():
         save_dict['y_trend_pred'] = y_pred_trend[:100]
 
     np.savez(predictions_path, **save_dict)
-    print(f"✓ 预测结果已保存: {predictions_path}")
+    print(f"+ 预测结果已保存: {predictions_path}")
 
     # ============================================
     # 步骤7: 示例预测
@@ -372,18 +372,18 @@ def main():
     # 性能分析
     print(f"\n性能分析:")
     if 'mape' in original_metrics and original_metrics['mape'] < 5:
-        print(f"  ✓✓ MAPE < 5%，性能优秀！")
+        print(f"  ++ MAPE < 5%，性能优秀！")
     elif 'mape' in original_metrics and original_metrics['mape'] < 10:
-        print(f"  ✓ MAPE < 10%，性能良好")
+        print(f"  + MAPE < 10%，性能良好")
     else:
-        print(f"  ⚠ 性能有待提升，建议:")
+        print(f"   性能有待提升，建议:")
         print(f"    - 增加lookback窗口")
         print(f"    - 使用注意力机制")
         print(f"    - 尝试多任务学习")
         print(f"    - 增加训练数据")
 
     # 风险提示
-    print(f"\n⚠️  风险提示:")
+    print(f"\n  风险提示:")
     print(f"  本模型仅供学习使用，不构成投资建议。")
     print(f"  股票投资有风险，入市需谨慎。")
 

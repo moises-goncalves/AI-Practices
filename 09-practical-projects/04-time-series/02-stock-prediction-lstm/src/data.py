@@ -1,74 +1,78 @@
 """
-股票数据处理模块
+Stock data processing module.
 
-本模块负责：
-1. 加载股票数据
-2. 计算技术指标
-3. 创建滑动窗口序列
-4. 数据归一化
+This module handles:
+1. Loading stock data
+2. Calculating technical indicators
+3. Creating sliding window sequences
+4. Data normalization
 
-每个步骤都有详细的注释说明。
+Technical indicators provide additional information beyond raw price data,
+including trend, momentum, and volatility signals that help improve prediction accuracy.
 """
+
+import logging
+from pathlib import Path
+from typing import Tuple, List, Optional
 
 import numpy as np
 import pandas as pd
-from pathlib import Path
 from sklearn.preprocessing import MinMaxScaler
 import pickle
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 class TechnicalIndicators:
     """
-    技术指标计算器
+    Calculator for common stock technical indicators.
 
-    【是什么】：计算常用的股票技术指标
-    【为什么】：
-        - 原始价格信息有限
-        - 技术指标包含趋势、动量、波动等信息
-        - 提升模型预测能力
+    Technical indicators augment raw price data with derived signals
+    that capture trends, momentum, and volatility patterns.
     """
 
     @staticmethod
-    def calculate_ma(df, periods=[5, 10, 20, 60]):
+    def calculate_ma(df: pd.DataFrame, periods: List[int] = [5, 10, 20, 60]) -> pd.DataFrame:
         """
-        计算移动平均线（Moving Average）
+        Calculate Moving Average indicators.
 
-        【是什么】：过去N天的平均价格
-        【为什么】：
-            - 平滑价格波动
-            - 识别趋势方向
-            - MA5 > MA20: 上升趋势
+        Moving averages smooth price fluctuations and identify trend direction.
+        Short-term MA crossing above long-term MA often signals upward momentum.
 
         Args:
-            df: DataFrame
-            periods: 周期列表
+            df: DataFrame with price data
+            periods: List of window sizes for moving averages
 
         Returns:
-            DataFrame with MA columns
+            DataFrame with MA columns added
         """
         for period in periods:
             df[f'MA{period}'] = df['Close'].rolling(window=period).mean()
         return df
 
     @staticmethod
-    def calculate_rsi(df, period=14):
+    def calculate_rsi(df: pd.DataFrame, period: int = 14) -> pd.DataFrame:
         """
-        计算相对强弱指标（RSI）
+        Calculate Relative Strength Index (RSI).
 
-        【是什么】：衡量价格变动的速度和幅度
-        【公式】：RSI = 100 - (100 / (1 + RS))
-                 RS = 平均涨幅 / 平均跌幅
-        【为什么】：
-            - RSI > 70: 超买（可能下跌）
-            - RSI < 30: 超卖（可能上涨）
-            - 识别反转信号
+        RSI measures the magnitude of recent price changes to evaluate
+        overbought or oversold conditions. Range: 0-100.
+        - RSI > 70: Potentially overbought
+        - RSI < 30: Potentially oversold
+
+        Formula: RSI = 100 - (100 / (1 + RS))
+                 RS = Average Gain / Average Loss
 
         Args:
-            df: DataFrame
-            period: 周期
+            df: DataFrame with price data
+            period: Calculation window (typically 14 days)
 
         Returns:
-            DataFrame with RSI column
+            DataFrame with RSI column added
         """
         delta = df['Close'].diff()
         gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
@@ -79,28 +83,26 @@ class TechnicalIndicators:
         return df
 
     @staticmethod
-    def calculate_macd(df, fast=12, slow=26, signal=9):
+    def calculate_macd(df: pd.DataFrame, fast: int = 12, slow: int = 26, signal: int = 9) -> pd.DataFrame:
         """
-        计算MACD指标
+        Calculate MACD (Moving Average Convergence Divergence).
 
-        【是什么】：Moving Average Convergence Divergence
-        【公式】：
-            - MACD = EMA(12) - EMA(26)
-            - Signal = EMA(MACD, 9)
-            - Histogram = MACD - Signal
-        【为什么】：
-            - MACD > Signal: 买入信号
-            - MACD < Signal: 卖出信号
-            - 识别趋势变化
+        MACD tracks the relationship between two moving averages.
+        Crossovers between MACD and signal line indicate potential trend changes.
+
+        Components:
+        - MACD Line: EMA(12) - EMA(26)
+        - Signal Line: EMA(MACD, 9)
+        - Histogram: MACD - Signal
 
         Args:
-            df: DataFrame
-            fast: 快线周期
-            slow: 慢线周期
-            signal: 信号线周期
+            df: DataFrame with price data
+            fast: Fast EMA period
+            slow: Slow EMA period
+            signal: Signal line period
 
         Returns:
-            DataFrame with MACD columns
+            DataFrame with MACD columns added
         """
         exp1 = df['Close'].ewm(span=fast, adjust=False).mean()
         exp2 = df['Close'].ewm(span=slow, adjust=False).mean()
@@ -111,27 +113,27 @@ class TechnicalIndicators:
         return df
 
     @staticmethod
-    def calculate_bollinger_bands(df, period=20, std_dev=2):
+    def calculate_bollinger_bands(df: pd.DataFrame, period: int = 20, std_dev: int = 2) -> pd.DataFrame:
         """
-        计算布林带（Bollinger Bands）
+        Calculate Bollinger Bands.
 
-        【是什么】：价格的波动区间
-        【公式】：
-            - 中轨 = MA(20)
-            - 上轨 = 中轨 + 2*标准差
-            - 下轨 = 中轨 - 2*标准差
-        【为什么】：
-            - 价格触及上轨: 可能回调
-            - 价格触及下轨: 可能反弹
-            - 衡量波动性
+        Bollinger Bands measure volatility and provide dynamic support/resistance levels.
+
+        Formula:
+        - Middle Band: SMA(20)
+        - Upper Band: Middle + (2 * std_dev)
+        - Lower Band: Middle - (2 * std_dev)
+
+        Price touching upper band may indicate overbought conditions,
+        while touching lower band may indicate oversold conditions.
 
         Args:
-            df: DataFrame
-            period: 周期
-            std_dev: 标准差倍数
+            df: DataFrame with price data
+            period: Moving average period
+            std_dev: Standard deviation multiplier
 
         Returns:
-            DataFrame with Bollinger columns
+            DataFrame with Bollinger Band columns added
         """
         df['BB_middle'] = df['Close'].rolling(window=period).mean()
         std = df['Close'].rolling(window=period).std()
@@ -142,24 +144,22 @@ class TechnicalIndicators:
         return df
 
     @staticmethod
-    def calculate_atr(df, period=14):
+    def calculate_atr(df: pd.DataFrame, period: int = 14) -> pd.DataFrame:
         """
-        计算平均真实波幅（ATR）
+        Calculate Average True Range (ATR).
 
-        【是什么】：衡量价格波动性
-        【公式】：TR = max(High-Low, |High-Close_prev|, |Low-Close_prev|)
-                 ATR = MA(TR, period)
-        【为什么】：
-            - ATR高: 波动大，风险高
-            - ATR低: 波动小，风险低
-            - 用于止损设置
+        ATR measures market volatility. Higher ATR indicates higher volatility.
+
+        Formula:
+        True Range = max(High-Low, |High-Close_prev|, |Low-Close_prev|)
+        ATR = MA(True Range, period)
 
         Args:
-            df: DataFrame
-            period: 周期
+            df: DataFrame with OHLC data
+            period: Calculation window
 
         Returns:
-            DataFrame with ATR column
+            DataFrame with ATR column added
         """
         high_low = df['High'] - df['Low']
         high_close = np.abs(df['High'] - df['Close'].shift())
@@ -170,24 +170,22 @@ class TechnicalIndicators:
         return df
 
     @staticmethod
-    def calculate_obv(df):
+    def calculate_obv(df: pd.DataFrame) -> pd.DataFrame:
         """
-        计算能量潮（OBV）
+        Calculate On-Balance Volume (OBV).
 
-        【是什么】：On-Balance Volume，累积成交量
-        【公式】：
-            - 收盘价上涨: OBV += Volume
-            - 收盘价下跌: OBV -= Volume
-        【为什么】：
-            - OBV上升: 买盘强劲
-            - OBV下降: 卖盘强劲
-            - 确认价格趋势
+        OBV cumulates volume based on price direction:
+        - Price up: OBV += Volume
+        - Price down: OBV -= Volume
+
+        Rising OBV suggests accumulation (buying pressure),
+        while falling OBV suggests distribution (selling pressure).
 
         Args:
-            df: DataFrame
+            df: DataFrame with Close and Volume data
 
         Returns:
-            DataFrame with OBV column
+            DataFrame with OBV column added
         """
         obv = [0]
         for i in range(1, len(df)):
@@ -202,197 +200,177 @@ class TechnicalIndicators:
         return df
 
     @staticmethod
-    def calculate_all_indicators(df):
+    def calculate_all_indicators(df: pd.DataFrame) -> pd.DataFrame:
         """
-        计算所有技术指标
+        Calculate all technical indicators.
 
         Args:
             df: DataFrame with OHLCV data
 
         Returns:
-            DataFrame with all indicators
+            DataFrame with all indicator columns added
         """
-        print("\n计算技术指标...")
+        logger.info("Calculating technical indicators...")
 
-        # 移动平均
         df = TechnicalIndicators.calculate_ma(df)
-        print("  ✓ 移动平均线 (MA)")
+        logger.info("  Moving Averages (MA) calculated")
 
-        # RSI
         df = TechnicalIndicators.calculate_rsi(df)
-        print("  ✓ 相对强弱指标 (RSI)")
+        logger.info("  Relative Strength Index (RSI) calculated")
 
-        # MACD
         df = TechnicalIndicators.calculate_macd(df)
-        print("  ✓ MACD指标")
+        logger.info("  MACD calculated")
 
-        # 布林带
         df = TechnicalIndicators.calculate_bollinger_bands(df)
-        print("  ✓ 布林带 (Bollinger Bands)")
+        logger.info("  Bollinger Bands calculated")
 
-        # ATR
         df = TechnicalIndicators.calculate_atr(df)
-        print("  ✓ 平均真实波幅 (ATR)")
+        logger.info("  Average True Range (ATR) calculated")
 
-        # OBV
         df = TechnicalIndicators.calculate_obv(df)
-        print("  ✓ 能量潮 (OBV)")
+        logger.info("  On-Balance Volume (OBV) calculated")
 
         return df
 
 
 class StockDataProcessor:
     """
-    股票数据处理器
+    Processor for stock time series data.
 
-    【是什么】：处理股票时间序列数据的工具类
-    【做什么】：
-        - 加载股票数据
-        - 计算技术指标
-        - 创建滑动窗口
-        - 数据归一化
+    Handles the complete data pipeline:
+    - Loading raw stock data
+    - Computing technical indicators
+    - Creating sliding windows for LSTM input
+    - Normalizing features and targets
     """
 
-    def __init__(self, data_path, target_column='Close'):
+    def __init__(self, data_path: str, target_column: str = 'Close'):
         """
-        初始化数据处理器
+        Initialize data processor.
 
         Args:
-            data_path: 数据文件路径
-            target_column: 目标列名
+            data_path: Path to CSV file with stock data
+            target_column: Column name for prediction target
         """
         self.data_path = data_path
         self.target_column = target_column
 
-        # 归一化器
         self.feature_scaler = MinMaxScaler()
         self.target_scaler = MinMaxScaler()
 
-        # 数据
         self.df = None
         self.feature_names = None
 
-    def load_data(self):
+    def load_data(self) -> pd.DataFrame:
         """
-        加载股票数据
+        Load stock data from CSV file.
 
         Returns:
-            DataFrame
+            DataFrame with loaded data
         """
-        print("\n加载股票数据...")
+        logger.info("Loading stock data...")
 
-        # 读取CSV
         self.df = pd.read_csv(self.data_path)
 
-        # 确保有Date列
         if 'Date' in self.df.columns:
             self.df['Date'] = pd.to_datetime(self.df['Date'])
             self.df.set_index('Date', inplace=True)
 
-        # 按日期排序
         self.df.sort_index(inplace=True)
 
-        print(f"  数据形状: {self.df.shape}")
-        print(f"  时间范围: {self.df.index[0]} 到 {self.df.index[-1]}")
-        print(f"  列名: {self.df.columns.tolist()}")
+        logger.info(f"  Shape: {self.df.shape}")
+        logger.info(f"  Date range: {self.df.index[0]} to {self.df.index[-1]}")
+        logger.info(f"  Columns: {self.df.columns.tolist()}")
 
         return self.df
 
-    def create_features(self):
+    def create_features(self) -> pd.DataFrame:
         """
-        创建特征（包括技术指标）
+        Create feature set including technical indicators.
 
         Returns:
-            DataFrame with features
+            DataFrame with all features
         """
-        print("\n创建特征...")
+        logger.info("Creating features...")
 
-        # 计算技术指标
         self.df = TechnicalIndicators.calculate_all_indicators(self.df)
 
-        # 删除NaN值（技术指标计算会产生NaN）
-        print(f"\n删除NaN值...")
-        print(f"  删除前: {len(self.df)}")
+        logger.info(f"Removing NaN values...")
+        logger.info(f"  Before: {len(self.df)}")
         self.df = self.df.dropna()
-        print(f"  删除后: {len(self.df)}")
+        logger.info(f"  After: {len(self.df)}")
 
-        # 选择特征列
-        # 基础特征：OHLCV
         base_features = ['Open', 'High', 'Low', 'Close', 'Volume']
-
-        # 技术指标特征
         indicator_features = [col for col in self.df.columns
                             if col not in base_features and col != self.target_column]
 
         self.feature_names = base_features + indicator_features
 
-        print(f"\n特征统计:")
-        print(f"  基础特征: {len(base_features)}")
-        print(f"  技术指标: {len(indicator_features)}")
-        print(f"  总特征数: {len(self.feature_names)}")
+        logger.info(f"Feature counts:")
+        logger.info(f"  Base features: {len(base_features)}")
+        logger.info(f"  Technical indicators: {len(indicator_features)}")
+        logger.info(f"  Total features: {len(self.feature_names)}")
 
         return self.df[self.feature_names]
 
-    def normalize_data(self, X, y, train_split=0.7):
+    def normalize_data(self, X: np.ndarray, y: np.ndarray,
+                      train_split: float = 0.7) -> Tuple[np.ndarray, np.ndarray]:
         """
-        归一化数据
+        Normalize features and targets using MinMaxScaler.
 
-        【重要】：只在训练集上fit scaler
+        Important: Scaler is fit only on training data to prevent data leakage.
 
         Args:
-            X: 特征
-            y: 目标
-            train_split: 训练集比例
+            X: Feature array
+            y: Target array
+            train_split: Training data proportion
 
         Returns:
-            归一化后的X, y
+            Normalized X and y arrays
         """
-        print("\n归一化数据...")
+        logger.info("Normalizing data...")
 
         train_size = int(len(X) * train_split)
 
-        # 在训练集上fit
         self.feature_scaler.fit(X[:train_size])
         self.target_scaler.fit(y[:train_size].reshape(-1, 1))
 
-        # 转换所有数据
         X_normalized = self.feature_scaler.transform(X)
         y_normalized = self.target_scaler.transform(y.reshape(-1, 1)).flatten()
 
-        print(f"  特征范围: [{X_normalized.min():.2f}, {X_normalized.max():.2f}]")
-        print(f"  目标范围: [{y_normalized.min():.2f}, {y_normalized.max():.2f}]")
+        logger.info(f"  Feature range: [{X_normalized.min():.2f}, {X_normalized.max():.2f}]")
+        logger.info(f"  Target range: [{y_normalized.min():.2f}, {y_normalized.max():.2f}]")
 
         return X_normalized, y_normalized
 
-    def create_sequences(self, X, y, lookback=60, forecast_horizon=1):
+    def create_sequences(self, X: np.ndarray, y: np.ndarray,
+                        lookback: int = 60, forecast_horizon: int = 1) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
-        创建滑动窗口序列
+        Create sliding window sequences for LSTM input.
+
+        For multi-task learning, also generates trend labels (up/down).
 
         Args:
-            X: 特征
-            y: 目标
-            lookback: 回看窗口
-            forecast_horizon: 预测范围
+            X: Feature array
+            y: Target array
+            lookback: Number of historical time steps
+            forecast_horizon: Number of steps ahead to predict
 
         Returns:
-            X_seq, y_seq, y_trend
+            X_seq: Input sequences (batch, lookback, features)
+            y_seq: Price targets (batch,)
+            y_trend: Trend labels (batch,) - 1 for up, 0 for down
         """
-        print("\n创建滑动窗口序列...")
-        print(f"  回看窗口: {lookback} 天")
-        print(f"  预测范围: {forecast_horizon} 天")
+        logger.info("Creating sliding window sequences...")
+        logger.info(f"  Lookback window: {lookback} days")
+        logger.info(f"  Forecast horizon: {forecast_horizon} days")
 
         X_seq, y_seq, y_trend = [], [], []
 
         for i in range(lookback, len(X) - forecast_horizon + 1):
-            # 输入序列
             X_seq.append(X[i-lookback:i])
-
-            # 目标价格
             y_seq.append(y[i+forecast_horizon-1])
 
-            # 趋势标签（多任务学习）
-            # 【是什么】：涨(1)或跌(0)
-            # 【为什么】：同时预测价格和趋势
             current_price = y[i-1]
             future_price = y[i+forecast_horizon-1]
             trend = 1 if future_price > current_price else 0
@@ -402,150 +380,142 @@ class StockDataProcessor:
         y_seq = np.array(y_seq)
         y_trend = np.array(y_trend)
 
-        print(f"  生成序列数: {len(X_seq)}")
-        print(f"  输入形状: {X_seq.shape}")
-        print(f"  价格目标形状: {y_seq.shape}")
-        print(f"  趋势目标形状: {y_trend.shape}")
-        print(f"  趋势分布: 上涨={y_trend.sum()}, 下跌={len(y_trend)-y_trend.sum()}")
+        logger.info(f"  Generated sequences: {len(X_seq)}")
+        logger.info(f"  Input shape: {X_seq.shape}")
+        logger.info(f"  Price target shape: {y_seq.shape}")
+        logger.info(f"  Trend target shape: {y_trend.shape}")
+        logger.info(f"  Trend distribution: Up={y_trend.sum()}, Down={len(y_trend)-y_trend.sum()}")
 
         return X_seq, y_seq, y_trend
 
-    def split_data(self, X, y_price, y_trend, train_split=0.7, val_split=0.15):
+    def split_data(self, X: np.ndarray, y_price: np.ndarray, y_trend: np.ndarray,
+                   train_split: float = 0.7, val_split: float = 0.15) -> Tuple:
         """
-        划分数据集（保持时间顺序）
+        Split data into train/validation/test sets while preserving time order.
 
         Args:
-            X: 输入序列
-            y_price: 价格目标
-            y_trend: 趋势目标
-            train_split: 训练集比例
-            val_split: 验证集比例
+            X: Input sequences
+            y_price: Price targets
+            y_trend: Trend targets
+            train_split: Training data proportion
+            val_split: Validation data proportion
 
         Returns:
-            训练集、验证集、测试集
+            Training, validation, and test tuples (X, y_price, y_trend)
         """
-        print("\n划分数据集...")
+        logger.info("Splitting data...")
 
         n_samples = len(X)
         train_size = int(n_samples * train_split)
         val_size = int(n_samples * val_split)
 
-        # 训练集
         X_train = X[:train_size]
         y_price_train = y_price[:train_size]
         y_trend_train = y_trend[:train_size]
 
-        # 验证集
         X_val = X[train_size:train_size+val_size]
         y_price_val = y_price[train_size:train_size+val_size]
         y_trend_val = y_trend[train_size:train_size+val_size]
 
-        # 测试集
         X_test = X[train_size+val_size:]
         y_price_test = y_price[train_size+val_size:]
         y_trend_test = y_trend[train_size+val_size:]
 
-        print(f"  训练集: {X_train.shape}")
-        print(f"  验证集: {X_val.shape}")
-        print(f"  测试集: {X_test.shape}")
+        logger.info(f"  Training set: {X_train.shape}")
+        logger.info(f"  Validation set: {X_val.shape}")
+        logger.info(f"  Test set: {X_test.shape}")
 
         return (X_train, y_price_train, y_trend_train), \
                (X_val, y_price_val, y_trend_val), \
                (X_test, y_price_test, y_trend_test)
 
-    def inverse_transform_price(self, y):
-        """反归一化价格"""
+    def inverse_transform_price(self, y: np.ndarray) -> np.ndarray:
+        """Reverse normalization to get original price scale."""
         return self.target_scaler.inverse_transform(y.reshape(-1, 1)).flatten()
 
-    def save_processor(self, filepath):
-        """保存数据处理器"""
+    def save_processor(self, filepath: str) -> None:
+        """Save scaler and feature configuration."""
         with open(filepath, 'wb') as f:
             pickle.dump({
                 'feature_scaler': self.feature_scaler,
                 'target_scaler': self.target_scaler,
                 'feature_names': self.feature_names
             }, f)
-        print(f"✓ 数据处理器已保存: {filepath}")
+        logger.info(f"Processor saved: {filepath}")
 
-    def load_processor(self, filepath):
-        """加载数据处理器"""
+    def load_processor(self, filepath: str) -> None:
+        """Load saved scaler and feature configuration."""
         with open(filepath, 'rb') as f:
             data = pickle.load(f)
             self.feature_scaler = data['feature_scaler']
             self.target_scaler = data['target_scaler']
             self.feature_names = data['feature_names']
-        print(f"✓ 数据处理器已加载: {filepath}")
+        logger.info(f"Processor loaded: {filepath}")
 
 
-def prepare_stock_data(data_path,
-                       lookback=60,
-                       forecast_horizon=1,
-                       train_split=0.7,
-                       val_split=0.15):
+def prepare_stock_data(
+    data_path: str,
+    lookback: int = 60,
+    forecast_horizon: int = 1,
+    train_split: float = 0.7,
+    val_split: float = 0.15
+) -> Tuple:
     """
-    准备股票数据
+    Complete data preparation pipeline.
 
     Args:
-        data_path: 数据文件路径
-        lookback: 回看窗口
-        forecast_horizon: 预测范围
-        train_split: 训练集比例
-        val_split: 验证集比例
+        data_path: Path to stock data CSV file
+        lookback: Lookback window size
+        forecast_horizon: Prediction horizon
+        train_split: Training data proportion
+        val_split: Validation data proportion
 
     Returns:
-        训练集、验证集、测试集、处理器
+        train_data, val_data, test_data, processor
     """
     print("="*60)
-    print("股票数据准备")
+    print("Stock Data Preparation")
     print("="*60)
 
-    # 创建处理器
     processor = StockDataProcessor(data_path)
 
-    # 加载数据
     processor.load_data()
 
-    # 创建特征
     X = processor.create_features()
     y = processor.df[processor.target_column].values
 
-    # 归一化
     X_normalized, y_normalized = processor.normalize_data(X.values, y, train_split)
 
-    # 创建序列
     X_seq, y_price, y_trend = processor.create_sequences(
         X_normalized, y_normalized,
         lookback, forecast_horizon
     )
 
-    # 划分数据集
     train_data, val_data, test_data = processor.split_data(
         X_seq, y_price, y_trend,
         train_split, val_split
     )
 
-    print("\n数据准备完成！")
+    logger.info("Data preparation complete!")
 
     return train_data, val_data, test_data, processor
 
 
 if __name__ == '__main__':
-    """测试数据处理"""
+    """Test data processing module."""
     print("="*60)
-    print("数据处理模块测试")
+    print("Data Processing Module Test")
     print("="*60)
 
-    # 创建模拟股票数据
-    print("\n创建模拟数据...")
+    logger.info("Creating synthetic stock data...")
     dates = pd.date_range('2020-01-01', periods=500, freq='D')
     np.random.seed(42)
 
-    # 模拟价格走势
     price = 100
     prices = [price]
     for _ in range(499):
         change = np.random.randn() * 2
-        price = max(price + change, 50)  # 价格不低于50
+        price = max(price + change, 50)
         prices.append(price)
 
     df = pd.DataFrame({
@@ -557,24 +527,21 @@ if __name__ == '__main__':
         'Volume': np.random.randint(1000000, 10000000, 500)
     })
 
-    # 保存临时文件
     temp_path = 'temp_stock_data.csv'
     df.to_csv(temp_path, index=False)
 
     try:
-        # 测试数据处理
         train_data, val_data, test_data, processor = prepare_stock_data(
             temp_path,
             lookback=30,
             forecast_horizon=1
         )
 
-        print("\n✓ 数据处理测试通过！")
+        logger.info("Data processing test passed!")
 
     finally:
-        # 清理临时文件
         import os
         if os.path.exists(temp_path):
             os.remove(temp_path)
 
-    print("\n✓ 所有测试通过！")
+    logger.info("All tests passed!")

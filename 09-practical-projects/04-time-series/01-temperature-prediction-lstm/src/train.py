@@ -155,7 +155,7 @@ def main():
             sampling_rate=args.sampling_rate
         )
     except FileNotFoundError as e:
-        print(f"\n✗ 数据文件不存在: {e}")
+        print(f"\n错误: 数据文件不存在: {e}")
         print("\n请先下载数据:")
         print("  cd data")
         print("  python download_data.py")
@@ -272,7 +272,7 @@ def main():
         history_path,
         **history.history
     )
-    print(f"✓ 训练历史已保存: {history_path}")
+    print(f"训练历史已保存: {history_path}")
 
     # 保存评估结果
     results = {
@@ -300,7 +300,7 @@ def main():
     with open(results_path, 'w') as f:
         for key, value in results.items():
             f.write(f"{key}: {value}\n")
-    print(f"✓ 评估结果已保存: {results_path}")
+    print(f"评估结果已保存: {results_path}")
 
     # 保存预测结果（用于可视化）
     predictions_path = result_dir / f'{args.model_type}_predictions.npz'
@@ -309,7 +309,7 @@ def main():
         y_true=y_test_original[:100],  # 保存前100个样本
         y_pred=y_pred_original[:100]
     )
-    print(f"✓ 预测结果已保存: {predictions_path}")
+    print(f"预测结果已保存: {predictions_path}")
 
     # ============================================
     # 步骤7: 示例预测
@@ -362,16 +362,16 @@ def main():
     rmse_threshold = 3.0  # 3°C
 
     if original_metrics['mae'] < mae_threshold and original_metrics['rmse'] < rmse_threshold:
-        print(f"  ✓✓ 模型性能优秀！")
+        print(f"  [优秀] 模型性能优秀！")
         print(f"     MAE < {mae_threshold}°C, RMSE < {rmse_threshold}°C")
     elif original_metrics['mae'] < mae_threshold * 1.5:
-        print(f"  ✓ 模型性能良好")
+        print(f"  [良好] 模型性能良好")
         print(f"     可以尝试:")
         print(f"     - 增加训练轮数")
         print(f"     - 使用更复杂的模型（stacked）")
         print(f"     - 调整学习率")
     else:
-        print(f"  ⚠ 模型性能有待提升，建议:")
+        print(f"  [注意] 模型性能有待提升，建议:")
         print(f"    - 检查数据质量")
         print(f"    - 增加lookback窗口")
         print(f"    - 使用更多特征")
@@ -379,7 +379,7 @@ def main():
 
     # 过拟合检查
     if train_metrics['mae'] < val_metrics['mae'] * 0.7:
-        print(f"\n  ⚠ 检测到过拟合，建议:")
+        print(f"\n  [注意] 检测到过拟合，建议:")
         print(f"    - 增加Dropout")
         print(f"    - 减少模型复杂度")
         print(f"    - 增加训练数据")

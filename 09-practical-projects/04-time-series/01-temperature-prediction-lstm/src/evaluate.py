@@ -76,7 +76,7 @@ def plot_predictions(y_true, y_pred, num_samples=5, save_path=None):
 
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        print(f"✓ 预测对比图已保存: {save_path}")
+        print(f"预测对比图已保存: {save_path}")
 
 
 def plot_error_distribution(y_true, y_pred, save_path=None):
@@ -119,7 +119,7 @@ def plot_error_distribution(y_true, y_pred, save_path=None):
 
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        print(f"✓ 误差分布图已保存: {save_path}")
+        print(f"误差分布图已保存: {save_path}")
 
 
 def plot_scatter(y_true, y_pred, save_path=None):
@@ -163,7 +163,7 @@ def plot_scatter(y_true, y_pred, save_path=None):
 
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        print(f"✓ 散点图已保存: {save_path}")
+        print(f"散点图已保存: {save_path}")
 
 
 def plot_hourly_performance(y_true, y_pred, save_path=None):
@@ -203,7 +203,7 @@ def plot_hourly_performance(y_true, y_pred, save_path=None):
 
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        print(f"✓ 逐小时性能图已保存: {save_path}")
+        print(f"逐小时性能图已保存: {save_path}")
 
     return hourly_mae
 
@@ -294,7 +294,7 @@ def main():
             sampling_rate=args.sampling_rate
         )
     except FileNotFoundError as e:
-        print(f"\n✗ 数据文件不存在: {e}")
+        print(f"\n错误: 数据文件不存在: {e}")
         return
 
     # ============================================
@@ -305,7 +305,7 @@ def main():
     print("="*60)
 
     model = keras.models.load_model(args.model_path)
-    print(f"✓ 模型已加载")
+    print(f"模型已加载")
 
     # ============================================
     # 步骤4: 预测
@@ -427,11 +427,11 @@ def main():
 
     # 性能评价
     if mae < 2.0 and rmse < 3.0:
-        print(f"\n  ✓✓ 模型性能优秀！")
+        print(f"\n  [优秀] 模型性能优秀！")
     elif mae < 3.0 and rmse < 4.0:
-        print(f"\n  ✓ 模型性能良好")
+        print(f"\n  [良好] 模型性能良好")
     else:
-        print(f"\n  ⚠ 模型性能有待提升")
+        print(f"\n  [注意] 模型性能有待提升")
 
 
 if __name__ == '__main__':
