@@ -3,6 +3,12 @@ sys.path.append('./')
 from paths import PATHS
 import torch
 
+try:
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+except:
+    device = 'cuda'
+
+
 class CFG:
     DDP = 1
     DDP_INIT_DONE = 0
@@ -14,7 +20,7 @@ class CFG:
     
     seed = 2717
     
-    device = torch.device('cuda')
+    device = device
     
     n_folds = 4
     folds = [i for i in range(n_folds)]

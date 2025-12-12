@@ -102,7 +102,7 @@ from glob import glob
 import copy
 import time
 import math
-import command
+
 import random
 
 #os.environ['CUDA_VISIBLE_DEVICES'] = '1,2,3'

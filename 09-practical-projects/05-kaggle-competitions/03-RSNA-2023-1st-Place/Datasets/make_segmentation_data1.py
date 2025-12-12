@@ -1,25 +1,27 @@
+"""
+Script to generate segmentation training data for 3D organ segmentation model.
+
+This script processes DICOM CT scans and their corresponding segmentation masks from two sources:
+1. Competition segmentation data (from RSNA dataset)
+2. TotalSegmentor external dataset (additional training data)
+
+The output is preprocessed volumes and masks ready for 3D segmentation model training.
+"""
+
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-from glob import glob
 import os
-import copy
-import time
-
 import cv2
-from PIL import Image
-import matplotlib.pyplot as plt
-
-import pydicom
 import nibabel as nib
 
 import sys
 sys.path.append('./')
 from paths import PATHS
-
-
+from utils.dicom_utils import glob_sorted, get_windowed_image
 import dicomsdl
 
+# Patch dicomsdl for numpy conversion
 def __dataset__to_numpy_image(self, index=0):
     info = self.getPixelDataInfo()
     dtype = info['dtype']
@@ -33,54 +35,27 @@ def __dataset__to_numpy_image(self, index=0):
 dicomsdl._dicomsdl.DataSet.to_numpy_image = __dataset__to_numpy_image
 
 
-#UTILS
-
-def glob_sorted(path):
-    return sorted(glob(path), key=lambda x: int(x.split('/')[-1].split('.')[0]))
-
-def get_standardized_pixel_array(dcm):
-    # Correct DICOM pixel_array if PixelRepresentation == 1.
-    pixel_array = dcm.to_numpy_image()
-    if dcm.PixelRepresentation == 1:
-        bit_shift = dcm.BitsAllocated - dcm.BitsStored
-        dtype = pixel_array.dtype 
-        pixel_array = (pixel_array << bit_shift).astype(dtype) >>  bit_shift
-    return pixel_array
-
-def get_windowed_image(dcm, WL=50, WW=400):
-    resI, resS = dcm.RescaleIntercept, dcm.RescaleSlope
-    
-    img = dcm.to_numpy_image()
-    
-    #img = get_standardized_pixel_array(dcm)
-    
-    img = resS * img + resI
-    
-    upper, lower = WL+WW//2, WL-WW//2
-    X = np.clip(img.copy(), lower, upper)
-    X = X - np.min(X)
-    X = X / np.max(X)
-    X = (X*255.0).astype('uint8')
-    
-    return X
-
 def load_volume(dcms):
+    """
+    Load CT volume from DICOM files with soft-tissue windowing.
+
+    Args:
+        dcms: List of DICOM file paths
+
+    Returns:
+        np.ndarray: Normalized volume with shape (num_slices, height, width)
+    """
     volume = []
     for dcm_path in dcms:
-        #dcm = pydicom.read_file(dcm_path)
-        #image = dcm.pixel_array
-        
         dcm = dicomsdl.open(dcm_path)
-        
         image = get_windowed_image(dcm)
-        
-        if np.min(image)<0:
+
+        if np.min(image) < 0:
             image = image + np.abs(np.min(image))
-        
+
         image = image / image.max()
-        
         volume.append(image)
-        
+
     return np.stack(volume)
 
 def load_segmentation_volume(path):
@@ -104,22 +79,36 @@ def load_total_segmentation_volume(path):
     
     return volume
 
-print(PATHS.BASE_PATH, PATHS.OUTPUT_BASE)
+# ========================================
+# Part 1: Process Competition Segmentation Data
+# ========================================
 
+print(f"Base path: {PATHS.BASE_PATH}")
+print(f"Output path: {PATHS.OUTPUT_BASE}")
+
+# Get list of studies that have segmentation masks
 seg_studies = [x.split('.')[0] for x in os.listdir(PATHS.BASE_PATH + '/segmentations/')]
 
+# Load study-level labels
 study_level = pd.read_csv(f'{PATHS.BASE_PATH}/train.csv')
 
+# Map patients to their studies
 patient_to_studies = {}
 for pat in study_level.patient_id:
     patient_to_studies[pat] = os.listdir(f"{PATHS.BASE_PATH}/train_images/{pat}/")
-    
-study_level['seg_study'] = study_level.patient_id.apply(lambda x: max([1 if y in seg_studies else 0 for y in patient_to_studies[x]]))
-study_level['seg_studies'] = study_level.patient_id.apply(lambda x: [y for y in patient_to_studies[x]])
 
-seg_study_level = study_level[study_level['seg_study']==1]
+# Add segmentation availability flags
+study_level['seg_study'] = study_level.patient_id.apply(
+    lambda x: max([1 if y in seg_studies else 0 for y in patient_to_studies[x]])
+)
+study_level['seg_studies'] = study_level.patient_id.apply(
+    lambda x: [y for y in patient_to_studies[x]]
+)
 
-print("MAKING SEGMENTOR DATA")
+# Filter to studies with segmentation masks
+seg_study_level = study_level[study_level['seg_study'] == 1]
+
+print(f"Processing {len(seg_study_level)} studies with segmentation masks")
 
 SAVE_FOLDER = PATHS.SEGMENTOR_SAVE_FOLDER
 os.makedirs(SAVE_FOLDER, exist_ok=1)

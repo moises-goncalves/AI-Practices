@@ -1,6 +1,23 @@
+"""
+3D Segmentation Model for Organ Mask Generation.
+
+This module implements a 3D segmentation model based on ResNet18d for generating
+organ masks from CT scans. The model is trained to segment 5 organs:
+- Liver (class 0)
+- Spleen (class 1)
+- Right Kidney (class 2)
+- Left Kidney (class 3)
+- Bowel (class 4)
+
+Architecture:
+    - Encoder: timm ResNet18d with 3D convolutions
+    - Decoder: U-Net style decoder
+    - Loss: Dice Loss for multi-label segmentation
+"""
+
 import torch
 from torch import nn, optim
-import torch.functional as F
+import torch.nn.functional as F
 import timm
 import segmentation_models_pytorch as smp
 from transformers import get_cosine_schedule_with_warmup
@@ -10,23 +27,57 @@ sys.path.append('./Configs/')
 from segmentation_config import CFG
 
 class Model(nn.Module):
+    """
+    3D Segmentation Model for multi-organ segmentation.
+
+    This model uses a U-Net architecture with a timm encoder (ResNet18d by default)
+    converted to 3D convolutions. It performs dense pixel-wise prediction to generate
+    segmentation masks for 5 different organs.
+
+    Args:
+        backbone (str, optional): Not used, kept for compatibility. Model name is from CFG.
+        segtype (str): Decoder type, currently only 'unet' is supported. Default: 'unet'.
+        pretrained (bool): Whether to use ImageNet pretrained weights. Default: False.
+
+    Architecture Details:
+        - Input: (B, C, H, W) where C is 1 (grayscale CT)
+        - The input is replicated to 3 channels for timm compatibility
+        - Encoder: ResNet18d with 4 blocks
+        - Decoder: U-Net decoder with skip connections
+        - Output: (B, 5, H, W) for 5 organ classes
+
+    Forward Pass:
+        1. Replicate grayscale input to 3 channels
+        2. Extract multi-scale features from encoder
+        3. Decode features with skip connections
+        4. Generate 5-channel segmentation map
+    """
+
     def __init__(self, backbone=None, segtype='unet', pretrained=False):
         super(Model, self).__init__()
-        
+
+        # Number of encoder blocks to use
         n_blocks = 4
         self.n_blocks = n_blocks
-        
+
+        # Create encoder with feature extraction
         self.encoder = timm.create_model(
             CFG.model_name,
-            in_chans=3,
-            features_only=True,
-            drop_rate=0.1,
-            drop_path_rate=0.1,
-            pretrained=pretrained
+            in_chans=3,  # RGB input required by timm models
+            features_only=True,  # Return intermediate features for U-Net skip connections
+            drop_rate=0.1,  # Dropout rate for regularization
+            drop_path_rate=0.1,  # Stochastic depth rate
+            pretrained=pretrained  # Use ImageNet weights if True
         )
+
+        # Determine encoder output channels dynamically
         g = self.encoder(torch.rand(1, 3, 64, 64))
         encoder_channels = [1] + [_.shape[1] for _ in g]
+
+        # Decoder channel configuration
         decoder_channels = [256, 128, 64, 32, 16]
+
+        # Build U-Net decoder
         if segtype == 'unet':
             self.decoder = smp.decoders.unet.decoder.UnetDecoder(
                 encoder_channels=encoder_channels[:n_blocks+1],
@@ -34,15 +85,37 @@ class Model(nn.Module):
                 n_blocks=n_blocks,
             )
 
-        self.segmentation_head = nn.Conv2d(decoder_channels[n_blocks-1], 5, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        # Final segmentation head: maps decoder output to 5 organ classes
+        self.segmentation_head = nn.Conv2d(
+            decoder_channels[n_blocks-1],
+            5,  # 5 organ classes
+            kernel_size=(3, 3),
+            stride=(1, 1),
+            padding=(1, 1)
+        )
 
-    def forward(self,x):
-        
+    def forward(self, x):
+        """
+        Forward pass of the segmentation model.
+
+        Args:
+            x (torch.Tensor): Input tensor of shape (B, H, W) or (B, 1, H, W)
+
+        Returns:
+            torch.Tensor: Segmentation logits of shape (B, 5, H, W)
+        """
+        # Convert grayscale to RGB by replicating channels
         x = torch.stack([x]*3, 1)
-        
+
+        # Extract multi-scale features
         global_features = [0] + self.encoder(x)[:self.n_blocks]
+
+        # Decode features with skip connections
         seg_features = self.decoder(*global_features)
+
+        # Generate final segmentation map
         seg_features = self.segmentation_head(seg_features)
+
         return seg_features
     
 #from timm.models.layers.conv2d_same import Conv2dSame

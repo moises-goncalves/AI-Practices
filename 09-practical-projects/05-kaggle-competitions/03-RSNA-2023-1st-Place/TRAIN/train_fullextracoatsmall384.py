@@ -98,7 +98,7 @@ from glob import glob
 import copy
 import time
 import math
-import command
+
 import random
 
 import cv2
