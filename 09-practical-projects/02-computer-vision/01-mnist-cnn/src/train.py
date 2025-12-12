@@ -1,5 +1,27 @@
 """
 MNIST模型训练脚本
+
+提供命令行接口用于训练MNIST手写数字识别模型。
+支持多种模型架构和超参数配置。
+
+使用方法:
+    python train.py --model simple_cnn --epochs 20 --batch-size 128
+
+    可用参数:
+        --model: 模型类型 (simple_cnn, improved_cnn, deep_cnn)
+        --epochs: 训练轮数
+        --batch-size: 批次大小
+        --seed: 随机种子
+
+功能特性:
+    - 自动数据加载和预处理
+    - 模型训练和验证
+    - 早停和学习率调度
+    - 模型保存和性能评估
+    - 完整的训练日志
+
+作者: Deep Learning Research Team
+日期: 2024-01
 """
 
 import sys
