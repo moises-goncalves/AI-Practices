@@ -110,31 +110,45 @@
 
 <div align="center">
 
-<!-- 项目核心指标卡片 -->
+<!-- 项目核心指标卡片 - iOS 风格双行布局 -->
 <table>
 <tr>
-<td align="center">
+<td align="center" width="160">
 <img src="https://img.shields.io/badge/113+-Notebooks-007AFF?style=for-the-badge&labelColor=1c1c1e" alt="Notebooks"/><br/>
-<sub>可复现实验</sub>
+<b>可复现实验</b><br/>
+<sub>Jupyter Notebooks</sub>
 </td>
-<td align="center">
+<td align="center" width="160">
 <img src="https://img.shields.io/badge/9-Modules-34C759?style=for-the-badge&labelColor=1c1c1e" alt="Modules"/><br/>
-<sub>核心模块</sub>
+<b>核心模块</b><br/>
+<sub>Learning Modules</sub>
 </td>
-<td align="center">
+<td align="center" width="160">
 <img src="https://img.shields.io/badge/19-Projects-FF9500?style=for-the-badge&labelColor=1c1c1e" alt="Projects"/><br/>
-<sub>实战项目</sub>
+<b>实战项目</b><br/>
+<sub>Real-world Projects</sub>
 </td>
-<td align="center">
+<td align="center" width="160">
 <img src="https://img.shields.io/badge/149k+-LOC-5856D6?style=for-the-badge&labelColor=1c1c1e" alt="LOC"/><br/>
-<sub>代码行数</sub>
+<b>代码行数</b><br/>
+<sub>Lines of Code</sub>
 </td>
-<td align="center">
-<img src="https://img.shields.io/badge/Gold-Kaggle-FF2D55?style=for-the-badge&labelColor=1c1c1e" alt="Kaggle"/><br/>
-<sub>竞赛金牌</sub>
+<td align="center" width="160">
+<img src="https://img.shields.io/badge/2x_Gold-Kaggle-FF2D55?style=for-the-badge&labelColor=1c1c1e" alt="Kaggle"/><br/>
+<b>竞赛金牌</b><br/>
+<sub>Competition Medals</sub>
 </td>
 </tr>
 </table>
+
+<br/>
+
+<!-- 技术覆盖范围 -->
+<img src="https://img.shields.io/badge/ML-Supervised_|_Unsupervised_|_Ensemble-007AFF?style=flat-square&labelColor=1c1c1e" alt="ML"/>
+&nbsp;
+<img src="https://img.shields.io/badge/DL-CNN_|_RNN_|_Transformer_|_GAN-5856D6?style=flat-square&labelColor=1c1c1e" alt="DL"/>
+&nbsp;
+<img src="https://img.shields.io/badge/RL-DQN_|_PPO_|_SAC-AF52DE?style=flat-square&labelColor=1c1c1e" alt="RL"/>
 
 </div>
 
@@ -148,38 +162,41 @@
 
 ### Methodology
 
-本项目遵循 **"理论驱动、实践为本、工程导向"** 的设计理念：
+本项目遵循 **"理论驱动、实践为本、工程导向"** 的三位一体设计理念，构建从理论到实战的完整学习闭环：
 
 <div align="center">
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    Progressive Learning Framework                        │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐         │
-│   │  Theory  │───▶│  Impl    │───▶│Framework │───▶│ Practice │         │
-│   │  First   │    │  From    │    │  Master  │    │ Project  │         │
-│   │          │    │ Scratch  │    │          │    │          │         │
-│   └──────────┘    └──────────┘    └──────────┘    └──────────┘         │
-│        │               │               │               │                │
-│        ▼               ▼               ▼               ▼                │
-│   数学原理        核心算法       TensorFlow       Kaggle竞赛           │
-│   算法理论        底层实现       PyTorch          真实项目             │
-│                                                                          │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+<!-- 学习阶段流程 -->
+<img src="https://img.shields.io/badge/Phase_I-Theory_First-007AFF?style=for-the-badge" alt="Phase I"/>
+<img src="https://img.shields.io/badge/→-white?style=for-the-badge" alt="arrow"/>
+<img src="https://img.shields.io/badge/Phase_II-From_Scratch-5856D6?style=for-the-badge" alt="Phase II"/>
+<img src="https://img.shields.io/badge/→-white?style=for-the-badge" alt="arrow"/>
+<img src="https://img.shields.io/badge/Phase_III-Framework-AF52DE?style=for-the-badge" alt="Phase III"/>
+<img src="https://img.shields.io/badge/→-white?style=for-the-badge" alt="arrow"/>
+<img src="https://img.shields.io/badge/Phase_IV-Practice-FF2D55?style=for-the-badge" alt="Phase IV"/>
 
 </div>
 
 <br/>
 
-| Phase | Principle | Method | Output |
-|:-----:|:----------|:-------|:-------|
-| **Ⅰ** | Theory First | 数学推导 + 算法分析 | 理论笔记 |
-| **Ⅱ** | Implementation | NumPy 从零实现 | 核心代码 |
-| **Ⅲ** | Framework | TensorFlow/PyTorch | 工程代码 |
-| **Ⅳ** | Practice | 真实项目 + 竞赛 | 完整方案 |
+<div align="center">
+
+| Phase | Principle | Method | Output | Goal |
+|:-----:|:----------|:-------|:-------|:----:|
+| **I** | **Theory First** | Math derivation + Algorithm analysis | Theory Notes | 🎯 |
+| **II** | **From Scratch** | NumPy implementation from scratch | Core Code | 🔧 |
+| **III** | **Framework** | PyTorch / TensorFlow engineering | Production Code | ⚡ |
+| **IV** | **Practice** | Kaggle + Real-world Projects | Complete Solutions | 🏆 |
+
+</div>
+
+<br/>
+
+**Core Advantages:**
+
+- 🔄 **Progressive Learning** — Each phase builds upon the previous, ensuring knowledge continuity
+- 🧠 **Theory + Practice** — Not just "How", but "Why" — develop independent problem-solving skills
+- 🏭 **Engineering Mindset** — From academic research to industrial deployment
 
 <br/>
 
@@ -192,49 +209,42 @@
 
 ### Module Dependencies
 
+> 模块间的依赖关系遵循**渐进式学习路径**，每个阶段都建立在前一阶段的基础之上。
+
 <div align="center">
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#007AFF', 'primaryTextColor': '#fff', 'primaryBorderColor': '#5856D6', 'lineColor': '#AF52DE', 'secondaryColor': '#1c1c1e', 'tertiaryColor': '#2c2c2e', 'background': '#000000'}}}%%
-flowchart TB
-    subgraph P1["🎯 Phase 1: Foundation"]
-        A[01 Foundations<br/>机器学习基础]
-    end
-
-    subgraph P2["🧠 Phase 2: Core"]
-        B[02 Neural Networks<br/>深度学习基石]
-        C[03 Computer Vision<br/>计算机视觉]
-        D[04 Sequence Models<br/>序列模型/NLP]
-    end
-
-    subgraph P3["⚡ Phase 3: Advanced"]
-        E[05 Advanced Topics<br/>高级专题]
-        F[06 Generative Models<br/>生成式AI]
-        G[07 Reinforcement Learning<br/>强化学习]
-    end
-
-    subgraph P4["🏆 Phase 4: Practice"]
-        H[09 Practical Projects<br/>实战项目]
-    end
-
-    subgraph Support["📖 Support"]
-        I[08 Theory Notes<br/>理论笔记]
-    end
-
-    A --> B
-    B --> C & D
-    C & D --> E
-    E --> F & G
-    F & G --> H
-    C & D --> H
-    I -.->|理论支持| A & B & C & D
-```
+| Phase | Module | Prerequisites | Core Skills Acquired |
+|:-----:|:-------|:--------------|:--------------------|
+| **Ⅰ** | 📚 **01-Foundations** | Python, NumPy | 经典 ML 算法、数学基础、模型评估 |
+| **Ⅱ** | 🧠 **02-Neural Networks** | 01-Foundations | 反向传播、优化器、正则化技术 |
+| **Ⅱ** | 👁️ **03-Computer Vision** | 02-Neural Networks | CNN 架构、迁移学习、图像处理 |
+| **Ⅱ** | 📝 **04-Sequence Models** | 02-Neural Networks | RNN/LSTM、Attention、Transformer |
+| **Ⅲ** | ⚡ **05-Advanced Topics** | 03-CV, 04-Seq | 分布式训练、超参优化、模型部署 |
+| **Ⅲ** | 🎨 **06-Generative Models** | 05-Advanced | VAE、GAN、Diffusion Models |
+| **Ⅲ** | 🎮 **07-Reinforcement Learning** | 05-Advanced | 值函数、策略梯度、Actor-Critic |
+| **Ⅳ** | 🏆 **09-Practical Projects** | 03-CV, 04-Seq, 06-Gen | 端到端项目、Kaggle 竞赛实战 |
+| **—** | 📖 **08-Theory Notes** | — | 数学推导参考（可随时查阅） |
 
 </div>
 
-<br/>
-
 ### Directory Structure
+
+```
+AI-Practices/
+├── 📚 01-foundations/          # 机器学习基础 (ML Fundamentals)
+├── 🧠 02-neural-networks/      # 神经网络 (Deep Learning Core)
+├── 👁️ 03-computer-vision/      # 计算机视觉 (CNN, ViT, Detection)
+├── 📝 04-sequence-models/      # 序列模型 (RNN, Transformer, LLM)
+├── ⚡ 05-advanced-topics/      # 高级专题 (Optimization, Deployment)
+├── 🎨 06-generative-models/    # 生成模型 (VAE, GAN, Diffusion)
+├── 🎮 07-reinforcement-learning/ # 强化学习 (DQN, PPO, SAC)
+├── 📖 08-theory-notes/         # 理论笔记 (Math, Optimization)
+├── 🏆 09-practical-projects/   # 实战项目 (Kaggle, Industry)
+└── 🔧 utils/                   # 工具库 (Data, Viz, Metrics)
+```
+
+<details>
+<summary><b>📂 展开完整目录结构</b></summary>
 
 ```
 AI-Practices/
@@ -290,10 +300,277 @@ AI-Practices/
     └── metrics/                       #   评估指标
 ```
 
+</details>
+
+<br/>
+
+### 💻 Core Implementation
+
+> 以下代码展示了本项目的工程质量标准，体现了 **类型安全**、**模块化设计** 和 **生产级实践**。
+
+<details open>
+<summary><b>🔥 Multi-Head Self-Attention (PyTorch)</b></summary>
+
+```python
+"""
+Multi-Head Self-Attention Implementation
+Reference: Vaswani et al., "Attention Is All You Need" (NeurIPS 2017)
+"""
+from __future__ import annotations
+
+import math
+from typing import Optional, Tuple
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch import Tensor
+
+
+class MultiHeadSelfAttention(nn.Module):
+    """
+    Scaled Dot-Product Multi-Head Self-Attention mechanism.
+
+    Implements the attention formula:
+        Attention(Q, K, V) = softmax(QK^T / √d_k) V
+
+    Args:
+        d_model: Model embedding dimension
+        n_heads: Number of parallel attention heads
+        dropout: Dropout probability for attention weights
+        bias: Whether to include bias in linear projections
+    """
+
+    def __init__(
+        self,
+        d_model: int = 512,
+        n_heads: int = 8,
+        dropout: float = 0.1,
+        bias: bool = True,
+    ) -> None:
+        super().__init__()
+
+        assert d_model % n_heads == 0, \
+            f"d_model ({d_model}) must be divisible by n_heads ({n_heads})"
+
+        self.d_model = d_model
+        self.n_heads = n_heads
+        self.d_k = d_model // n_heads  # Dimension per head
+        self.scale = math.sqrt(self.d_k)
+
+        # Fused QKV projection for efficiency
+        self.qkv_proj = nn.Linear(d_model, 3 * d_model, bias=bias)
+        self.out_proj = nn.Linear(d_model, d_model, bias=bias)
+        self.dropout = nn.Dropout(dropout)
+
+        self._init_weights()
+
+    def _init_weights(self) -> None:
+        """Xavier uniform initialization for stable training."""
+        nn.init.xavier_uniform_(self.qkv_proj.weight)
+        nn.init.xavier_uniform_(self.out_proj.weight)
+        if self.qkv_proj.bias is not None:
+            nn.init.zeros_(self.qkv_proj.bias)
+            nn.init.zeros_(self.out_proj.bias)
+
+    def forward(
+        self,
+        x: Tensor,
+        mask: Optional[Tensor] = None,
+        return_attention: bool = False,
+    ) -> Tuple[Tensor, Optional[Tensor]]:
+        """
+        Forward pass of multi-head self-attention.
+
+        Args:
+            x: Input tensor of shape (batch, seq_len, d_model)
+            mask: Optional attention mask (batch, 1, 1, seq_len) or (batch, 1, seq_len, seq_len)
+            return_attention: Whether to return attention weights
+
+        Returns:
+            output: Attended output of shape (batch, seq_len, d_model)
+            attn_weights: Attention weights if return_attention=True, else None
+        """
+        B, L, _ = x.shape
+
+        # Fused QKV projection: (B, L, 3*d_model) -> 3 x (B, n_heads, L, d_k)
+        qkv = self.qkv_proj(x).reshape(B, L, 3, self.n_heads, self.d_k)
+        qkv = qkv.permute(2, 0, 3, 1, 4)  # (3, B, n_heads, L, d_k)
+        q, k, v = qkv.unbind(0)
+
+        # Scaled dot-product attention: softmax(QK^T / √d_k) V
+        attn_scores = torch.matmul(q, k.transpose(-2, -1)) / self.scale
+
+        if mask is not None:
+            attn_scores = attn_scores.masked_fill(mask == 0, float("-inf"))
+
+        attn_weights = F.softmax(attn_scores, dim=-1)
+        attn_weights = self.dropout(attn_weights)
+
+        # Apply attention to values
+        attn_output = torch.matmul(attn_weights, v)
+
+        # Reshape and project: (B, n_heads, L, d_k) -> (B, L, d_model)
+        attn_output = attn_output.transpose(1, 2).reshape(B, L, self.d_model)
+        output = self.out_proj(attn_output)
+
+        return output, attn_weights if return_attention else None
+```
+
+</details>
+
+<details>
+<summary><b>🎮 PPO Trainer (Reinforcement Learning)</b></summary>
+
+```python
+"""
+Proximal Policy Optimization (PPO) Trainer
+Reference: Schulman et al., "Proximal Policy Optimization Algorithms" (2017)
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Dict, Iterator, Tuple
+
+import torch
+import torch.nn as nn
+from torch import Tensor
+from torch.distributions import Categorical
+
+
+@dataclass
+class PPOConfig:
+    """PPO hyperparameters with sensible defaults."""
+    gamma: float = 0.99           # Discount factor
+    gae_lambda: float = 0.95      # GAE parameter
+    clip_epsilon: float = 0.2     # PPO clipping range
+    entropy_coef: float = 0.01    # Entropy bonus coefficient
+    value_coef: float = 0.5       # Value loss coefficient
+    max_grad_norm: float = 0.5    # Gradient clipping threshold
+    n_epochs: int = 4             # PPO update epochs
+    batch_size: int = 64          # Mini-batch size
+
+
+class PPOTrainer:
+    """
+    Production-ready PPO trainer with GAE and gradient clipping.
+
+    Implements the clipped surrogate objective:
+        L^CLIP(θ) = E[min(r_t(θ)A_t, clip(r_t(θ), 1-ε, 1+ε)A_t)]
+
+    where r_t(θ) = π_θ(a_t|s_t) / π_θ_old(a_t|s_t)
+    """
+
+    def __init__(
+        self,
+        policy: nn.Module,
+        optimizer: torch.optim.Optimizer,
+        config: PPOConfig = PPOConfig(),
+    ) -> None:
+        self.policy = policy
+        self.optimizer = optimizer
+        self.config = config
+
+    def compute_gae(
+        self,
+        rewards: Tensor,
+        values: Tensor,
+        dones: Tensor,
+        next_value: Tensor,
+    ) -> Tuple[Tensor, Tensor]:
+        """
+        Compute Generalized Advantage Estimation (GAE).
+
+        GAE(γ,λ) = Σ_{l=0}^{∞} (γλ)^l δ_{t+l}
+        where δ_t = r_t + γV(s_{t+1}) - V(s_t)
+        """
+        T = len(rewards)
+        advantages = torch.zeros_like(rewards)
+        last_gae = 0.0
+
+        for t in reversed(range(T)):
+            next_val = next_value if t == T - 1 else values[t + 1]
+            delta = rewards[t] + self.config.gamma * next_val * (1 - dones[t]) - values[t]
+            advantages[t] = last_gae = delta + \
+                self.config.gamma * self.config.gae_lambda * (1 - dones[t]) * last_gae
+
+        returns = advantages + values
+        return advantages, returns
+
+    def update(self, rollout_buffer: Dict[str, Tensor]) -> Dict[str, float]:
+        """
+        Perform PPO update with clipped objective.
+
+        Returns:
+            Dictionary of training metrics
+        """
+        states = rollout_buffer["states"]
+        actions = rollout_buffer["actions"]
+        old_log_probs = rollout_buffer["log_probs"]
+        advantages = rollout_buffer["advantages"]
+        returns = rollout_buffer["returns"]
+
+        # Normalize advantages for stable training
+        advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+
+        metrics = {"policy_loss": 0.0, "value_loss": 0.0, "entropy": 0.0}
+
+        for _ in range(self.config.n_epochs):
+            for batch in self._get_batches(len(states)):
+                # Forward pass
+                logits, values = self.policy(states[batch])
+                dist = Categorical(logits=logits)
+
+                new_log_probs = dist.log_prob(actions[batch])
+                entropy = dist.entropy().mean()
+
+                # PPO clipped objective
+                ratio = torch.exp(new_log_probs - old_log_probs[batch])
+                surr1 = ratio * advantages[batch]
+                surr2 = torch.clamp(
+                    ratio,
+                    1 - self.config.clip_epsilon,
+                    1 + self.config.clip_epsilon
+                ) * advantages[batch]
+
+                policy_loss = -torch.min(surr1, surr2).mean()
+                value_loss = nn.functional.mse_loss(values.squeeze(), returns[batch])
+
+                # Combined loss with entropy bonus
+                loss = (
+                    policy_loss
+                    + self.config.value_coef * value_loss
+                    - self.config.entropy_coef * entropy
+                )
+
+                # Optimization step with gradient clipping
+                self.optimizer.zero_grad()
+                loss.backward()
+                nn.utils.clip_grad_norm_(self.policy.parameters(), self.config.max_grad_norm)
+                self.optimizer.step()
+
+                # Accumulate metrics
+                metrics["policy_loss"] += policy_loss.item()
+                metrics["value_loss"] += value_loss.item()
+                metrics["entropy"] += entropy.item()
+
+        # Average metrics
+        n_updates = self.config.n_epochs * (len(states) // self.config.batch_size)
+        return {k: v / n_updates for k, v in metrics.items()}
+
+    def _get_batches(self, dataset_size: int) -> Iterator[Tensor]:
+        """Generate random mini-batch indices."""
+        indices = torch.randperm(dataset_size)
+        for start in range(0, dataset_size, self.config.batch_size):
+            yield indices[start:start + self.config.batch_size]
+```
+
+</details>
+
 <br/>
 
 <!-- 动态分隔线 -->
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%" alt="divider">
 
 <br/>
 
@@ -354,11 +631,19 @@ ResNet (2015) → DenseNet (2016) → EfficientNet (2019) → ViT (2020)
 <summary><b>📝 04 - Sequence Models | 序列模型</b></summary>
 <br/>
 
-> 掌握序列建模从 RNN 到 Transformer
+> 掌握序列建模从 RNN 到 Transformer，深入理解注意力机制的数学本质
 
-**Attention Mechanism**:
+**Scaled Dot-Product Attention** *(Vaswani et al., NeurIPS 2017)*:
 
 $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+
+其中 $Q \in \mathbb{R}^{n \times d_k}$, $K \in \mathbb{R}^{m \times d_k}$, $V \in \mathbb{R}^{m \times d_v}$。缩放因子 $\sqrt{d_k}$ 防止点积过大导致 softmax 梯度消失。
+
+**Multi-Head Attention** 通过并行计算多个注意力头捕获不同子空间的信息：
+
+$$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O$$
+
+$$\text{where } \text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$
 
 **Tech**: ![HuggingFace](https://img.shields.io/badge/Transformers-FFD21E?style=flat-square&logo=huggingface&logoColor=black) ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
 
@@ -373,6 +658,20 @@ $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)
 | **05 Advanced** | 工程优化 | Mixed Precision, Gradient Checkpointing, Optuna |
 | **06 Generative** | 生成模型 | VAE, GAN (DCGAN/WGAN/StyleGAN), Diffusion |
 | **07 RL** | 强化学习 | DQN, A2C, PPO, SAC, World Models |
+
+<br/>
+
+**🎮 Reinforcement Learning 核心公式**
+
+**Bellman Optimality Equation** — 强化学习的理论基石：
+
+$$Q^*(s, a) = \mathbb{E}\left[r + \gamma \max_{a'} Q^*(s', a') \mid s, a\right]$$
+
+**PPO Clipped Objective** *(Schulman et al., 2017)* — 稳定的策略梯度方法：
+
+$$L^{CLIP}(\theta) = \mathbb{E}_t\left[\min\left(r_t(\theta)\hat{A}_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon)\hat{A}_t\right)\right]$$
+
+其中 $r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}$ 为重要性采样比率，$\hat{A}_t$ 为优势函数估计。
 
 </details>
 
