@@ -1,0 +1,35 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://citation-file-format.github.io to generate yours today!
+
+cff-version: 1.2.0
+title: AI-Practices
+message: >-
+  If you use this project in your research or learning,
+  please cite it using the metadata from this file.
+type: software
+authors:
+  - given-names: zimingttkx
+    affiliation: Independent Researcher
+repository-code: 'https://github.com/zimingttkx/AI-Practices'
+url: 'https://zimingttkx.github.io/AI-Practices/'
+abstract: >-
+  A comprehensive, systematic approach to learning AI/ML through
+  hands-on practice. Contains 179 Jupyter notebooks covering
+  machine learning, deep learning, computer vision, NLP,
+  reinforcement learning, and more.
+keywords:
+  - machine-learning
+  - deep-learning
+  - artificial-intelligence
+  - neural-networks
+  - computer-vision
+  - natural-language-processing
+  - reinforcement-learning
+  - pytorch
+  - tensorflow
+  - jupyter-notebooks
+  - tutorials
+  - education
+license: MIT
+version: '1.0.0'
+date-released: '2024-12-13'

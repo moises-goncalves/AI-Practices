@@ -1,0 +1,33 @@
+# CODEOWNERS file
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# These owners will be the default owners for everything in the repo.
+# Unless a later match takes precedence, @zimingttkx will be requested for
+# review when someone opens a pull request.
+*       @zimingttkx
+
+# Documentation
+/docs/                      @zimingttkx
+*.md                        @zimingttkx
+
+# GitHub configuration
+/.github/                   @zimingttkx
+
+# Core modules
+/01-foundations/            @zimingttkx
+/02-neural-networks/        @zimingttkx
+/03-computer-vision/        @zimingttkx
+/04-sequence-models/        @zimingttkx
+/05-advanced-topics/        @zimingttkx
+/06-generative-models/      @zimingttkx
+/07-reinforcement-learning/ @zimingttkx
+/08-theory-notes/           @zimingttkx
+/09-practical-projects/     @zimingttkx
+
+# Utilities
+/utils/                     @zimingttkx
+
+# Configuration files
+/requirements.txt           @zimingttkx
+/environment.yml            @zimingttkx
+/package.json               @zimingttkx

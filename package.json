@@ -12,8 +12,21 @@
     "type": "git",
     "url": "git+https://github.com/zimingttkx/AI-Practices.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "machine-learning",
+    "deep-learning",
+    "artificial-intelligence",
+    "neural-networks",
+    "computer-vision",
+    "nlp",
+    "pytorch",
+    "tensorflow",
+    "data-science",
+    "jupyter-notebooks",
+    "tutorials",
+    "education"
+  ],
+  "author": "zimingttkx",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/zimingttkx/AI-Practices/issues"
