@@ -7,7 +7,23 @@ export default defineConfig({
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
     ['meta', { name: 'theme-color', content: '#007AFF' }],
+    ['meta', { name: 'author', content: 'zimingttkx' }],
+    ['meta', { name: 'keywords', content: 'AI, Machine Learning, Deep Learning, Neural Networks, Computer Vision, NLP, PyTorch, TensorFlow' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:title', content: 'AI-Practices' }],
+    ['meta', { property: 'og:description', content: 'A Systematic Approach to AI Research & Engineering' }],
+    ['meta', { property: 'og:url', content: 'https://zimingttkx.github.io/AI-Practices/' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'AI-Practices' }],
+    ['meta', { name: 'twitter:description', content: 'A Systematic Approach to AI Research & Engineering' }],
   ],
+
+  sitemap: {
+    hostname: 'https://zimingttkx.github.io/AI-Practices/'
+  },
+
+  lastUpdated: true,
+  cleanUrls: true,
 
   locales: {
     zh: {

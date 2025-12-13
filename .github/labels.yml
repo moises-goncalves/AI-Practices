@@ -1,0 +1,151 @@
+# GitHub Labels Configuration
+# Use with: https://github.com/marketplace/actions/github-labeler
+
+# Bug & Issues
+- name: "bug"
+  color: "d73a4a"
+  description: "Something isn't working"
+
+- name: "critical"
+  color: "b60205"
+  description: "Critical issue requiring immediate attention"
+
+# Feature & Enhancement
+- name: "enhancement"
+  color: "a2eeef"
+  description: "New feature or request"
+
+- name: "feature"
+  color: "0e8a16"
+  description: "New feature implementation"
+
+# Documentation
+- name: "documentation"
+  color: "0075ca"
+  description: "Improvements or additions to documentation"
+
+- name: "docs"
+  color: "0075ca"
+  description: "Documentation related"
+
+# Content Type
+- name: "tutorial"
+  color: "7057ff"
+  description: "New tutorial or notebook"
+
+- name: "notebook"
+  color: "d4c5f9"
+  description: "Jupyter notebook related"
+
+# Priority
+- name: "priority: high"
+  color: "b60205"
+  description: "High priority"
+
+- name: "priority: medium"
+  color: "fbca04"
+  description: "Medium priority"
+
+- name: "priority: low"
+  color: "0e8a16"
+  description: "Low priority"
+
+# Status
+- name: "in progress"
+  color: "fbca04"
+  description: "Currently being worked on"
+
+- name: "help wanted"
+  color: "008672"
+  description: "Extra attention is needed"
+
+- name: "good first issue"
+  color: "7057ff"
+  description: "Good for newcomers"
+
+- name: "wontfix"
+  color: "ffffff"
+  description: "This will not be worked on"
+
+- name: "duplicate"
+  color: "cfd3d7"
+  description: "This issue or pull request already exists"
+
+- name: "invalid"
+  color: "e4e669"
+  description: "This doesn't seem right"
+
+- name: "stale"
+  color: "ededed"
+  description: "No recent activity"
+
+# Dependencies
+- name: "dependencies"
+  color: "0366d6"
+  description: "Pull requests that update a dependency file"
+
+- name: "python"
+  color: "3572A5"
+  description: "Python related"
+
+- name: "npm"
+  color: "cb3837"
+  description: "npm/Node.js related"
+
+- name: "github-actions"
+  color: "000000"
+  description: "GitHub Actions related"
+
+# Module Labels
+- name: "module: foundations"
+  color: "c5def5"
+  description: "ML Foundations module"
+
+- name: "module: neural-networks"
+  color: "c5def5"
+  description: "Neural Networks module"
+
+- name: "module: computer-vision"
+  color: "c5def5"
+  description: "Computer Vision module"
+
+- name: "module: sequence-models"
+  color: "c5def5"
+  description: "Sequence Models module"
+
+- name: "module: advanced"
+  color: "c5def5"
+  description: "Advanced Topics module"
+
+- name: "module: generative"
+  color: "c5def5"
+  description: "Generative Models module"
+
+- name: "module: reinforcement-learning"
+  color: "c5def5"
+  description: "Reinforcement Learning module"
+
+- name: "module: theory"
+  color: "c5def5"
+  description: "Theory Notes module"
+
+- name: "module: projects"
+  color: "c5def5"
+  description: "Practical Projects module"
+
+# Other
+- name: "question"
+  color: "d876e3"
+  description: "Further information is requested"
+
+- name: "discussion"
+  color: "d876e3"
+  description: "Open for discussion"
+
+- name: "pinned"
+  color: "006b75"
+  description: "Pinned issue"
+
+- name: "security"
+  color: "ee0701"
+  description: "Security related"
