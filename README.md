@@ -891,7 +891,39 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) for 
 <br/>
 
 <!-- 动态分隔线 -->
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%" alt="divider">
+
+<br/>
+
+## ☕ Sponsor
+
+如果这个项目对你有帮助，欢迎请作者喝杯咖啡 ☕
+
+<div align="center">
+
+<table>
+<tr>
+<td align="center">
+<img src="./assets/sponsor/wechat-pay.jpg" width="200" alt="WeChat Pay"/><br/>
+<b>微信支付</b>
+</td>
+<td align="center">
+<img src="./assets/sponsor/alipay.jpg" width="200" alt="Alipay"/><br/>
+<b>支付宝</b>
+</td>
+</tr>
+</table>
+
+<br/>
+
+**感谢所有赞助者的支持！** 🙏
+
+</div>
+
+<br/>
+
+<!-- 动态分隔线 -->
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%" alt="divider">
 
 <br/>
 
@@ -905,6 +937,6 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) for 
 <br/><br/>
 
 <!-- 动态渐变页脚 -->
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:007AFF,50:5856D6,100:AF52DE&height=100&section=footer" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:007AFF,50:5856D6,100:AF52DE&height=100&section=footer" width="100%" alt="footer"/>
 
 </div>
