@@ -568,6 +568,34 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) for 
 
 <br/>
 
+## ⭐ Star History
+
+<div align="center">
+
+<a href="https://star-history.com/#zimingttkx/AI-Practices&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=zimingttkx/AI-Practices&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=zimingttkx/AI-Practices&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=zimingttkx/AI-Practices&type=Date" width="700" />
+  </picture>
+</a>
+
+<br/><br/>
+
+<!-- 动态Star趋势 -->
+<a href="https://github.com/zimingttkx/AI-Practices/stargazers">
+  <img src="https://reporoster.com/stars/dark/zimingttkx/AI-Practices" alt="Stargazers" width="600"/>
+</a>
+
+</div>
+
+<br/>
+
+<!-- 动态分隔线 -->
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+
+<br/>
+
 <div align="center">
 
 <!-- 动态页脚 -->
