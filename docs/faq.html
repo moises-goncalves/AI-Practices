@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - AI-Practices</title>
+    <link rel="icon" type="image/svg+xml" href="public/logo.svg">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="public/logo.svg" alt="Logo" class="logo-img">
+                <span>AI-Practices</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">首页</a></li>
+                <li><a href="guide/getting-started.html" class="nav-link">快速开始</a></li>
+                <li><a href="contributing.html" class="nav-link">贡献指南</a></li>
+                <li><a href="faq.html" class="nav-link active">FAQ</a></li>
+            </ul>
+            <a href="https://github.com/zimingttkx/AI-Practices" class="nav-github" target="_blank">
+                <i class="fab fa-github"></i>
+            </a>
+        </div>
+    </nav>
+
+    <main class="page-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>常见问题解答</h1>
+                <p>学习过程中常见的问题和解决方案</p>
+            </div>
+
+            <section class="content-section">
+                <h2><i class="fas fa-cog"></i> 环境配置问题</h2>
+
+                <div class="faq-item">
+                    <h3>Q: 如何安装项目所需的全部依赖？</h3>
+                    <div class="faq-answer">
+                        <p>推荐使用 Conda 创建隔离环境：</p>
+                        <div class="code-block">
+                            <div class="code-header"><span class="code-title">Terminal</span></div>
+                            <pre><code>conda env create -f environment.yml
+conda activate ai-practices</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q: 安装 TensorFlow 时报错怎么办？</h3>
+                    <div class="faq-answer">
+                        <ul class="feature-list">
+                            <li>确保 Python 版本为 3.10.x</li>
+                            <li>升级 pip: <code>pip install --upgrade pip</code></li>
+                            <li>Mac M1/M2 芯片使用: <code>pip install tensorflow-macos</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2><i class="fas fa-laptop-code"></i> Jupyter Notebook 问题</h2>
+
+                <div class="faq-item">
+                    <h3>Q: Notebook 中无法导入已安装的包？</h3>
+                    <div class="faq-answer">
+                        <p>这通常是环境问题，为 Jupyter 注册环境：</p>
+                        <div class="code-block">
+                            <div class="code-header"><span class="code-title">Terminal</span></div>
+                            <pre><code>python -m ipykernel install --user --name=ai-practices</code></pre>
+                        </div>
+                        <p>然后在 Notebook 中选择正确的 Kernel。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q: Notebook 运行很慢或卡死？</h3>
+                    <div class="faq-answer">
+                        <ul class="feature-list">
+                            <li>清理输出: Cell → All Output → Clear</li>
+                            <li>重启 Kernel: Kernel → Restart</li>
+                            <li>减小数据量进行测试</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2><i class="fas fa-microchip"></i> GPU 和 CUDA 问题</h2>
+
+                <div class="faq-item">
+                    <h3>Q: 如何检查 GPU 是否可用？</h3>
+                    <div class="faq-answer">
+                        <div class="code-block">
+                            <div class="code-header"><span class="code-title">Python</span></div>
+                            <pre><code><span class="comment"># TensorFlow</span>
+import tensorflow as tf
+print("GPU 可用:", tf.config.list_physical_devices('GPU'))
+
+<span class="comment"># PyTorch</span>
+import torch
+print("CUDA 可用:", torch.cuda.is_available())</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q: 训练时 GPU 内存不足 (OOM)?</h3>
+                    <div class="faq-answer">
+                        <ul class="feature-list">
+                            <li>减小 batch_size</li>
+                            <li>使用混合精度训练</li>
+                            <li>设置 GPU 内存增长</li>
+                        </ul>
+                        <div class="code-block">
+                            <div class="code-header"><span class="code-title">Python</span></div>
+                            <pre><code>gpus = tf.config.experimental.list_physical_devices('GPU')
+for gpu in gpus:
+    tf.config.experimental.set_memory_growth(gpu, True)</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2><i class="fas fa-chart-line"></i> 模型训练问题</h2>
+
+                <div class="faq-item">
+                    <h3>Q: 损失值为 NaN 或 Inf？</h3>
+                    <div class="faq-answer">
+                        <ul class="feature-list">
+                            <li>降低学习率</li>
+                            <li>检查数据中是否有 NaN/Inf 值</li>
+                            <li>添加梯度裁剪: <code>optimizer = Adam(clipnorm=1.0)</code></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q: 过拟合怎么办？</h3>
+                    <div class="faq-answer">
+                        <ul class="feature-list">
+                            <li>添加正则化 (L1/L2)</li>
+                            <li>使用 Dropout</li>
+                            <li>数据增强</li>
+                            <li>早停 (Early Stopping)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h2><i class="fas fa-road"></i> 学习路径问题</h2>
+
+                <div class="faq-item">
+                    <h3>Q: 应该先学机器学习还是深度学习？</h3>
+                    <div class="faq-answer">
+                        <p>推荐先学机器学习基础，原因：</p>
+                        <ul class="feature-list">
+                            <li>理解基本概念（损失函数、优化、过拟合等）</li>
+                            <li>掌握数据预处理和特征工程</li>
+                            <li>深度学习是机器学习的子集</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q: 应该学 TensorFlow 还是 PyTorch？</h3>
+                    <div class="faq-answer">
+                        <ul class="feature-list">
+                            <li>初学者：从 Keras 开始</li>
+                            <li>研究者：PyTorch 更灵活</li>
+                            <li>工程师：TensorFlow 部署方便</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <div class="tip-box">
+                <h4><i class="fas fa-question-circle"></i> 没找到答案？</h4>
+                <p>可以在 <a href="https://github.com/zimingttkx/AI-Practices/issues" style="color: var(--primary);">GitHub Issues</a> 中搜索或提问。</p>
+            </div>
+
+            <div class="page-nav">
+                <a href="contributing.html" class="nav-prev">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>贡献指南</span>
+                </a>
+                <a href="license.html" class="nav-next">
+                    <span>许可证</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-copyright">© 2024 AI-Practices. Released under the MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .faq-item {
+            margin-bottom: 32px;
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+        .faq-item h3 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+        .faq-answer {
+            color: var(--text-secondary);
+        }
+        .faq-answer code {
+            background: var(--bg-dark);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+    </style>
+</body>
+</html>
