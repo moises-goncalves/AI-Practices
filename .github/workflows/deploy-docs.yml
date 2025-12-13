@@ -1,3 +1,6 @@
+# Documentation Deployment Workflow
+# Automatically builds and deploys VitePress documentation to GitHub Pages
+
 name: Deploy Documentation
 
 on:
@@ -22,27 +25,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - name: Setup Pages
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build with VitePress
+      - name: Build documentation
         run: npm run docs:build
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
 
-      - name: Upload artifact
+      - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/.vitepress/dist
