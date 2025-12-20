@@ -114,7 +114,7 @@
 <table>
 <tr>
 <td align="center" width="160">
-<img src="https://img.shields.io/badge/113+-Notebooks-007AFF?style=for-the-badge&labelColor=1c1c1e" alt="Notebooks"/><br/>
+<img src="https://img.shields.io/badge/219+-Notebooks-007AFF?style=for-the-badge&labelColor=1c1c1e" alt="Notebooks"/><br/>
 <b>可复现实验</b><br/>
 <sub>Jupyter Notebooks</sub>
 </td>
@@ -124,12 +124,12 @@
 <sub>Learning Modules</sub>
 </td>
 <td align="center" width="160">
-<img src="https://img.shields.io/badge/19-Projects-FF9500?style=for-the-badge&labelColor=1c1c1e" alt="Projects"/><br/>
-<b>实战项目</b><br/>
-<sub>Real-world Projects</sub>
+<img src="https://img.shields.io/badge/480+-Python_Files-FF9500?style=for-the-badge&labelColor=1c1c1e" alt="Python Files"/><br/>
+<b>Python 文件</b><br/>
+<sub>Production Code</sub>
 </td>
 <td align="center" width="160">
-<img src="https://img.shields.io/badge/149k+-LOC-5856D6?style=for-the-badge&labelColor=1c1c1e" alt="LOC"/><br/>
+<img src="https://img.shields.io/badge/173k+-LOC-5856D6?style=for-the-badge&labelColor=1c1c1e" alt="LOC"/><br/>
 <b>代码行数</b><br/>
 <sub>Lines of Code</sub>
 </td>
@@ -249,55 +249,79 @@ AI-Practices/
 ```
 AI-Practices/
 │
-├── 📚 01-foundations/                 # 机器学习基础
-│   ├── training-models/               #   优化方法: SGD, Adam, L-BFGS
-│   ├── classification/                #   分类算法: LR, SVM, Decision Tree
-│   ├── ensemble-learning/             #   集成方法: Bagging, Boosting, Stacking
-│   └── unsupervised-learning/         #   无监督: Clustering, Dimensionality Reduction
+├── 📚 01-foundations/                 # 机器学习基础 (75+ 文件)
+│   ├── 01-training-models/            #   训练模型: 梯度下降、正则化、批量学习
+│   ├── 02-classification/             #   分类算法: Logistic Regression, SVM
+│   ├── 03-support-vector-machines/    #   支持向量机: 核技巧、软间隔
+│   ├── 04-decision-trees/             #   决策树: CART, 剪枝策略
+│   ├── 05-ensemble-learning/          #   集成学习: Bagging, Boosting, Stacking
+│   ├── 06-dimensionality-reduction/   #   降维: PCA, t-SNE, UMAP
+│   ├── 07-unsupervised-learning/      #   无监督学习: K-Means, DBSCAN, GMM
+│   └── 08-end-to-end-project/         #   端到端项目: 完整 ML 流程
 │
-├── 🧠 02-neural-networks/             # 神经网络与深度学习
-│   ├── keras-introduction/            #   框架入门: Sequential, Functional API
-│   ├── training-deep-networks/        #   训练技巧: BatchNorm, Dropout, Residual
-│   └── custom-models/                 #   自定义: Layer, Loss, Training Loop
+├── 🧠 02-neural-networks/             # 神经网络与深度学习 (42+ 文件)
+│   ├── 01-keras-introduction/         #   Keras 入门: Sequential, Functional API
+│   ├── 02-training-deep-networks/     #   训练技巧: BatchNorm, Dropout, Residual
+│   ├── 03-custom-models-training/     #   自定义模型: Layer, Loss, Training Loop
+│   └── 04-data-loading-preprocessing/ #   数据处理: TFRecord, Data Pipeline
 │
-├── 👁️ 03-computer-vision/             # 计算机视觉
-│   ├── cnn-architectures/             #   架构演进: LeNet → ResNet → EfficientNet → ViT
-│   ├── transfer-learning/             #   迁移学习: Feature Extraction, Fine-tuning
-│   └── model-interpretability/        #   可解释性: Grad-CAM, SHAP
+├── 👁️ 03-computer-vision/             # 计算机视觉 (37k+ 文件)
+│   ├── 01-cnn-basics/                 #   CNN 基础: 卷积、池化、激活函数
+│   ├── 02-classic-architectures/      #   经典架构: LeNet, AlexNet, VGG, ResNet
+│   ├── 03-transfer-learning/          #   迁移学习: Feature Extraction, Fine-tuning
+│   └── 04-visualization/              #   可视化: Grad-CAM, Feature Maps
 │
-├── 📝 04-sequence-models/             # 序列模型与NLP
-│   ├── rnn-lstm-gru/                  #   循环网络: Vanishing Gradient, Gating
-│   ├── attention-transformer/         #   注意力机制: Self-Attention, Multi-Head
-│   └── pretrained-models/             #   预训练: BERT, GPT, T5
+├── 📝 04-sequence-models/             # 序列模型与 NLP
+│   ├── 01-rnn-basics/                 #   RNN 基础: 循环神经网络原理
+│   ├── 02-lstm-gru/                   #   LSTM/GRU: 长短期记忆网络
+│   ├── 03-text-processing/            #   文本处理: Tokenization, Embedding
+│   └── 04-cnn-for-sequences/          #   序列 CNN: 1D 卷积应用
 │
 ├── ⚡ 05-advanced-topics/             # 高级专题
-│   ├── hyperparameter-tuning/         #   超参优化: Optuna, Ray Tune
-│   ├── distributed-training/          #   分布式: Data Parallel, Model Parallel
-│   └── model-deployment/              #   部署: TensorRT, ONNX, TFLite
+│   ├── 01-functional-api/             #   Functional API: 复杂模型构建
+│   ├── 02-callbacks-tensorboard/      #   回调与监控: TensorBoard, EarlyStopping
+│   └── 03-model-optimization/         #   模型优化: 量化、剪枝、蒸馏
 │
 ├── 🎨 06-generative-models/           # 生成式模型
-│   ├── variational-autoencoders/      #   VAE: Latent Space, Reparameterization
-│   ├── generative-adversarial/        #   GAN: DCGAN, WGAN, StyleGAN
-│   └── diffusion-models/              #   扩散: DDPM, Stable Diffusion
+│   ├── 02-gans/                       #   GAN: DCGAN, WGAN, StyleGAN
+│   ├── 04-text-generation/            #   文本生成: RNN, Transformer
+│   └── 05-deepdream/                  #   DeepDream: 神经网络可视化
 │
-├── 🎮 07-reinforcement-learning/      # 强化学习
-│   ├── value-based/                   #   值方法: Q-Learning, DQN, Double DQN
-│   ├── policy-based/                  #   策略方法: REINFORCE, PPO, SAC
-│   └── model-based/                   #   模型方法: World Models, MuZero
+├── 🎮 07-reinforcement-learning/      # 强化学习 (542+ 文件)
+│   ├── 01-mdp-basics/                 #   MDP 基础: 马尔可夫决策过程
+│   ├── 02-q-learning/                 #   Q-Learning: 值迭代、策略迭代
+│   ├── 03-deep-q-learning/            #   Deep Q-Learning: DQN, Double DQN
+│   ├── 03-deep-rl/                    #   深度强化学习: 算法与架构
+│   ├── 04-policy-gradient/            #   策略梯度: REINFORCE, PPO, A3C
+│   ├── 马尔科夫决策过程/              #   MDP 理论详解
+│   ├── 时序差分学习/                  #   TD Learning: SARSA, Q-Learning
+│   ├── 深度Q学习的变体/               #   DQN 变体: Rainbow, Dueling DQN
+│   ├── 策略梯度/                      #   Policy Gradient 详解
+│   ├── 策略搜索/                      #   Policy Search 方法
+│   ├── 神经网络策略/                  #   Neural Network Policies
+│   ├── 评估动作-信用分配问题/         #   Credit Assignment Problem
+│   ├── 学习优化奖励/                  #   Reward Shaping
+│   └── 流行强化学习算法概述/          #   Popular RL Algorithms Overview
 │
-├── 📖 08-theory-notes/                # 理论参考手册
-│   ├── mathematical-foundations/      #   数学基础: Linear Algebra, Probability
-│   ├── optimization-theory/           #   优化理论: Convex, Non-convex
-│   └── information-theory/            #   信息论: Entropy, KL-Divergence
+├── 📖 08-theory-notes/                # 理论参考手册 (16+ 文件)
+│   ├── QUICK-REFERENCE.md             #   ⭐ 激活函数与损失函数速查表
+│   ├── ARCHITECTURE-HYPERPARAMETER-TUNING.md  # ⭐ 架构选型与超参数调优
+│   ├── MODEL-SELECTION-TROUBLESHOOTING.md     # ⭐ 模型选择与问题诊断
+│   ├── activation-functions/          #   激活函数详解: 30+ 函数
+│   ├── loss-functions/                #   损失函数详解: 分类/回归/排序
+│   └── architectures/                 #   架构笔记: CNN, RNN, Transformer
 │
-├── 🏆 09-practical-projects/          # 实战项目
-│   ├── kaggle-competitions/           #   竞赛方案: Gold Medal Solutions
-│   └── industry-applications/         #   工业应用: End-to-End Pipelines
+├── 🏆 09-practical-projects/          # 实战项目 (566+ 文件)
+│   ├── 01-ml-basics/                  #   ML 基础项目: Titanic, Otto
+│   ├── 02-computer-vision/            #   CV 项目: MNIST, Image Classification
+│   ├── 03-nlp/                        #   NLP 项目: Sentiment, NER, Text Classification
+│   ├── 04-time-series/                #   时序项目: Temperature Prediction
+│   └── 05-kaggle-competitions/        #   Kaggle 竞赛: Gold Medal Solutions
 │
 └── 🔧 utils/                          # 工具库
-    ├── data/                          #   数据处理
-    ├── visualization/                 #   可视化
-    └── metrics/                       #   评估指标
+    ├── data/                          #   数据处理工具
+    ├── visualization/                 #   可视化工具
+    └── metrics/                       #   评估指标工具
 ```
 
 </details>
@@ -650,18 +674,54 @@ $$\text{where } \text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$
 </details>
 
 <details>
-<summary><b>⚡ 05~07 - Advanced Modules | 进阶模块</b></summary>
+<summary><b>⚡ 05 - Advanced Topics | 高级专题</b></summary>
 <br/>
 
-| Module | Focus | Key Methods |
-|:-------|:------|:------------|
-| **05 Advanced** | 工程优化 | Mixed Precision, Gradient Checkpointing, Optuna |
-| **06 Generative** | 生成模型 | VAE, GAN (DCGAN/WGAN/StyleGAN), Diffusion |
-| **07 RL** | 强化学习 | DQN, A2C, PPO, SAC, World Models |
+> 深度学习工程化实践与模型优化技术
 
+| Topic | Techniques | Description |
+|:------|:-----------|:------------|
+| Functional API | Complex Models | 多输入多输出、共享层、残差连接 |
+| Callbacks | Training Control | EarlyStopping, ModelCheckpoint, ReduceLROnPlateau |
+| TensorBoard | Visualization | 训练监控、模型图、嵌入可视化 |
+| Optimization | Model Compression | 量化、剪枝、知识蒸馏 |
+
+**Tech**: ![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=flat-square&logo=tensorflow&logoColor=white) ![TensorBoard](https://img.shields.io/badge/TensorBoard-FF6F00?style=flat-square&logo=tensorflow&logoColor=white)
+
+</details>
+
+<details>
+<summary><b>🎨 06 - Generative Models | 生成式模型</b></summary>
 <br/>
 
-**🎮 Reinforcement Learning 核心公式**
+> 探索生成式 AI 的前沿技术
+
+| Model Type | Algorithms | Applications |
+|:-----------|:-----------|:-------------|
+| GAN | DCGAN, WGAN, StyleGAN | 图像生成、风格迁移 |
+| Text Generation | RNN, LSTM, Transformer | 文本生成、对话系统 |
+| Neural Art | DeepDream, Style Transfer | 艺术创作、图像风格化 |
+
+**Tech**: ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white) ![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=flat-square&logo=tensorflow&logoColor=white)
+
+</details>
+
+<details>
+<summary><b>🎮 07 - Reinforcement Learning | 强化学习</b></summary>
+<br/>
+
+> 从 MDP 基础到深度强化学习的完整学习路径 (542+ 文件)
+
+**核心算法体系**：
+
+| Category | Algorithms | Key Features |
+|:---------|:-----------|:-------------|
+| **Value-Based** | Q-Learning, DQN, Double DQN, Dueling DQN | 值函数近似、经验回放 |
+| **Policy-Based** | REINFORCE, PPO, A3C, TRPO | 策略梯度、优势函数 |
+| **Actor-Critic** | A2C, A3C, SAC, TD3 | 结合值函数与策略 |
+| **Model-Based** | Dyna-Q, World Models, MuZero | 环境建模、规划 |
+
+**🎯 核心理论公式**：
 
 **Bellman Optimality Equation** — 强化学习的理论基石：
 
@@ -672,6 +732,45 @@ $$Q^*(s, a) = \mathbb{E}\left[r + \gamma \max_{a'} Q^*(s', a') \mid s, a\right]$
 $$L^{CLIP}(\theta) = \mathbb{E}_t\left[\min\left(r_t(\theta)\hat{A}_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon)\hat{A}_t\right)\right]$$
 
 其中 $r_t(\theta) = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)}$ 为重要性采样比率，$\hat{A}_t$ 为优势函数估计。
+
+**学习资源**：
+- 📚 中英文双语知识体系
+- 🔬 从零实现经典算法
+- 🎯 Gymnasium 环境实战
+- 📊 完整的实验与可视化
+
+**Tech**: ![Gymnasium](https://img.shields.io/badge/Gymnasium-0081A5?style=flat-square&logoColor=white) ![Stable-Baselines3](https://img.shields.io/badge/SB3-00599C?style=flat-square&logoColor=white) ![TF--Agents](https://img.shields.io/badge/TF--Agents-FF6F00?style=flat-square&logo=tensorflow&logoColor=white)
+
+</details>
+
+<details>
+<summary><b>📖 08 - Theory Notes | 理论笔记</b></summary>
+<br/>
+
+> 深度学习理论的高密度速查表库 (4000+ 行理论笔记)
+
+**三大快速参考卡**：
+
+| Document | Content | Usage Time |
+|:---------|:--------|:-----------|
+| **QUICK-REFERENCE.md** | 激活函数 & 损失函数速查表 | 5 分钟 |
+| **ARCHITECTURE-HYPERPARAMETER-TUNING.md** | 架构选型 & 超参数调优指南 | 30 分钟 |
+| **MODEL-SELECTION-TROUBLESHOOTING.md** | 模型选择 & 问题诊断决策树 | 问题排查 |
+
+**核心特色**：
+- ✅ **一句话选择指南** — 快速决策
+- ✅ **对比矩阵** — 全面对比
+- ✅ **决策树** — 系统化选择
+- ✅ **代码示例** — PyTorch 实现
+
+**涵盖内容**：
+- 30+ 激活函数详解
+- 分类/回归/排序损失函数
+- 网络架构选择决策树
+- 超参数调优策略
+- 常见问题诊断与解决
+
+**Tech**: 纯理论 + PyTorch 代码示例
 
 </details>
 
