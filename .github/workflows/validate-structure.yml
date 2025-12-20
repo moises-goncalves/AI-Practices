@@ -1,0 +1,110 @@
+name: Validate Project Structure
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Validate directory structure
+        run: |
+          python3 << 'EOF'
+          import os
+          import sys
+
+          required_modules = [
+              '01-foundations',
+              '02-neural-networks',
+              '03-computer-vision',
+              '04-sequence-models',
+              '05-advanced-topics',
+              '06-generative-models',
+              '07-reinforcement-learning',
+              '08-theory-notes',
+              '09-practical-projects'
+          ]
+
+          missing = []
+          for module in required_modules:
+              if not os.path.isdir(module):
+                  missing.append(module)
+
+          if missing:
+              print(f"❌ Missing modules: {', '.join(missing)}")
+              sys.exit(1)
+          else:
+              print("✅ All required modules present")
+
+          # Check for README files
+          readme_missing = []
+          for module in required_modules:
+              readme_path = os.path.join(module, 'README.md')
+              if not os.path.exists(readme_path):
+                  readme_missing.append(module)
+
+          if readme_missing:
+              print(f"⚠️  Missing README.md in: {', '.join(readme_missing)}")
+          else:
+              print("✅ All modules have README.md")
+          EOF
+
+      - name: Check file naming conventions
+        run: |
+          python3 << 'EOF'
+          import os
+          import re
+
+          issues = []
+
+          for root, dirs, files in os.walk('.'):
+              # Skip hidden directories and common non-content directories
+              dirs[:] = [d for d in dirs if not d.startswith('.') and d not in ['__pycache__', 'node_modules']]
+
+              for file in files:
+                  if file.endswith(('.ipynb', '.py', '.md')):
+                      # Check for invalid characters
+                      if not re.match(r'^[\w\-\. ]+$', file):
+                          issues.append(f"Invalid filename: {os.path.join(root, file)}")
+
+          if issues:
+              print("⚠️  Naming convention issues found:")
+              for issue in issues[:10]:  # Show first 10
+                  print(f"  - {issue}")
+          else:
+              print("✅ File naming conventions OK")
+          EOF
+
+      - name: Verify documentation
+        run: |
+          python3 << 'EOF'
+          import os
+
+          # Check main README
+          if not os.path.exists('README.md'):
+              print("❌ Missing main README.md")
+              exit(1)
+
+          # Check for LICENSE
+          if not os.path.exists('LICENSE'):
+              print("❌ Missing LICENSE file")
+              exit(1)
+
+          print("✅ Documentation files present")
+          EOF

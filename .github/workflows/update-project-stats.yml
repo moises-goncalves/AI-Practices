@@ -1,0 +1,123 @@
+name: Update Project Statistics
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # Weekly on Sunday at 2 AM UTC
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '01-foundations/**'
+      - '02-neural-networks/**'
+      - '03-computer-vision/**'
+      - '04-sequence-models/**'
+      - '05-advanced-topics/**'
+      - '06-generative-models/**'
+      - '07-reinforcement-learning/**'
+      - '08-theory-notes/**'
+      - '09-practical-projects/**'
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pyyaml requests
+
+      - name: Generate project statistics
+        run: |
+          python3 << 'EOF'
+          import os
+          import json
+          from pathlib import Path
+          from datetime import datetime
+
+          # Count files and lines of code
+          stats = {
+              'timestamp': datetime.now().isoformat(),
+              'modules': {},
+              'totals': {
+                  'notebooks': 0,
+                  'python_files': 0,
+                  'markdown_files': 0,
+                  'lines_of_code': 0
+              }
+          }
+
+          module_dirs = [
+              '01-foundations',
+              '02-neural-networks',
+              '03-computer-vision',
+              '04-sequence-models',
+              '05-advanced-topics',
+              '06-generative-models',
+              '07-reinforcement-learning',
+              '08-theory-notes',
+              '09-practical-projects'
+          ]
+
+          for module in module_dirs:
+              if not os.path.exists(module):
+                  continue
+
+              module_stats = {
+                  'notebooks': 0,
+                  'python_files': 0,
+                  'markdown_files': 0,
+                  'lines_of_code': 0
+              }
+
+              for root, dirs, files in os.walk(module):
+                  for file in files:
+                      if file.endswith('.ipynb'):
+                          module_stats['notebooks'] += 1
+                      elif file.endswith('.py'):
+                          module_stats['python_files'] += 1
+                          filepath = os.path.join(root, file)
+                          try:
+                              with open(filepath, 'r', encoding='utf-8') as f:
+                                  module_stats['lines_of_code'] += len(f.readlines())
+                          except:
+                              pass
+                      elif file.endswith('.md'):
+                          module_stats['markdown_files'] += 1
+
+              stats['modules'][module] = module_stats
+              for key in stats['totals']:
+                  stats['totals'][key] += module_stats[key]
+
+          # Save statistics
+          os.makedirs('docs/assets', exist_ok=True)
+          with open('docs/assets/project-stats.json', 'w') as f:
+              json.dump(stats, f, indent=2)
+
+          print(json.dumps(stats, indent=2))
+          EOF
+
+      - name: Commit statistics
+        run: |
+          if [[ -n "$(git status --porcelain docs/assets/project-stats.json)" ]]; then
+            git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git config --global user.name "github-actions[bot]"
+            git add docs/assets/project-stats.json
+            git commit -m "chore: update project statistics"
+            git push
+          else
+            echo "No statistics changes detected"
+          fi
