@@ -2,10 +2,11 @@
   "name": "ai-practices",
   "version": "1.0.0",
   "description": "A Systematic Approach to AI Research & Engineering",
+  "type": "module",
   "scripts": {
-    "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs",
-    "docs:preview": "serve docs/.vuepress/dist"
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "repository": {
     "type": "git",
@@ -28,20 +29,14 @@
   "author": "zimingttkx",
   "license": "MIT",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "bugs": {
     "url": "https://github.com/zimingttkx/AI-Practices/issues"
   },
   "homepage": "https://github.com/zimingttkx/AI-Practices#readme",
   "devDependencies": {
-    "vuepress": "^1.9.10",
-    "vuepress-theme-vdoing": "^1.12.9",
-    "vuepress-plugin-one-click-copy": "^1.0.6",
-    "vuepress-plugin-zooming": "^1.1.8",
-    "vuepress-plugin-fulltext-search": "^2.2.1",
-    "vuepress-plugin-mathjax": "^1.0.3",
-    "dayjs": "^1.11.13",
-    "serve": "^14.2.4"
+    "markdown-it-mathjax3": "^4.3.2",
+    "vitepress": "^1.6.4"
   }
 }
