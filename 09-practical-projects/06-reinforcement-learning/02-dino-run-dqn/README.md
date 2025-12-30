@@ -1,317 +1,272 @@
-# Chrome Dino DQN - 恐龙跳跃游戏AI
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.8+-blue.svg" alt="Python">
+  <img src="https://img.shields.io/badge/TensorFlow-2.0+-orange.svg" alt="TensorFlow">
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
+  <img src="https://img.shields.io/badge/Tests-11%20Passed-brightgreen.svg" alt="Tests">
+</p>
 
-**难度**: ⭐⭐⭐☆☆ (中级)
+<h1 align="center">Chrome Dino DQN</h1>
+
+<p align="center">
+  <b>使用深度Q网络训练AI玩Chrome恐龙跳跃游戏</b>
+</p>
+
+<p align="center">
+  <a href="#快速开始">快速开始</a> •
+  <a href="#运行模式">运行模式</a> •
+  <a href="#训练指南">训练指南</a> •
+  <a href="#算法原理">算法原理</a> •
+  <a href="#常见问题">FAQ</a>
+</p>
 
 ---
 
-## 写在前面：给初学者的话
+## 项目简介
 
-这是一个非常有趣的项目！你将训练AI来玩Chrome浏览器断网时出现的小恐龙游戏。本项目提供两种模式：
-- **模拟器模式**：不需要浏览器，适合快速测试和学习
-- **浏览器模式**：控制真实的Chrome浏览器玩游戏
+本项目使用 **Deep Q-Network (DQN)** 算法训练AI玩Chrome浏览器的恐龙跳跃游戏。项目提供两种运行模式：**模拟器模式**（快速学习）和**浏览器模式**（真实环境），非常适合强化学习入门学习。
 
-建议初学者先从模拟器模式开始，熟悉后再尝试浏览器模式。
+### 项目特色
+
+| 特性 | 说明 |
+|:-----|:-----|
+| 双模式支持 | 模拟器模式 + 浏览器模式 |
+| TensorFlow实现 | 使用Keras构建DQN网络 |
+| 浏览器自动化 | Selenium控制真实游戏 |
+| 完整测试 | 11个单元测试覆盖 |
 
 ---
 
-## 第一步：环境准备（超详细版）
+## 快速开始
 
-### 1.1 检查Python版本
+### 环境要求
 
-打开终端（Windows: CMD/PowerShell，Mac/Linux: Terminal）：
+- Python 3.8+
+- Chrome浏览器（浏览器模式需要）
+
+### 三步运行
 
 ```bash
-python --version
-# 或
-python3 --version
+# 1. 安装依赖
+pip install -r requirements.txt
+
+# 2. 验证环境
+python -m unittest tests.test_dino -v
+
+# 3. 开始训练（模拟器模式）
+python train.py --mode simulator --episodes 100
 ```
 
-需要Python 3.8或更高版本。
+<details>
+<summary><b>点击展开完整安装指南</b></summary>
 
-### 1.2 进入项目目录
-
-```bash
-# 根据你的实际路径修改
-cd /path/to/AI-Practices/09-practical-projects/06-reinforcement-learning/02-dino-run-dqn
-
-# 确认目录正确
-ls  # Mac/Linux
-dir # Windows
-# 应该能看到 train.py, requirements.txt 等文件
-```
-
-### 1.3 创建虚拟环境
+#### 1. 创建虚拟环境
 
 ```bash
-# 创建
 python -m venv venv
-
-# 激活
-# Linux/Mac:
-source venv/bin/activate
-# Windows CMD:
-venv\Scripts\activate.bat
-# Windows PowerShell:
-venv\Scripts\Activate.ps1
-
-# 成功后命令行前面会显示 (venv)
+source venv/bin/activate      # Linux/Mac
+venv\Scripts\activate.bat     # Windows
 ```
 
-### 1.4 安装依赖
+#### 2. 安装依赖
 
 ```bash
 pip install -r requirements.txt
 
-# 如果速度慢，使用国内镜像
+# 国内镜像加速
 pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
-**安装的主要包**：
-- `tensorflow`: 深度学习框架
-- `numpy`: 数值计算
-- `opencv-python`: 图像处理
-- `Pillow`: 图像处理
-- `selenium`: 浏览器自动化（浏览器模式需要）
-
-### 1.5 验证安装
+#### 3. 验证安装
 
 ```bash
 python -m unittest tests.test_dino -v
 ```
 
-看到 `OK` 表示环境配置成功！
+</details>
 
 ---
 
-## 第二步：理解项目结构
+## 项目结构
 
 ```
 02-dino-run-dqn/
-├── README.md              # 本文件
-├── requirements.txt       # 依赖列表
-├── train.py              # 训练脚本
-├── src/
+├── README.md                 # 项目文档
+├── requirements.txt          # 依赖列表
+├── train.py                  # 训练入口
+├── src/                      # 核心代码
 │   ├── __init__.py
-│   ├── dqn.py            # DQN网络和智能体
-│   ├── game_env.py       # 游戏环境（模拟器+浏览器）
-│   └── utils.py          # 图像处理工具
-├── models/               # 模型保存目录
-└── tests/
-    └── test_dino.py      # 单元测试
+│   ├── dqn.py               # DQN网络和智能体
+│   ├── game_env.py          # 游戏环境封装
+│   └── utils.py             # 图像处理工具
+├── models/                   # 模型存储
+└── tests/                    # 单元测试
+    └── test_dino.py
 ```
 
 ---
 
-## 第三步：使用模拟器模式训练（推荐新手）
+## 运行模式
 
-模拟器模式不需要浏览器，运行速度快，非常适合学习和测试。
+### 模式对比
 
-### 3.1 快速测试
+| 特性 | 模拟器模式 | 浏览器模式 |
+|:-----|:----------:|:----------:|
+| 速度 | 快 | 慢 |
+| 依赖 | 无需浏览器 | Chrome + ChromeDriver |
+| 画面 | 简化逻辑 | 真实游戏 |
+| 推荐 | 初学者首选 | 进阶使用 |
+
+### 模拟器模式（推荐）
 
 ```bash
-# 先用少量回合测试代码是否正常
+# 快速测试
 python train.py --mode simulator --episodes 10
+
+# 正式训练
+python train.py --mode simulator --episodes 1000
 ```
 
-**预期输出**：
-```
-==================================================
-Chrome Dino DQN Training
-Mode: simulator
-Episodes: 10
-==================================================
-Episode 1/10, Score: 3, Avg: 3.0, Epsilon: 0.0999
-Episode 2/10, Score: 5, Avg: 4.0, Epsilon: 0.0998
-...
-```
+### 浏览器模式
 
-### 3.2 正式训练
+<details>
+<summary><b>点击展开浏览器模式配置</b></summary>
 
-```bash
-# 训练500回合（约需10-30分钟）
-python train.py --mode simulator --episodes 500
+#### 1. 确认Chrome版本
 
-# 训练更多回合以获得更好效果
-python train.py --mode simulator --episodes 2000
-```
+打开Chrome，访问 `chrome://version`，记录版本号
 
-### 3.3 训练参数说明
+#### 2. 下载ChromeDriver
 
-| 参数 | 默认值 | 说明 |
-|------|--------|------|
-| `--mode` | simulator | 运行模式：simulator或browser |
-| `--episodes` | 1000 | 训练回合数 |
-| `--lr` | 1e-4 | 学习率 |
-| `--gamma` | 0.99 | 折扣因子 |
-| `--epsilon` | 0.1 | 初始探索率 |
-| `--batch_size` | 32 | 批次大小 |
-| `--save_interval` | 100 | 每多少回合保存模型 |
+访问 https://chromedriver.chromium.org/downloads 下载对应版本
 
-### 3.4 观察训练效果
-
-训练过程中关注这些指标：
-- **Score**: 当前回合得分（越高越好）
-- **Avg**: 最近10回合平均分（应该逐渐上升）
-- **Epsilon**: 探索率（逐渐下降）
-
----
-
-## 第四步：使用浏览器模式（进阶）
-
-浏览器模式会打开真实的Chrome浏览器，让AI玩真正的恐龙游戏。
-
-### 4.1 准备工作
-
-**步骤1：确认Chrome浏览器版本**
-1. 打开Chrome浏览器
-2. 地址栏输入 `chrome://version`
-3. 记下版本号（如 `120.0.6099.109`）
-
-**步骤2：下载对应版本的ChromeDriver**
-1. 访问 https://chromedriver.chromium.org/downloads
-2. 下载与你Chrome版本匹配的ChromeDriver
-3. 解压到一个你记得的位置
-
-**步骤3：验证ChromeDriver**
-```bash
-# 替换为你的ChromeDriver路径
-/path/to/chromedriver --version
-```
-
-### 4.2 开始训练
+#### 3. 开始训练
 
 ```bash
 python train.py --mode browser --chrome_driver /path/to/chromedriver --episodes 100
 ```
 
-你会看到：
-1. Chrome浏览器自动打开
-2. 自动进入恐龙游戏页面
-3. AI开始自动玩游戏
-
-**注意**：浏览器模式比模拟器慢很多，建议先用模拟器模式验证代码。
+</details>
 
 ---
 
-## 第五步：测试训练好的模型
+## 训练指南
 
-```bash
-# 使用模拟器模式测试
-python train.py --mode simulator --episodes 10
-# 观察Score是否比训练前高
+### 参数说明
+
+| 参数 | 默认值 | 说明 | 建议范围 |
+|:-----|:------:|:-----|:--------:|
+| `--mode` | simulator | 运行模式 | simulator/browser |
+| `--episodes` | 1000 | 训练回合数 | 500-5000 |
+| `--lr` | 1e-4 | 学习率 | 1e-5 ~ 1e-3 |
+| `--gamma` | 0.99 | 折扣因子 | 0.95-0.99 |
+| `--epsilon` | 0.1 | 初始探索率 | 0.1-0.3 |
+| `--batch_size` | 32 | 批次大小 | 32-128 |
+| `--save_interval` | 100 | 保存间隔 | - |
+
+### 训练监控
+
+| 指标 | 含义 | 期望趋势 |
+|:-----|:-----|:--------:|
+| Score | 当前得分 | 上升 |
+| Avg | 平均得分 | 上升 |
+| Epsilon | 探索率 | 下降 |
+
+---
+
+## 算法原理
+
+### DQN网络架构
+
+```
+输入: 4帧游戏画面 (80, 80, 4)
+      │
+      ▼
+┌─────────────────────────────────┐
+│  Conv2D(32, 8×8) + MaxPool     │
+│  ReLU                          │
+├─────────────────────────────────┤
+│  Conv2D(64, 4×4) + MaxPool     │
+│  ReLU                          │
+├─────────────────────────────────┤
+│  Conv2D(64, 3×3) + MaxPool     │
+│  ReLU                          │
+├─────────────────────────────────┤
+│  Flatten → Dense(512) → ReLU   │
+├─────────────────────────────────┤
+│  Dense(2)                      │
+│  输出: [不跳Q值, 跳跃Q值]        │
+└─────────────────────────────────┘
+```
+
+### 训练流程
+
+```
+┌────────────────────────────────────────┐
+│  1. 获取游戏画面                        │
+│  2. 图像预处理（灰度化→缩放→归一化）     │
+│  3. 堆叠4帧作为状态                     │
+│  4. DQN预测Q值，选择动作                │
+│  5. 执行动作（跳/不跳）                 │
+│  6. 获取奖励（存活+0.1，死亡-1）        │
+│  7. 存入经验池                         │
+│  8. 采样训练网络                        │
+│  9. 循环                               │
+└────────────────────────────────────────┘
 ```
 
 ---
 
-## 两种模式对比
+## 常见问题
 
-| 特性 | 模拟器模式 | 浏览器模式 |
-|------|-----------|-----------|
-| 速度 | 快（推荐学习用） | 慢 |
-| 依赖 | 无需额外软件 | 需要Chrome+ChromeDriver |
-| 画面 | 简化的游戏逻辑 | 真实游戏画面 |
-| 用途 | 学习、测试、快速实验 | 真实环境训练 |
-| 推荐 | 初学者首选 | 进阶使用 |
-
----
-
-## 核心代码解析
-
-### DQN网络结构
-
-```python
-输入: 4帧游戏画面堆叠 (80, 80, 4)
-      ↓
-Conv2D(32, 8x8) → MaxPool → ReLU
-      ↓
-Conv2D(64, 4x4) → MaxPool → ReLU
-      ↓
-Conv2D(64, 3x3) → MaxPool → ReLU
-      ↓
-Flatten → Dense(512) → ReLU
-      ↓
-Dense(2) → 输出: [不跳的Q值, 跳跃的Q值]
-```
-
-### 训练流程图解
-
-```
-┌─────────────────────────────────────────────────┐
-│  1. 获取游戏画面                                  │
-│     ↓                                           │
-│  2. 图像预处理（灰度化→缩放→归一化）              │
-│     ↓                                           │
-│  3. 堆叠最近4帧作为状态                          │
-│     ↓                                           │
-│  4. DQN网络预测Q值，选择动作                     │
-│     ↓                                           │
-│  5. 执行动作（跳或不跳）                         │
-│     ↓                                           │
-│  6. 获取奖励（存活+0.1，死亡-1）                 │
-│     ↓                                           │
-│  7. 存入经验池                                   │
-│     ↓                                           │
-│  8. 从经验池采样，训练网络                       │
-│     ↓                                           │
-│  9. 回到步骤1                                    │
-└─────────────────────────────────────────────────┘
-```
-
----
-
-## 常见问题解答
-
-### Q1: 模拟器模式报错 "No module named cv2"
+<details>
+<summary><b>Q: 报错 "No module named cv2"？</b></summary>
 
 ```bash
 pip install opencv-python
 ```
+</details>
 
-### Q2: 浏览器模式报错 "ChromeDriver版本不匹配"
+<details>
+<summary><b>Q: ChromeDriver版本不匹配？</b></summary>
 
-确保ChromeDriver版本与Chrome浏览器版本一致。访问 `chrome://version` 查看浏览器版本。
+确保ChromeDriver版本与Chrome浏览器版本一致，访问 `chrome://version` 查看
+</details>
 
-### Q3: 浏览器模式报错 "找不到ChromeDriver"
+<details>
+<summary><b>Q: TensorFlow GPU警告？</b></summary>
 
-```bash
-# 使用完整路径
-python train.py --mode browser --chrome_driver /full/path/to/chromedriver
-```
-
-### Q4: TensorFlow报GPU相关警告
-
-这些警告通常可以忽略，不影响训练。如果想消除：
 ```bash
 export TF_CPP_MIN_LOG_LEVEL=2  # Linux/Mac
 set TF_CPP_MIN_LOG_LEVEL=2     # Windows
 ```
+</details>
 
-### Q5: 训练效果不好怎么办？
+<details>
+<summary><b>Q: 训练效果不好？</b></summary>
 
-1. 增加训练回合数：`--episodes 2000`
-2. 调整学习率：`--lr 1e-5` 或 `--lr 5e-4`
+1. 增加回合数：`--episodes 2000`
+2. 调整学习率：`--lr 1e-5`
 3. 增加探索：`--epsilon 0.2`
-
-### Q6: 如何中断训练？
-
-按 `Ctrl+C`，模型会自动保存到 `models/` 目录。
+</details>
 
 ---
 
-## 进阶学习建议
+## 进阶优化
 
-1. **理解代码**：阅读 `src/dqn.py` 了解DQN实现
-2. **修改奖励**：尝试修改 `src/game_env.py` 中的奖励设计
-3. **调参实验**：尝试不同的超参数组合
-4. **算法改进**：实现Double DQN或Dueling DQN
+| 方向 | 说明 | 难度 |
+|:-----|:-----|:----:|
+| Double DQN | 解决Q值过估计 | ⭐⭐ |
+| Dueling DQN | 分离状态/动作价值 | ⭐⭐ |
+| 奖励塑形 | 优化奖励函数设计 | ⭐⭐ |
 
 ---
 
 ## 致谢
 
-本项目参考了 [DinoRunTutorial](https://github.com/Paperspace/DinoRunTutorial) by Paperspace，感谢原作者的开源贡献！
+本项目参考 [DinoRunTutorial](https://github.com/Paperspace/DinoRunTutorial) by **Paperspace**，感谢原作者的开源贡献！
 
 ---
 
-**预计学习时间**: 1-2周
-**前置知识**: Python基础
+<p align="center">
+  <b>预计学习时间: 1-2周 | 前置知识: Python基础</b>
+</p>
