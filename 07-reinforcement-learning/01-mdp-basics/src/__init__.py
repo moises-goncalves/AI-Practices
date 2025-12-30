@@ -1,47 +1,110 @@
 """
-MDP Basics: Markov Decision Process and Dynamic Programming
+Markov Decision Process (MDP) - Research-Grade Implementation
 
-Production-grade implementation of classical dynamic programming algorithms
-for solving Markov Decision Processes.
+A comprehensive, production-ready implementation of Markov Decision Processes
+with multiple solving algorithms and benchmark environments.
 
-Modules:
-    environment: MDP environment abstractions and GridWorld implementation
-    algorithms: Policy Evaluation, Policy Iteration, Value Iteration
-    executor: Policy execution and evaluation utilities
-    visualization: Rendering utilities for policies and value functions
+Core Components:
+    - MDP Formulation: States, actions, transitions, rewards, policies, values
+    - Solving Algorithms: Value Iteration, Policy Iteration, Linear Programming
+    - Benchmark Environments: GridWorld, FrozenLake, CliffWalking
+    - Visualization Tools: Policy plots, value heatmaps, convergence analysis
+
+Mathematical Foundation:
+    An MDP is a tuple M = (S, A, P, R, γ) where:
+    - S: State space
+    - A: Action space
+    - P(s'|s,a): Transition probability model
+    - R(s,a,s'): Reward function
+    - γ ∈ [0,1]: Discount factor
+
+    Bellman Optimality Equation:
+    V*(s) = max_a Σ_{s'} P(s'|s,a)[R(s,a,s') + γV*(s')]
+
+Key Features:
+    1. Rigorous mathematical formulation with comprehensive documentation
+    2. Multiple solving algorithms with convergence guarantees
+    3. Benchmark environments for algorithm evaluation
+    4. Production-grade code quality and error handling
+    5. Extensive visualization and analysis tools
+
+Usage Example:
+    >>> from src.environments import GridWorld
+    >>> from src.solvers import ValueIterationSolver
+    >>>
+    >>> # Create environment
+    >>> env = GridWorld(height=5, width=5)
+    >>> env.set_start(0, 0)
+    >>> env.set_goal(4, 4)
+    >>> env.build_transitions()
+    >>>
+    >>> # Solve with value iteration
+    >>> solver = ValueIterationSolver(env)
+    >>> value_fn, policy = solver.solve(verbose=True)
+    >>>
+    >>> # Visualize results
+    >>> print(env.render(policy=policy))
 
 References:
-    [1] Sutton & Barto, "Reinforcement Learning: An Introduction", 2018
-    [2] Bellman, R. "Dynamic Programming", Princeton University Press, 1957
-    [3] Howard, R. "Dynamic Programming and Markov Processes", MIT Press, 1960
+    - Bellman, R. E. (1957). Dynamic Programming
+    - Puterman, M. L. (1994). Markov Decision Processes
+    - Sutton, R. S., & Barto, A. G. (2018). Reinforcement Learning
 """
-
-from .environment import (
-    MDPEnvironment,
-    GridWorld,
-    GridWorldConfig,
-    State,
-    Action,
-    Policy,
-    ValueFunction,
-    QFunction,
-)
-from .algorithms import DynamicProgrammingSolver, AlgorithmResult
-from .executor import PolicyExecutor
 
 __version__ = "1.0.0"
 __author__ = "AI-Practices"
 
+from .core import (
+    State,
+    Action,
+    TransitionModel,
+    RewardFunction,
+    MarkovDecisionProcess,
+    Policy,
+    DeterministicPolicy,
+    StochasticPolicy,
+    ValueFunction,
+    StateValueFunction,
+    ActionValueFunction,
+)
+
+from .solvers import (
+    ValueIterationSolver,
+    PolicyIterationSolver,
+    LinearProgrammingSolver,
+)
+
+from .environments import (
+    GridWorld,
+    FrozenLake,
+    CliffWalking,
+)
+
+from .utils import (
+    MDPVisualizer,
+)
+
 __all__ = [
-    "MDPEnvironment",
-    "GridWorld",
-    "GridWorldConfig",
-    "DynamicProgrammingSolver",
-    "AlgorithmResult",
-    "PolicyExecutor",
+    # Core
     "State",
     "Action",
+    "TransitionModel",
+    "RewardFunction",
+    "MarkovDecisionProcess",
     "Policy",
+    "DeterministicPolicy",
+    "StochasticPolicy",
     "ValueFunction",
-    "QFunction",
+    "StateValueFunction",
+    "ActionValueFunction",
+    # Solvers
+    "ValueIterationSolver",
+    "PolicyIterationSolver",
+    "LinearProgrammingSolver",
+    # Environments
+    "GridWorld",
+    "FrozenLake",
+    "CliffWalking",
+    # Utils
+    "MDPVisualizer",
 ]
