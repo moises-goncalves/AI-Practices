@@ -1,299 +1,316 @@
 """
-REINFORCE Algorithm Implementation.
+REINFORCE Algorithm Implementation
 
-This module implements the REINFORCE algorithm (Williams, 1992), the foundational
-Monte Carlo policy gradient method.
-
-Core Idea:
-    REINFORCE uses complete episode returns as unbiased estimates of the
-    action-value function Q(s,a). While simple and theoretically elegant,
-    it suffers from high variance due to the stochasticity in trajectory
-    sampling.
-
-Mathematical Theory:
-    Policy Gradient Theorem:
-        ∇_θ J(θ) = E_{π_θ}[∇_θ log π_θ(a|s) · Q^π(s,a)]
-
-    REINFORCE Estimator (using MC return):
-        ∇_θ J(θ) ≈ (1/N) Σ_i Σ_t ∇_θ log π_θ(a_t^i | s_t^i) · G_t^i
-
-    Where G_t = Σ_{k=t}^T γ^{k-t} r_k is the discounted return from time t.
-
-    Properties:
-        - Unbiased: E[G_t] = Q^π(s_t, a_t)
-        - High Variance: Var[G_t] can be large due to trajectory stochasticity
-
-Problem Statement:
-    Given: MDP (S, A, P, R, γ), parameterized policy π_θ
-    Find: θ* = argmax_θ J(θ) = argmax_θ E_{τ~π_θ}[R(τ)]
-
-Algorithm Comparison:
-    | Method             | Bias | Variance | Update Timing |
-    |--------------------|------|----------|---------------|
-    | REINFORCE          | None | High     | Episode end   |
-    | REINFORCE+Baseline | None | Medium   | Episode end   |
-    | Actor-Critic (TD)  | Some | Low      | Each step     |
-
-References:
-    [1] Williams, R.J. (1992). Simple statistical gradient-following
-        algorithms for connectionist reinforcement learning.
-        Machine Learning, 8(3-4), 229-256.
-
-    [2] Sutton, R.S., & Barto, A.G. (2018). Reinforcement Learning:
-        An Introduction. Chapter 13.
+REINFORCE (REward Increment = Nonnegative Factor times Offset Reinforcement times Characteristic Eligibility)
+is the foundational policy gradient algorithm that directly optimizes the policy using Monte Carlo returns.
 """
 
-from __future__ import annotations
-
-from typing import Any, Dict, Tuple, Union
-
+from typing import Dict, Tuple, Optional
 import numpy as np
 import torch
-import torch.nn as nn
-import torch.optim as optim
+import torch.nn.functional as F
 
-from core.config import TrainingConfig
-from core.buffers import EpisodeBuffer
-from networks.policy import DiscretePolicy, ContinuousPolicy
-from algorithms.base import BasePolicyGradient
-from utils.returns import compute_returns
+from ..core.base import PolicyGradientAgent, BasePolicy, BaseValueFunction
+from ..core.trajectory import Trajectory, TrajectoryBuffer
 
 
-class REINFORCE(BasePolicyGradient):
+class REINFORCE(PolicyGradientAgent):
     """
-    REINFORCE Algorithm (Williams, 1992).
-
-    The foundational Monte Carlo policy gradient algorithm that uses complete
-    episode returns to estimate policy gradients.
+    REINFORCE Algorithm - The Foundational Policy Gradient Method.
 
     Core Idea:
-        Sample complete trajectories, compute discounted returns, and update
-        policy in the direction that increases probability of high-return
-        actions.
+        REINFORCE directly estimates the policy gradient using Monte Carlo returns.
+        It samples complete trajectories and updates the policy in the direction that
+        increases the log probability of actions that led to high returns.
 
     Mathematical Theory:
-        Gradient Estimate:
-            ∇_θ J(θ) ≈ Σ_t ∇_θ log π_θ(a_t|s_t) · G_t
+        Policy Gradient Theorem:
+        ∇_θ J(θ) = E[∇_θ log π_θ(a|s) G_t]
 
-        Loss Function (for gradient descent):
-            L(θ) = -E[log π_θ(a|s) · G]
+        where:
+        - J(θ) = E[G_0] is the expected return from the start state
+        - G_t = ∑_{k=0}^{T-t-1} γ^k r_{t+k} is the discounted return
+        - ∇_θ log π_θ(a|s) is the score function
 
         Update Rule:
-            θ ← θ + α · G_t · ∇_θ log π_θ(a_t|s_t)
+        θ ← θ + α ∇_θ log π_θ(a|s) G_t
 
-    Parameters
-    ----------
-    state_dim : int
-        Dimension of state observation space.
-    action_dim : int
-        Dimension of action space (number of actions for discrete,
-        action vector dimension for continuous).
-    config : TrainingConfig, optional
-        Training configuration. Uses defaults if not provided.
-    continuous : bool, default=False
-        If True, use Gaussian policy for continuous action space.
-        If False, use Categorical policy for discrete action space.
+    Problem Statement:
+        Traditional supervised learning requires labeled data. In RL, we don't have
+        labels but rewards. REINFORCE solves this by using the return as a "label"
+        and the log probability gradient as the "feature". This allows us to apply
+        gradient ascent directly on the expected return.
 
-    Attributes
-    ----------
-    policy : DiscretePolicy or ContinuousPolicy
-        Policy network π_θ(a|s).
-    optimizer : torch.optim.Optimizer
-        Optimizer for policy parameters.
-    continuous : bool
-        Whether using continuous action space.
+    Algorithm Comparison:
+        vs. Q-Learning: On-policy vs off-policy; direct policy optimization vs value-based
+        vs. Actor-Critic: Higher variance but simpler; no value function needed
+        vs. PPO: No trust region; can have large policy updates
 
-    Examples
-    --------
-    >>> # Discrete action space (e.g., CartPole)
-    >>> config = TrainingConfig(gamma=0.99, lr_actor=1e-3)
-    >>> agent = REINFORCE(state_dim=4, action_dim=2, config=config)
+    Advantages:
+        1. Simple and elegant - easy to understand and implement
+        2. Theoretically sound - guaranteed convergence to local optima
+        3. Works with any differentiable policy
+        4. No need for value function (though one can be added for variance reduction)
 
-    >>> # Training loop
-    >>> buffer = EpisodeBuffer()
-    >>> state = env.reset()
-    >>> while not done:
-    ...     action, info = agent.select_action(state)
-    ...     next_state, reward, done, _ = env.step(action)
-    ...     buffer.store(state, action, reward, info["log_prob"],
-    ...                  entropy=info["entropy"])
-    ...     state = next_state
-    >>> loss_info = agent.update(buffer)
+    Disadvantages:
+        1. High variance - requires many samples for stable estimates
+        2. Sample inefficient - only uses on-policy data
+        3. Slow convergence - especially in high-dimensional spaces
+        4. Sensitive to reward scaling
 
-    >>> # Continuous action space (e.g., Pendulum)
-    >>> agent = REINFORCE(state_dim=3, action_dim=1, config=config, continuous=True)
+    Complexity:
+        Time: O(T) per episode where T is episode length
+        Space: O(T) for storing trajectories
+        Sample Complexity: O(1/ε²) for ε-optimal policy
 
-    Notes
-    -----
-    Complexity Analysis:
-        - select_action: O(policy_forward_pass)
-        - update: O(T * policy_forward_pass) for episode length T
-        - Memory: O(T) for storing episode trajectory
-
-    Practical Considerations:
-        - High variance makes training unstable
-        - Requires many episodes for reliable gradient estimates
-        - Works well for simple problems with short episodes
-        - Consider using baseline (REINFORCEBaseline) for better performance
-
-    Summary:
-        REINFORCE is the simplest policy gradient algorithm, providing an
-        unbiased but high-variance gradient estimate. It serves as the
-        foundation for understanding more advanced methods that add variance
-        reduction techniques.
+    References:
+        Williams, R. J. (1992). "Simple statistical gradient-following algorithms
+        for connectionist reinforcement learning." Machine Learning, 8(3-4), 229-256.
     """
 
     def __init__(
         self,
-        state_dim: int,
-        action_dim: int,
-        config: TrainingConfig = None,
-        continuous: bool = False,
+        policy: BasePolicy,
+        value_function: Optional[BaseValueFunction] = None,
+        learning_rate: float = 1e-3,
+        gamma: float = 0.99,
+        entropy_coeff: float = 0.01,
+        device: str = "cpu"
     ):
-        if config is None:
-            config = TrainingConfig()
-        super().__init__(config)
+        """
+        Initialize REINFORCE agent.
 
-        self.state_dim = state_dim
-        self.action_dim = action_dim
-        self.continuous = continuous
-
-        # Build policy network
-        if continuous:
-            self.policy = ContinuousPolicy(state_dim, action_dim).to(self.device)
-        else:
-            self.policy = DiscretePolicy(state_dim, action_dim).to(self.device)
-
-        # Optimizer
-        self.optimizer = optim.Adam(
-            self.policy.parameters(),
-            lr=config.lr_actor,
+        Args:
+            policy: Policy network π_θ(a|s)
+            value_function: Optional value function for baseline (variance reduction)
+            learning_rate: Learning rate for policy updates
+            gamma: Discount factor
+            entropy_coeff: Coefficient for entropy regularization
+            device: Device to run on ("cpu" or "cuda")
+        """
+        super().__init__(
+            policy=policy,
+            value_function=value_function,
+            learning_rate=learning_rate,
+            gamma=gamma,
+            device=device
         )
+        self.entropy_coeff = entropy_coeff
+        self.trajectory_buffer = TrajectoryBuffer(gamma=gamma)
 
-    def select_action(
+    def compute_policy_loss(
         self,
-        state: np.ndarray,
-        deterministic: bool = False,
-    ) -> Tuple[Union[int, np.ndarray], Dict[str, torch.Tensor]]:
+        states: torch.Tensor,
+        actions: torch.Tensor,
+        returns: torch.Tensor,
+        advantages: Optional[torch.Tensor] = None
+    ) -> torch.Tensor:
         """
-        Select action according to current policy.
+        Compute REINFORCE policy loss.
 
-        Parameters
-        ----------
-        state : np.ndarray
-            Current state observation of shape (state_dim,).
-        deterministic : bool, default=False
-            If True, return most likely action (for evaluation).
+        Loss = -E[log π_θ(a|s) * G_t]
 
-        Returns
-        -------
-        action : int or np.ndarray
-            Selected action. Integer for discrete space, array for continuous.
-        info : dict
-            Dictionary containing:
-            - "log_prob": Log probability of selected action
-            - "entropy": Entropy of policy distribution
+        The negative sign is because we use gradient descent, but we want to
+        maximize the expected return.
 
-        Notes
-        -----
-        For discrete actions:
-            - Stochastic: Sample from Categorical(logits)
-            - Deterministic: argmax over logits
+        Args:
+            states: State tensor of shape (batch_size, state_dim)
+            actions: Action tensor of shape (batch_size, action_dim)
+            returns: Return tensor of shape (batch_size, 1)
+            advantages: Ignored in REINFORCE (uses returns directly)
 
-        For continuous actions:
-            - Stochastic: Sample from N(μ, σ²), apply tanh
-            - Deterministic: tanh(μ)
+        Returns:
+            Policy loss (scalar)
         """
-        state_t = self._to_tensor(state).unsqueeze(0)
+        # Compute log probabilities and entropy
+        log_probs, entropy = self.policy.evaluate(states, actions)
 
-        with torch.no_grad() if deterministic else torch.enable_grad():
-            if self.continuous:
-                action, log_prob, entropy = self.policy.sample(state_t, deterministic)
-                action = action.squeeze(0).cpu().numpy()
-            else:
-                if deterministic:
-                    logits = self.policy(state_t)
-                    action = logits.argmax(dim=-1).item()
-                    log_prob = torch.zeros(1)
-                    entropy = torch.zeros(1)
-                else:
-                    action, log_prob, entropy = self.policy.sample(state_t)
-                    action = action.item()
-
-        return action, {"log_prob": log_prob, "entropy": entropy}
-
-    def update(self, buffer: EpisodeBuffer) -> Dict[str, float]:
-        """
-        Update policy using REINFORCE gradient estimate.
-
-        Computes Monte Carlo returns and updates policy to increase
-        probability of high-return actions.
-
-        Parameters
-        ----------
-        buffer : EpisodeBuffer
-            Episode trajectory containing:
-            - rewards: List of rewards [r_1, ..., r_T]
-            - log_probs: List of action log probabilities
-
-        Returns
-        -------
-        Dict[str, float]
-            Training metrics:
-            - "policy_loss": Policy gradient loss value
-            - "entropy": Mean policy entropy
-            - "mean_return": Mean of computed returns
-
-        Notes
-        -----
-        Algorithm Steps:
-            1. Compute MC returns: G_t = Σ_{k=t}^T γ^{k-t} r_k
-            2. Normalize returns (optional, for variance reduction)
-            3. Compute loss: L = -Σ_t log π(a_t|s_t) · G_t
-            4. Add entropy bonus: L -= c_ent · H(π)
-            5. Backpropagate and update
-
-        Mathematical Details:
-            The negative sign converts gradient ascent to gradient descent:
-                max J(θ) ⟺ min -J(θ)
-        """
-        # Compute Monte Carlo returns
-        returns = compute_returns(
-            buffer.rewards,
-            self.config.gamma,
-            normalize=self.config.normalize_advantage,
-        )
-
-        # Stack log probabilities
-        log_probs = torch.stack(buffer.log_probs)
-
-        # Policy gradient loss: -E[log π(a|s) · G]
+        # REINFORCE loss: -E[log π(a|s) * G_t]
         policy_loss = -(log_probs * returns).mean()
 
-        # Entropy regularization
-        if buffer.entropies and self.config.entropy_coef > 0:
-            entropies = torch.stack(buffer.entropies)
-            entropy_bonus = entropies.mean()
-            total_loss = policy_loss - self.config.entropy_coef * entropy_bonus
-        else:
-            total_loss = policy_loss
-            entropy_bonus = torch.tensor(0.0)
+        # Add entropy regularization to encourage exploration
+        entropy_loss = -self.entropy_coeff * entropy.mean()
 
-        # Optimization step
-        self.optimizer.zero_grad()
-        total_loss.backward()
+        total_loss = policy_loss + entropy_loss
 
-        # Gradient clipping
-        if self.config.max_grad_norm > 0:
-            nn.utils.clip_grad_norm_(
-                self.policy.parameters(),
-                self.config.max_grad_norm,
-            )
+        return total_loss
 
-        self.optimizer.step()
+    def train_step(
+        self,
+        states: torch.Tensor,
+        actions: torch.Tensor,
+        returns: torch.Tensor,
+        advantages: Optional[torch.Tensor] = None
+    ) -> Dict[str, float]:
+        """
+        Perform one REINFORCE training step.
+
+        Args:
+            states: State tensor
+            actions: Action tensor
+            returns: Return tensor
+            advantages: Ignored in REINFORCE
+
+        Returns:
+            Dictionary with loss values and metrics
+        """
+        # Normalize returns for stability
+        returns_normalized = (returns - returns.mean()) / (returns.std() + 1e-8)
+
+        # Compute policy loss
+        policy_loss = self.compute_policy_loss(states, actions, returns_normalized)
+
+        # Policy update
+        self.policy_optimizer.zero_grad()
+        policy_loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.policy.parameters(), max_norm=1.0)
+        self.policy_optimizer.step()
+
+        # Value function update (if available)
+        value_loss = 0.0
+        if self.value_function is not None:
+            value_loss = self.value_function.compute_loss(states, returns)
+
+            self.value_optimizer.zero_grad()
+            value_loss.backward()
+            torch.nn.utils.clip_grad_norm_(self.value_function.parameters(), max_norm=1.0)
+            self.value_optimizer.step()
 
         return {
             "policy_loss": policy_loss.item(),
-            "entropy": entropy_bonus.item() if isinstance(entropy_bonus, torch.Tensor) else entropy_bonus,
-            "mean_return": returns.mean().item(),
+            "value_loss": value_loss.item() if isinstance(value_loss, torch.Tensor) else value_loss,
         }
+
+    def collect_trajectory(
+        self,
+        env,
+        max_steps: int = 1000
+    ) -> Trajectory:
+        """
+        Collect one complete trajectory from the environment.
+
+        Args:
+            env: Gym environment
+            max_steps: Maximum steps per episode
+
+        Returns:
+            Trajectory object containing the episode data
+        """
+        states = []
+        actions = []
+        rewards = []
+        dones = []
+        log_probs = []
+
+        state, _ = env.reset()
+        episode_return = 0.0
+
+        for step in range(max_steps):
+            # Select action
+            state_tensor = torch.FloatTensor(state).unsqueeze(0).to(self.device)
+
+            with torch.no_grad():
+                action, log_prob = self.policy.sample(state_tensor)
+
+            action_np = action.cpu().numpy().squeeze()
+
+            # Take environment step
+            next_state, reward, terminated, truncated, _ = env.step(action_np)
+            done = terminated or truncated
+
+            # Store trajectory data
+            states.append(state)
+            actions.append(action_np)
+            rewards.append(reward)
+            dones.append(done)
+            log_probs.append(log_prob)
+
+            episode_return += reward
+            state = next_state
+
+            if done:
+                break
+
+        trajectory = Trajectory(
+            states=states,
+            actions=actions,
+            rewards=rewards,
+            dones=dones,
+            log_probs=log_probs
+        )
+
+        return trajectory, episode_return
+
+    def train_episode(
+        self,
+        env,
+        max_steps: int = 1000
+    ) -> Dict[str, float]:
+        """
+        Train for one complete episode.
+
+        Args:
+            env: Gym environment
+            max_steps: Maximum steps per episode
+
+        Returns:
+            Dictionary with training metrics
+        """
+        # Collect trajectory
+        trajectory, episode_return = self.collect_trajectory(env, max_steps)
+
+        # Convert to tensors
+        states = torch.FloatTensor(np.array(trajectory.states)).to(self.device)
+        actions = torch.FloatTensor(np.array(trajectory.actions)).to(self.device)
+        log_probs = torch.FloatTensor(trajectory.log_probs).unsqueeze(1).to(self.device)
+
+        # Compute returns
+        returns = self.trajectory_buffer.compute_returns(trajectory)
+        returns = torch.FloatTensor(returns).unsqueeze(1).to(self.device)
+
+        # Training step
+        metrics = self.train_step(states, actions, returns)
+        metrics["episode_return"] = episode_return
+        metrics["episode_length"] = len(trajectory)
+
+        return metrics
+
+    def train(
+        self,
+        env,
+        num_episodes: int = 100,
+        max_steps: int = 1000,
+        eval_interval: int = 10
+    ) -> Dict[str, list]:
+        """
+        Train the agent for multiple episodes.
+
+        Args:
+            env: Gym environment
+            num_episodes: Number of episodes to train
+            max_steps: Maximum steps per episode
+            eval_interval: Interval for evaluation
+
+        Returns:
+            Dictionary with training history
+        """
+        history = {
+            "episode_returns": [],
+            "episode_lengths": [],
+            "policy_losses": [],
+            "value_losses": [],
+        }
+
+        for episode in range(num_episodes):
+            metrics = self.train_episode(env, max_steps)
+
+            history["episode_returns"].append(metrics["episode_return"])
+            history["episode_lengths"].append(metrics["episode_length"])
+            history["policy_losses"].append(metrics["policy_loss"])
+            history["value_losses"].append(metrics["value_loss"])
+
+            if (episode + 1) % eval_interval == 0:
+                avg_return = np.mean(history["episode_returns"][-eval_interval:])
+                print(f"Episode {episode + 1}/{num_episodes} | Avg Return: {avg_return:.2f}")
+
+        return history

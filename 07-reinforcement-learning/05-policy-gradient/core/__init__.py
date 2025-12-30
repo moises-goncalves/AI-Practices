@@ -1,19 +1,12 @@
-"""
-Core Module - Policy Gradient Methods
+"""Core module for policy gradient algorithms."""
 
-Provides fundamental data structures and configurations for policy gradient algorithms.
-
-Exports:
-    - TrainingConfig: Hyperparameter configuration dataclass
-    - EpisodeBuffer: Episode trajectory storage
-    - Transition: Single-step transition tuple
-"""
-
-from core.config import TrainingConfig
-from core.buffers import EpisodeBuffer, Transition
+from .base import PolicyGradientAgent, BasePolicy, BaseValueFunction
+from .trajectory import Trajectory, TrajectoryBuffer
 
 __all__ = [
-    "TrainingConfig",
-    "EpisodeBuffer",
-    "Transition",
+    "PolicyGradientAgent",
+    "BasePolicy",
+    "BaseValueFunction",
+    "Trajectory",
+    "TrajectoryBuffer",
 ]
