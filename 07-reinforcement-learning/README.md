@@ -1,114 +1,57 @@
-# 强化学习
+# 强化学习 (Reinforcement Learning)
 
-> MDP、Q-Learning 与深度强化学习
-
----
+从基础理论到前沿算法的完整强化学习学习路径。
 
 ## 目录结构
 
 ```
 07-reinforcement-learning/
-├── 01-mdp-basics/              # MDP 基础
-├── 02-temporal-difference/     # 时序差分学习
-├── 03-q-learning/              # Q-Learning
-├── 04-deep-q-learning/         # 深度 Q 学习
-├── 05-policy-gradient/         # 策略梯度
-├── 06-reward-optimization/     # 奖励优化
-├── 07-popular-algorithms/      # 流行算法 (PPO, SAC, TD3)
-└── tools/                      # 工具库
-    ├── gymnasium/              # Gymnasium 环境
-    └── tf-agents/              # TF-Agents 库
+├── 01-mdp-basics/           # MDP基础与动态规划
+├── 02-temporal-difference/  # 时序差分学习
+├── 03-q-learning/           # Q学习算法
+├── 04-deep-q-learning/      # 深度Q网络(DQN)
+├── 05-policy-gradient/      # 策略梯度方法
+├── 06-actor-critic/         # Actor-Critic方法
+├── 07-advanced-algorithms/  # 高级算法(DDPG/TD3/SAC)
+├── 08-reward-optimization/  # 奖励优化与探索
+├── tools/                   # 工具库(Gymnasium/TF-Agents)
+└── KNOWLEDGE_SYSTEM.md      # 知识体系总览
 ```
 
----
-
-## 学习路线
+## 学习路径
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        强化学习学习路线                              │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                     │
-│  基础理论 (01-mdp-basics)                                           │
-│  ├── 马尔可夫决策过程 (MDP)                                          │
-│  ├── 贝尔曼方程                                                     │
-│  └── 动态规划                                                       │
-│         │                                                          │
-│         ▼                                                          │
-│  无模型方法 (02-temporal-difference, 03-q-learning)                 │
-│  ├── 时序差分学习 (TD)                                              │
-│  ├── Q-Learning / SARSA                                            │
-│  └── 探索与利用                                                     │
-│         │                                                          │
-│         ▼                                                          │
-│  深度强化学习 (04-deep-q-learning, 05-policy-gradient)              │
-│  ├── DQN 及变体                                                     │
-│  ├── 策略梯度 (REINFORCE)                                           │
-│  └── Actor-Critic (A2C/A3C)                                        │
-│         │                                                          │
-│         ▼                                                          │
-│  高级主题 (06-reward-optimization, 07-popular-algorithms)           │
-│  ├── 奖励优化与塑形                                                 │
-│  ├── PPO / TRPO / SAC / TD3                                        │
-│  └── 多智能体 RL                                                    │
-│                                                                     │
-└─────────────────────────────────────────────────────────────────────┘
+MDP基础 → 时序差分 → Q学习 → DQN → 策略梯度 → Actor-Critic → 高级算法
+   ↓                                                              ↓
+动态规划                                                    奖励优化/探索
 ```
 
----
+## 模块概览
 
-## 核心内容
+| 模块 | 核心内容 | 关键算法 |
+|------|----------|----------|
+| 01-mdp-basics | 状态、动作、奖励、策略 | 值迭代、策略迭代 |
+| 02-temporal-difference | 在线学习、自举 | TD(0)、TD(λ)、SARSA |
+| 03-q-learning | 离策略学习 | Q-Learning、Double Q |
+| 04-deep-q-learning | 函数逼近 | DQN、Double DQN、Dueling、PER |
+| 05-policy-gradient | 直接策略优化 | REINFORCE、基线方法 |
+| 06-actor-critic | 混合方法 | A2C、A3C、PPO、GAE |
+| 07-advanced-algorithms | 连续控制 | DDPG、TD3、SAC |
+| 08-reward-optimization | 奖励设计 | 奖励塑形、好奇心驱动、HER |
 
-| 子模块 | 核心概念 | 实践重点 |
-|--------|----------|----------|
-| 01-mdp-basics | 马尔可夫决策过程、贝尔曼方程 | 网格世界、动态规划 |
-| 02-temporal-difference | TD 误差、TD(0)、TD(λ) | SARSA、n-step TD |
-| 03-q-learning | 值迭代、ε-greedy | 表格型 Q-Learning |
-| 04-deep-q-learning | 经验回放、目标网络 | DQN、Double DQN、Dueling DQN |
-| 05-policy-gradient | REINFORCE、优势函数 | Actor-Critic、A2C |
-| 06-reward-optimization | 奖励塑形、好奇心驱动 | HER、逆强化学习 |
-| 07-popular-algorithms | PPO、SAC、TD3 | 生产级算法实现 |
-| tools/gymnasium | 环境接口、标准化 | Gymnasium 使用 |
-| tools/tf-agents | 高级 RL 库 | 生产级实现 |
-
----
-
-## 环境配置
+## 快速开始
 
 ```bash
-# 基础依赖
-pip install numpy matplotlib
+# 安装依赖
+pip install torch numpy gymnasium matplotlib
 
-# PyTorch (根据你的系统选择)
-pip install torch
-
-# Gymnasium (OpenAI Gym 的维护版本)
-pip install gymnasium
-pip install gymnasium[classic-control]  # CartPole 等经典环境
-pip install gymnasium[atari]            # Atari 游戏
-
-# TensorFlow Agents (可选)
-pip install tf-agents
+# 运行DQN示例
+cd 04-deep-q-learning
+python train.py --env CartPole-v1 --double --dueling
 ```
 
----
+## 参考资源
 
-## 推荐资源
-
-### 书籍
-- Sutton & Barto, "Reinforcement Learning: An Introduction" (圣经)
-- 《深度强化学习》- 王树森
-
-### 课程
-- David Silver, UCL RL Course
-- OpenAI Spinning Up
-- 李宏毅深度强化学习
-
-### 工具库
-- [Stable-Baselines3](https://github.com/DLR-RM/stable-baselines3)
-- [RLlib](https://docs.ray.io/en/latest/rllib/index.html)
-- [CleanRL](https://github.com/vwxyzjn/cleanrl)
-
----
-
-[返回主页](../README.md)
+- [Sutton & Barto - RL: An Introduction](http://incompleteideas.net/book/the-book.html)
+- [David Silver RL Course](https://www.davidsilver.uk/teaching/)
+- [OpenAI Spinning Up](https://spinningup.openai.com/)
