@@ -1,146 +1,91 @@
 """
-Deep Q-Network Variants Module.
+深度Q学习实现 - 主模块
 
-This package provides production-ready implementations of DQN variants
-for reinforcement learning research and applications.
+============================================================
+模块概述 (Module Overview)
+============================================================
+本模块提供完整的Deep Q-Network (DQN)实现，包括：
 
-Algorithms Implemented (已实现算法)
-===================================
-+------------------+--------------------------------------------------+
-| Variant          | Key Innovation                                   |
-+==================+==================================================+
-| VANILLA          | Original DQN (Mnih et al., 2015)                 |
-+------------------+--------------------------------------------------+
-| DOUBLE           | Decoupled action selection/evaluation            |
-+------------------+--------------------------------------------------+
-| DUELING          | Value-advantage decomposition architecture       |
-+------------------+--------------------------------------------------+
-| NOISY            | Parametric exploration via noisy layers          |
-+------------------+--------------------------------------------------+
-| CATEGORICAL      | Full return distribution modeling (C51)          |
-+------------------+--------------------------------------------------+
-| RAINBOW          | All improvements combined                        |
-+------------------+--------------------------------------------------+
+1. 核心算法
+   - 标准DQN
+   - Double DQN（解决过估计问题）
+   - Dueling DQN（价值-优势分解）
 
-Module Structure (模块结构)
-===========================
-::
+2. 经验回放
+   - 均匀采样回放缓冲区
+   - 优先经验回放(PER)
 
-    深度Q学习的变体/
-    ├── core/           Configuration and data structures
-    │   ├── config.py   DQNVariantConfig
-    │   ├── enums.py    DQNVariant enumeration
-    │   └── types.py    Transition, NStepTransition
-    ├── buffers/        Replay buffer implementations
-    │   ├── base.py     ReplayBuffer (uniform)
-    │   ├── sum_tree.py SumTree data structure
-    │   ├── prioritized.py  PrioritizedReplayBuffer
-    │   └── n_step.py   NStepReplayBuffer
-    ├── networks/       Neural network architectures
-    │   ├── base.py     DQNNetwork
-    │   ├── dueling.py  DuelingNetwork
-    │   ├── noisy.py    NoisyLinear, NoisyNetwork
-    │   ├── categorical.py  CategoricalNetwork (C51)
-    │   └── rainbow.py  RainbowNetwork
-    ├── agents/         Agent implementations
-    │   └── variant_agent.py  DQNVariantAgent
-    ├── utils/          Training utilities
-    │   ├── training.py     train_agent, evaluate_agent
-    │   ├── comparison.py   compare_variants
-    │   └── visualization.py  plotting functions
-    └── tests/          Unit tests
+3. 训练工具
+   - 训练循环
+   - 评估函数
+   - 可视化工具
 
-Quick Start (快速开始)
-======================
->>> from dqn_variants import DQNVariantAgent, DQNVariantConfig, DQNVariant
->>> from dqn_variants import train_agent, evaluate_agent
->>>
->>> # Create agent
->>> config = DQNVariantConfig(state_dim=4, action_dim=2)
->>> agent = DQNVariantAgent(config, DQNVariant.RAINBOW)
->>>
->>> # Train
->>> agent, logger = train_agent(agent, "CartPole-v1", num_episodes=500)
->>>
->>> # Evaluate
->>> mean_reward, std_reward = evaluate_agent(agent, "CartPole-v1")
->>> print(f"Performance: {mean_reward:.1f} ± {std_reward:.1f}")
+============================================================
+快速开始 (Quick Start)
+============================================================
+>>> from agent import DQNAgent, create_dqn_agent
+>>> from core import DQNConfig
+>>> 
+>>> # 创建agent
+>>> agent = create_dqn_agent(state_dim=4, action_dim=2)
+>>> 
+>>> # 训练循环
+>>> state = env.reset()
+>>> action = agent.select_action(state)
+>>> next_state, reward, done, _ = env.step(action)
+>>> loss = agent.train_step(state, action, reward, next_state, done)
 
-References
-==========
-[1] Mnih, V. et al. (2015). Human-level control through deep RL. Nature.
-[2] van Hasselt, H. et al. (2016). Deep RL with Double Q-learning. AAAI.
-[3] Wang, Z. et al. (2016). Dueling Network Architectures. ICML.
-[4] Fortunato, M. et al. (2017). Noisy Networks for Exploration. ICLR.
-[5] Bellemare, M. et al. (2017). A Distributional Perspective on RL. ICML.
-[6] Schaul, T. et al. (2016). Prioritized Experience Replay. ICLR.
-[7] Hessel, M. et al. (2018). Rainbow: Combining Improvements. AAAI.
+============================================================
+目录结构 (Directory Structure)
+============================================================
+实现深度Q学习/
+├── __init__.py          # 主模块入口
+├── agent.py             # DQN Agent实现
+├── train.py             # 训练脚本
+├── core/                # 核心配置和类型
+│   ├── config.py        # DQNConfig配置类
+│   ├── types.py         # 数据类型定义
+│   └── enums.py         # 枚举类型
+├── buffers/             # 经验回放缓冲区
+│   ├── base.py          # 均匀回放缓冲区
+│   ├── sum_tree.py      # Sum Tree数据结构
+│   └── prioritized.py   # 优先经验回放
+├── networks/            # 神经网络架构
+│   ├── base.py          # 标准DQN网络
+│   └── dueling.py       # Dueling网络
+├── utils/               # 工具函数
+│   ├── training.py      # 训练配置和指标
+│   └── visualization.py # 可视化工具
+├── notebooks/           # Jupyter教程
+└── tests/               # 单元测试
 """
 
-# Core components
-from core.config import DQNVariantConfig
-from core.enums import DQNVariant
-from core.types import Transition, NStepTransition
-
-# Buffers
-from buffers.base import ReplayBuffer
-from buffers.sum_tree import SumTree
-from buffers.prioritized import PrioritizedReplayBuffer
-from buffers.n_step import NStepReplayBuffer
-
-# Networks
-from networks.base import DQNNetwork, init_weights
-from networks.dueling import DuelingNetwork
-from networks.noisy import NoisyLinear, NoisyNetwork, NoisyDuelingNetwork
-from networks.categorical import CategoricalNetwork, CategoricalDuelingNetwork
-from networks.rainbow import RainbowNetwork
-
-# Agents
-from agents.variant_agent import DQNVariantAgent
-
-# Utilities
-from utils.training import TrainingLogger, train_agent, evaluate_agent
-from utils.comparison import compare_variants
-from utils.visualization import (
-    plot_training_curves,
-    plot_comparison,
-    plot_ablation_study,
-    plot_distribution,
-)
+from .agent import DQNAgent, create_dqn_agent
+from .core import DQNConfig, Transition, NStepTransition
+from .core import NetworkType, LossType, ExplorationStrategy
+from .buffers import ReplayBuffer, PrioritizedReplayBuffer
+from .networks import DQNNetwork, DuelingDQNNetwork
 
 __version__ = "1.0.0"
-__author__ = "Reinforcement Learning Research Group"
+__author__ = "AI-Practices Contributors"
 
 __all__ = [
-    # Core
-    "DQNVariantConfig",
-    "DQNVariant",
+    # Agent
+    "DQNAgent",
+    "create_dqn_agent",
+    # Config
+    "DQNConfig",
+    # Types
     "Transition",
     "NStepTransition",
+    # Enums
+    "NetworkType",
+    "LossType",
+    "ExplorationStrategy",
     # Buffers
     "ReplayBuffer",
-    "SumTree",
     "PrioritizedReplayBuffer",
-    "NStepReplayBuffer",
     # Networks
     "DQNNetwork",
-    "init_weights",
-    "DuelingNetwork",
-    "NoisyLinear",
-    "NoisyNetwork",
-    "NoisyDuelingNetwork",
-    "CategoricalNetwork",
-    "CategoricalDuelingNetwork",
-    "RainbowNetwork",
-    # Agents
-    "DQNVariantAgent",
-    # Utilities
-    "TrainingLogger",
-    "train_agent",
-    "evaluate_agent",
-    "compare_variants",
-    "plot_training_curves",
-    "plot_comparison",
-    "plot_ablation_study",
-    "plot_distribution",
+    "DuelingDQNNetwork",
 ]

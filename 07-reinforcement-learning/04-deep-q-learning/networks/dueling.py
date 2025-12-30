@@ -1,178 +1,155 @@
 """
-Dueling Network Architecture.
+Dueling DQN网络架构
 
-This module implements the Dueling DQN architecture (Wang et al., 2016).
-
-Core Idea (核心思想)
-====================
-将Q函数分解为状态价值V(s)和动作优势A(s,a)：
-
+============================================================
+核心思想 (Core Idea)
+============================================================
+将Q函数分解为状态价值V(s)和动作优势A(s, a)：
     Q(s, a) = V(s) + A(s, a) - mean_a A(s, a)
 
-这种分解使网络能够独立学习状态的价值，提高泛化能力。
+直觉：
+- V(s): "这个状态有多好" - 与动作无关
+- A(s, a): "这个动作比平均好多少"
 
-Mathematical Foundation (数学基础)
-==================================
-Decomposition:
-    Q(s, a) = V(s) + A(s, a) - (1/|A|) Σ_a' A(s, a')
+分离这些允许：
+- 状态价值从所有动作经验中学习
+- 在动作选择不重要的状态中更快收敛
 
-Identifiability constraint:
-    Σ_a A(s, a) = 0  =>  V(s) = max_a Q(s, a)
+============================================================
+数学基础 (Mathematical Foundation)
+============================================================
+网络结构：
+    h = φ(s)                    # 共享特征提取
+    V(s) = V_stream(h)          # 价值流，输出标量
+    A(s, ·) = A_stream(h)       # 优势流，输出向量
 
-Benefits:
-    - Learn state values without evaluating every action
-    - Better generalization in states where action choice matters less
+聚合（均值基线）：
+    Q(s, a) = V(s) + (A(s, a) - 1/|A| Σ_{a'} A(s, a'))
 
-References:
-    Wang, Z. et al. (2016). Dueling Network Architectures for Deep
-    Reinforcement Learning. ICML.
+为什么减去均值？
+- 可辨识性：V和A的分解不是唯一的
+    Q(s,a) = (V(s) + c) + (A(s,a) - c) 对任意c成立
+- 均值减法约束：Σ_a A(s,a) = 0，使V和A唯一
+
+============================================================
+算法对比 (Algorithm Comparison)
+============================================================
+vs. 标准DQN:
++ 更快收敛：V(s)从所有动作学习
++ 更稳定：价值流梯度更平滑
++ 在Atari上约20%提升
+- 参数稍多：约1.5倍
+- 额外计算：均值操作
+
+============================================================
+复杂度分析 (Complexity Analysis)
+============================================================
+参数量: O(d·h + h² + h + h·|A|) ≈ 1.5倍标准DQN
+前向传播: O(|θ|)
+
+============================================================
+参考文献 (References)
+============================================================
+Wang, Z. et al. (2016). Dueling Network Architectures for Deep
+Reinforcement Learning. ICML.
 """
 
 from __future__ import annotations
 
+from typing import List
+
 import torch.nn as nn
 from torch import Tensor
 
-from networks.base import init_weights
+from .base import init_weights_orthogonal
 
 
-class DuelingNetwork(nn.Module):
+class DuelingDQNNetwork(nn.Module):
     """
-    Dueling DQN architecture (Wang et al., 2016).
-
-    Core Idea (核心思想)
-    --------------------
-    将Q函数分解为**状态价值**和**动作优势**：
-
-    .. math::
-        Q(s, a) = V(s) + A(s, a) - \\frac{1}{|\\mathcal{A}|} \\sum_{a'} A(s, a')
-
-    Intuition (直觉理解)
-    --------------------
-    - **V(s)**: 这个状态有多好？（与动作无关）
-    - **A(s,a)**: 动作a比平均动作好多少？
-
-    Identifiability (可辨识性)
-    -------------------------
-    **问题**: Q = V + A 有无穷多分解方式
-
-    **解决方案**: 强制 Σ_a A(s,a) = 0，通过减去均值实现
-
-    Benefits (优势)
-    ---------------
-    1. 更好的泛化：可以在不评估每个动作的情况下学习状态价值
-    2. 对于动作选择不重要的状态，更快学习
-    3. 提高样本效率
-
-    Network Architecture (网络架构)
-    ------------------------------
-    ::
-
-        Input → Shared Layers → Value Stream  → V(s) [1维]
-                             ↘
-                               Advantage Stream → A(s,a) [|A|维]
-                             ↘
-                               聚合 → Q(s,a) = V + (A - mean(A))
-
-    Parameters
-    ----------
-    state_dim : int
-        Dimension of state space
-    action_dim : int
-        Number of discrete actions
-    hidden_dim : int, default=128
-        Hidden layer size for both streams
-
-    Examples
-    --------
-    >>> net = DuelingNetwork(state_dim=4, action_dim=2)
-    >>> q_values = net(torch.randn(1, 4))
-    >>> q_values.shape
-    torch.Size([1, 2])
-
-    References
-    ----------
-    Wang, Z. et al. (2016). Dueling Network Architectures for Deep
-    Reinforcement Learning. ICML.
+    Dueling DQN网络
+    
+    将Q函数分解为状态价值和动作优势两个流。
     """
-
+    
     def __init__(
         self,
         state_dim: int,
         action_dim: int,
-        hidden_dim: int = 128,
+        hidden_dims: List[int] = [128, 128],
     ) -> None:
         """
-        Initialize Dueling network.
-
+        初始化Dueling网络
+        
         Parameters
         ----------
         state_dim : int
-            Dimension of state space
+            状态空间维度
         action_dim : int
-            Number of discrete actions
-        hidden_dim : int, default=128
-            Hidden layer size
+            动作数量
+        hidden_dims : List[int]
+            隐藏层维度
         """
         super().__init__()
-
         self.state_dim = state_dim
         self.action_dim = action_dim
-
-        # Shared feature extraction
+        self.hidden_dims = hidden_dims
+        
+        # 确定特征层和流的维度
+        if len(hidden_dims) >= 2:
+            feature_dim = hidden_dims[0]
+            stream_hidden_dim = hidden_dims[-1]
+        else:
+            feature_dim = hidden_dims[0] if hidden_dims else 128
+            stream_hidden_dim = feature_dim
+        
+        # 共享特征提取层
         self.feature = nn.Sequential(
-            nn.Linear(state_dim, hidden_dim),
-            nn.ReLU(inplace=True),
+            nn.Linear(state_dim, feature_dim),
+            nn.ReLU(),
         )
-
-        # Value stream: V(s) ∈ ℝ
+        
+        # 价值流: V(s) ∈ ℝ
         self.value_stream = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU(inplace=True),
-            nn.Linear(hidden_dim, 1),
+            nn.Linear(feature_dim, stream_hidden_dim),
+            nn.ReLU(),
+            nn.Linear(stream_hidden_dim, 1),
         )
-
-        # Advantage stream: A(s, ·) ∈ ℝ^{|A|}
+        
+        # 优势流: A(s, ·) ∈ ℝ^{|A|}
         self.advantage_stream = nn.Sequential(
-            nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU(inplace=True),
-            nn.Linear(hidden_dim, action_dim),
+            nn.Linear(feature_dim, stream_hidden_dim),
+            nn.ReLU(),
+            nn.Linear(stream_hidden_dim, action_dim),
         )
-
-        self.apply(init_weights)
-
+        
+        self.apply(init_weights_orthogonal)
+    
     def forward(self, state: Tensor) -> Tensor:
         """
-        Forward pass with value-advantage aggregation.
-
-        Computes Q(s, a) = V(s) + [A(s, a) - mean_a' A(s, a')]
-
+        前向传播
+        
+        聚合: Q = V + (A - mean(A))
+        
         Parameters
         ----------
         state : Tensor
-            Batch of states, shape (batch_size, state_dim)
-
+            状态张量 (batch_size, state_dim)
+        
         Returns
         -------
         Tensor
-            Q-values for all actions, shape (batch_size, action_dim)
-
-        Notes
-        -----
-        Mean subtraction ensures identifiability:
-            Σ_a A(s, a) = 0  =>  V(s) = max_a Q(s, a)
-
-        Examples
-        --------
-        >>> net = DuelingNetwork(state_dim=4, action_dim=2)
-        >>> q_values = net(torch.randn(32, 4))
-        >>> q_values.shape
-        torch.Size([32, 2])
+            Q值 (batch_size, action_dim)
         """
         features = self.feature(state)
         value = self.value_stream(features)
         advantage = self.advantage_stream(features)
-
-        # Mean subtraction for identifiability
-        q_values = value + (advantage - advantage.mean(dim=-1, keepdim=True))
+        
+        # Q = V + (A - mean(A))
+        q_values = value + (advantage - advantage.mean(dim=1, keepdim=True))
         return q_values
+    
+    def __repr__(self) -> str:
+        return (
+            f"DuelingDQNNetwork(state_dim={self.state_dim}, "
+            f"action_dim={self.action_dim}, hidden_dims={self.hidden_dims})"
+        )

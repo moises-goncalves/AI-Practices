@@ -1,127 +1,47 @@
 """
-DQN Variant Enumeration.
+枚举类型定义
 
-This module defines the available DQN algorithm variants.
-
-Algorithm Overview (算法概述)
-============================
-Each variant addresses specific limitations of vanilla DQN:
-
-+------------------+--------------------------------------------------+
-| Variant          | Key Innovation                                   |
-+==================+==================================================+
-| VANILLA          | Original DQN (Mnih et al., 2015)                 |
-+------------------+--------------------------------------------------+
-| DOUBLE           | Decoupled action selection/evaluation            |
-+------------------+--------------------------------------------------+
-| DUELING          | Value-advantage decomposition                    |
-+------------------+--------------------------------------------------+
-| NOISY            | Parametric exploration via noisy layers          |
-+------------------+--------------------------------------------------+
-| CATEGORICAL      | Full return distribution modeling (C51)          |
-+------------------+--------------------------------------------------+
-| DOUBLE_DUELING   | Combines Double and Dueling                      |
-+------------------+--------------------------------------------------+
-| RAINBOW          | All improvements combined                        |
-+------------------+--------------------------------------------------+
+定义DQN算法中使用的各种枚举类型，包括网络架构、损失函数和探索策略。
 """
 
-from enum import Enum
+from enum import Enum, auto
 
 
-class DQNVariant(Enum):
+class NetworkType(Enum):
     """
-    Available DQN algorithm variants.
-
-    Core Idea (核心思想)
-    --------------------
-    每个变体针对原始DQN的特定失效模式进行优化：
-
-    - **VANILLA**: 原始DQN，存在过估计偏差
-    - **DOUBLE**: 解耦动作选择与评估，消除过估计
-    - **DUELING**: 分离状态价值与动作优势，提升泛化
-    - **NOISY**: 参数化噪声实现状态依赖探索
-    - **CATEGORICAL**: 建模完整回报分布
-    - **DOUBLE_DUELING**: 结合Double和Dueling的优势
-    - **RAINBOW**: 集成所有改进，达到最优性能
-
-    Performance on Atari (Atari性能)
-    --------------------------------
-    Median human-normalized score:
-
-    - VANILLA: 79%
-    - DOUBLE: 117%
-    - DUELING: 151%
-    - CATEGORICAL: 235%
-    - RAINBOW: 441%
-
-    Examples
-    --------
-    >>> variant = DQNVariant.RAINBOW
-    >>> variant.value
-    'rainbow'
-    >>> DQNVariant('double')
-    <DQNVariant.DOUBLE: 'double'>
-
-    References
-    ----------
-    [1] Mnih et al. (2015). Human-level control through deep RL. Nature.
-    [2] van Hasselt et al. (2016). Deep RL with Double Q-learning. AAAI.
-    [3] Wang et al. (2016). Dueling Network Architectures. ICML.
-    [4] Fortunato et al. (2017). Noisy Networks for Exploration. ICLR.
-    [5] Bellemare et al. (2017). A Distributional Perspective on RL. ICML.
-    [6] Hessel et al. (2018). Rainbow: Combining Improvements. AAAI.
+    Q网络架构类型
+    
+    - STANDARD: 标准MLP架构，直接输出所有动作的Q值
+    - DUELING: 对偶架构，分离状态价值V(s)和动作优势A(s,a)
     """
-
-    VANILLA = "vanilla"
-    """Original DQN with uniform replay and ε-greedy exploration."""
-
-    DOUBLE = "double"
-    """Double DQN: decoupled action selection and evaluation."""
-
+    STANDARD = "standard"
     DUELING = "dueling"
-    """Dueling DQN: value-advantage decomposition architecture."""
 
+
+class LossType(Enum):
+    """
+    损失函数类型
+    
+    - MSE: 均方误差损失 L = (y - Q)²
+      简单但对异常值（大TD误差）敏感
+    
+    - HUBER: Huber损失（平滑L1），对异常值更鲁棒
+      L = 0.5 * (y - Q)² if |y - Q| < 1 else |y - Q| - 0.5
+    """
+    MSE = "mse"
+    HUBER = "huber"
+
+
+class ExplorationStrategy(Enum):
+    """
+    探索策略类型
+    
+    - EPSILON_GREEDY: ε-贪婪策略，以ε概率随机探索
+    - BOLTZMANN: 玻尔兹曼探索，基于Q值的softmax分布
+    - UCB: 上置信界探索，考虑不确定性
+    - NOISY: 噪声网络，通过参数噪声实现探索
+    """
+    EPSILON_GREEDY = "epsilon_greedy"
+    BOLTZMANN = "boltzmann"
+    UCB = "ucb"
     NOISY = "noisy"
-    """Noisy DQN: parametric exploration via noisy linear layers."""
-
-    CATEGORICAL = "categorical"
-    """Categorical DQN (C51): distributional value estimation."""
-
-    DOUBLE_DUELING = "double_dueling"
-    """Combination of Double DQN and Dueling architecture."""
-
-    RAINBOW = "rainbow"
-    """Rainbow: Double + Dueling + Noisy + Categorical + PER + N-step."""
-
-    def __str__(self) -> str:
-        """Return human-readable variant name."""
-        return self.value.replace("_", " ").title()
-
-    @property
-    def uses_noisy_exploration(self) -> bool:
-        """Check if variant uses noisy networks for exploration."""
-        return self in (DQNVariant.NOISY, DQNVariant.RAINBOW)
-
-    @property
-    def is_distributional(self) -> bool:
-        """Check if variant uses distributional RL."""
-        return self in (DQNVariant.CATEGORICAL, DQNVariant.RAINBOW)
-
-    @property
-    def uses_double(self) -> bool:
-        """Check if variant uses Double DQN."""
-        return self in (
-            DQNVariant.DOUBLE,
-            DQNVariant.DOUBLE_DUELING,
-            DQNVariant.RAINBOW,
-        )
-
-    @property
-    def uses_dueling(self) -> bool:
-        """Check if variant uses Dueling architecture."""
-        return self in (
-            DQNVariant.DUELING,
-            DQNVariant.DOUBLE_DUELING,
-            DQNVariant.RAINBOW,
-        )

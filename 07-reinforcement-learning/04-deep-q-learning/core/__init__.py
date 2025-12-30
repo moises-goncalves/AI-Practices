@@ -1,33 +1,18 @@
 """
-Core Module - Configuration and Data Structures.
+DQN Core Module - 配置与类型定义
 
-This module provides foundational components for DQN variants:
-    - DQNVariantConfig: Hyperparameter configuration with validation
-    - DQNVariant: Enumeration of available algorithm variants
-    - Transition: Single-step transition data structure
-    - NStepTransition: Multi-step transition for n-step learning
-
-Core Idea (核心思想)
-====================
-集中管理所有DQN变体的配置参数，确保类型安全和参数验证。
-使用dataclass和enum实现强类型约束，提高代码可维护性。
-
-Example:
-    >>> from core import DQNVariantConfig, DQNVariant
-    >>> config = DQNVariantConfig(state_dim=4, action_dim=2)
-    >>> config.get_device()
-    device(type='cuda')
+提供DQN算法的核心配置类、类型定义和枚举类型。
 """
 
-from core.config import DQNVariantConfig
-from core.types import Transition, NStepTransition, FloatArray, IntArray
-from core.enums import DQNVariant
+from .config import DQNConfig
+from .types import Transition, NStepTransition
+from .enums import NetworkType, LossType, ExplorationStrategy
 
 __all__ = [
-    "DQNVariantConfig",
-    "DQNVariant",
+    "DQNConfig",
     "Transition",
     "NStepTransition",
-    "FloatArray",
-    "IntArray",
+    "NetworkType",
+    "LossType",
+    "ExplorationStrategy",
 ]
