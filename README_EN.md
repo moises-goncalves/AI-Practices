@@ -1,251 +1,272 @@
-# AI-Practices · Full-Stack AI Learning Lab
-
 <div align="center">
 
-English | [简体中文](./README.md)
+# AI-Practices
 
-[![License](https://img.shields.io/github/license/zimingttkx/AI-Practices?style=for-the-badge)](./LICENSE)
-[![Stars](https://img.shields.io/github/stars/zimingttkx/AI-Practices?style=for-the-badge&logo=github)](https://github.com/zimingttkx/AI-Practices/stargazers)
-[![Forks](https://img.shields.io/github/forks/zimingttkx/AI-Practices?style=for-the-badge&logo=github)](https://github.com/zimingttkx/AI-Practices/network/members)
-[![Issues](https://img.shields.io/github/issues/zimingttkx/AI-Practices?style=for-the-badge)](https://github.com/zimingttkx/AI-Practices/issues)
-[![Last Commit](https://img.shields.io/github/last-commit/zimingttkx/AI-Practices?style=for-the-badge)](https://github.com/zimingttkx/AI-Practices/commits/main)
+### A Systematic Approach to AI Research & Engineering
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
-![TensorFlow](https://img.shields.io/badge/TensorFlow-2.13%2B-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
-![Jupyter](https://img.shields.io/badge/Jupyter-Notebooks-F37626?style=for-the-badge&logo=jupyter&logoColor=white)
-![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.3%2B-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.13+-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://tensorflow.org)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](./LICENSE)
 
-![Notebooks](https://img.shields.io/badge/Notebooks-113%2B-9061F9?style=for-the-badge)
-![Projects](https://img.shields.io/badge/Practical_Projects-19-14B8A6?style=for-the-badge)
-![Lines of Code](https://img.shields.io/badge/Lines_of_Code-149k%2B-0A84FF?style=for-the-badge)
-[![Contributors](https://img.shields.io/github/contributors/zimingttkx/AI-Practices?style=for-the-badge)](https://github.com/zimingttkx/AI-Practices/graphs/contributors)
+[![Stars](https://img.shields.io/github/stars/zimingttkx/AI-Practices?style=for-the-badge&logo=github&color=yellow)](https://github.com/zimingttkx/AI-Practices/stargazers)
+[![Forks](https://img.shields.io/github/forks/zimingttkx/AI-Practices?style=for-the-badge&logo=github&color=blue)](https://github.com/zimingttkx/AI-Practices/network/members)
+[![Issues](https://img.shields.io/github/issues/zimingttkx/AI-Practices?style=for-the-badge&logo=github&color=red)](https://github.com/zimingttkx/AI-Practices/issues)
+
+**[中文](./README.md)** | **[Documentation](https://zimingttkx.github.io/AI-Practices/)** | **[Quick Start](#-quick-start)**
+
+---
+
+**From Theory to Practice, Build a Complete AI Knowledge System**
+
+*Machine Learning • Deep Learning • Computer Vision • NLP • Generative AI • Reinforcement Learning*
 
 </div>
 
-> A comprehensive AI learning repository covering **Machine Learning**, **Deep Learning**, **Computer Vision**, **Natural Language Processing**, **Sequence Modeling**, **Generative AI**, and **Kaggle Competition Solutions**. All notes and scripts are personally written and tested for research, competitions, and teaching.
+---
 
-**Keywords**: Machine Learning · Deep Learning · Computer Vision · NLP · PyTorch · TensorFlow · Keras · Jupyter Notebooks · Kaggle · Chinese Tutorial · AI Tutorial · Neural Networks · CNN · RNN · Transformer · GAN
+## Highlights
+
+<div align="center">
+
+| 📚 **219+ Notebooks** | 🧩 **9 Core Modules** | 📝 **480+ Python Files** | 💻 **173k+ LOC** | 🏆 **2 Kaggle Golds** |
+|:---------------------:|:---------------------:|:------------------------:|:----------------:|:---------------------:|
+| Reproducible Experiments | Systematic Learning Path | Production-Ready Code | Deep Coverage | Competition Verified |
+
+</div>
+
+### Why AI-Practices?
+
+- **Progressive Learning** — From math derivation to framework engineering, step by step
+- **Theory + Practice** — Not just "how to do", but "why it works"
+- **Engineering-Oriented** — Complete pipeline from research to deployment
+- **Competition Verified** — Kaggle Top 1% Gold Medal solutions
 
 ---
 
-## 📌 Project Snapshot
+## Learning Path
 
-| Dimension | Data |
-|-----------|------|
-| 📒 Jupyter Notebooks | **113+** (reproducible experiments & classroom demos) |
-| 🧠 Main Modules | **8 volumes** (01-foundations ~ 08-theory-notes) |
-| 🧾 Documentation | **30+ Markdown files** (tutorials, logs, audit reports) |
-| 🚀 Practical Projects | **19 end-to-end cases** (Classification, CV, NLP, Time Series, Recommender Systems, Generative AI) |
-| 🧪 Quality Records | `CONTENT_AUDIT_*`, `NOTEBOOK_QUALITY_REPORT.md`, `migration_log.json` |
-
----
-
-## 🗂️ Directory Overview
-
-| Directory | Description | Example Content |
-|-----------|-------------|-----------------|
-| `01-foundations/` | Machine Learning Fundamentals (8 chapters) | Training models, ensemble learning, unsupervised learning, end-to-end projects |
-| `02-neural-networks/` | Deep Learning Foundations | Keras/TensorFlow frameworks, training techniques, custom loops |
-| `03-computer-vision/` | Computer Vision Topics | CNN basics, classic architectures, transfer learning, visualization |
-| `04-sequence-models/` | Sequence & NLP | RNN/LSTM/Transformer, word embeddings, sequence-to-sequence |
-| `05-advanced-topics/` | Engineering & Optimization | Functional API, callbacks, TensorBoard, hyperparameter tuning |
-| `06-generative-models/` | Generative AI | AutoEncoder, GAN, VAE, text generation, DeepDream |
-| `08-theory-notes/` | Theory Reference | Complete activation functions, loss functions, architecture/optimizer notes |
-| `09-practical-projects/` | Project Workshop | Kaggle/industry project scripts with data download & training pipelines |
-| `docs/` | Documentation | CODE_STYLE, NOTEBOOK_GUIDE, OPTIMIZATION_REPORT, etc. |
-| `utils/` | Utility Modules | `common.py`, `visualization.py`, `paths.py` |
-
----
-
-## 🧭 Learning / Research Roadmap
-
-```mermaid
-graph LR
-    A(Math & Python) --> B[01-foundations\nSupervised/Unsupervised/Ensemble]
-    B --> C[02-neural-networks\nKeras & TensorFlow]
-    C --> D[03-computer-vision]
-    C --> E[04-sequence-models]
-    D --> F[05-advanced-topics\nEngineering/Tuning]
-    E --> F
-    F --> G[06-generative-models]
-    G --> H[09-practical-projects\nCompetitions/Research/Deployment]
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│  Phase I        │    │  Phase II       │    │  Phase III      │    │  Phase IV       │
+│  Theory First   │ -> │  From Scratch   │ -> │  Framework      │ -> │  Practice       │
+│  Math & Analysis│    │  NumPy Impl.    │    │  PyTorch/TF     │    │  Kaggle & Proj  │
+└─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-Each chapter includes:
-- `README.md`: Objectives, knowledge graph, dependencies
-- `notes/`: Why / What / When / How / Watch Out structure
-- `notebooks/`: Runnable examples (GPU/CPU versions)
-- `code/` or `src/`: Modular training scripts
-
 ---
 
-## 📊 Code & Documentation Statistics
+## Module Overview
 
-| File Type | Lines | Percentage | Primary Role |
-|-----------|-------|------------|--------------|
-| Python (`.py`) | **64,692** | **43%** | Training scripts, utility libraries, evaluation & deployment |
-| Notebook (`.ipynb`) | **46,787** | **31%** | Classroom demos, experiment logs, Kaggle reviews |
-| Markdown (`.md`) | **25,749** | **17%** | Theory notes, reports, logs |
-| YAML (`.yml/.yaml`) | **12,673** | **9%** | Environment, pipelines, hyperparameter configs |
+| Phase | Module | Content | Files |
+|:-----:|:-------|:--------|:-----:|
+| I | **01-Foundations** | Linear Models, SVM, Decision Trees, Ensemble, Dimensionality Reduction | 75+ |
+| II | **02-Neural Networks** | Backprop, Optimizers, Regularization, BatchNorm | 42+ |
+| II | **03-Computer Vision** | CNN Architectures, Transfer Learning, Object Detection | 50+ |
+| II | **04-Sequence Models** | RNN/LSTM, Attention, Transformer | 40+ |
+| III | **05-Advanced Topics** | Distributed Training, Model Compression, Deployment | 30+ |
+| III | **06-Generative Models** | VAE, GAN, Diffusion Models | 35+ |
+| III | **07-Reinforcement Learning** | DQN, PPO, SAC, Actor-Critic | 542+ |
+| IV | **09-Practical Projects** | Kaggle Competitions, Game AI, Stock Trading | 566+ |
+| - | **08-Theory Notes** | Activation Functions, Loss Functions, Architecture Guide | 16+ |
 
-> Statistics as of November 2025 (excluding `.git` and cache directories). Updates will be synchronized in README.
+<details>
+<summary><b>📂 Expand Full Directory Structure</b></summary>
 
-```mermaid
-pie title Lines of Code Distribution
-    "Python" : 64692
-    "Jupyter Notebooks" : 46787
-    "Markdown" : 25749
-    "YAML" : 12673
+```
+AI-Practices/
+├── 01-foundations/                 # ML Fundamentals
+│   ├── 01-training-models/         # Gradient Descent, Regularization
+│   ├── 02-classification/          # Logistic Regression, SVM
+│   ├── 03-support-vector-machines/ # Kernel Trick, Soft Margin
+│   ├── 04-decision-trees/          # CART, Pruning
+│   ├── 05-ensemble-learning/       # Bagging, Boosting, Stacking
+│   ├── 06-dimensionality-reduction/# PCA, t-SNE, UMAP
+│   ├── 07-unsupervised-learning/   # K-Means, DBSCAN, GMM
+│   └── 08-end-to-end-project/      # Complete ML Pipeline
+│
+├── 02-neural-networks/             # Neural Networks
+│   ├── 01-keras-introduction/      # Sequential, Functional API
+│   ├── 02-training-deep-networks/  # BatchNorm, Dropout
+│   ├── 03-custom-models-training/  # Custom Layers and Training Loops
+│   └── 04-data-loading-preprocessing/
+│
+├── 07-reinforcement-learning/      # Reinforcement Learning (542+ files)
+│   ├── 01-mdp-basics/              # Markov Decision Process
+│   ├── 02-q-learning/              # Value Iteration, Policy Iteration
+│   ├── 03-deep-q-learning/         # DQN, Double DQN
+│   └── 04-policy-gradient/         # REINFORCE, PPO, A3C
+│
+└── 09-practical-projects/          # Practical Projects (566+ files)
+    ├── 01-ml-basics/               # Titanic, Otto
+    ├── 02-computer-vision/         # MNIST CNN
+    ├── 03-nlp/                     # Sentiment Analysis, NER
+    ├── 04-time-series/             # Temperature Prediction
+    ├── 05-kaggle-competitions/     # Gold Medal Solutions
+    └── 06-reinforcement-learning/  # Game AI, Stock Trading
 ```
 
-## 📈 GitHub Trends Monitoring
-
-> The chart below is automatically fetched from GitHub API (Stars/Forks) and updated daily to track repository popularity over time. Data snapshots are available in `docs/assets/github-trends.json`.
-
-![GitHub Stars & Forks Trend](docs/assets/github-trends.svg)
+</details>
 
 ---
 
-## 🧩 Module Breakdown
+## Algorithm Coverage
 
-### 01 · Foundations
+### Machine Learning Fundamentals
 
-- Linear & logistic regression, gradient descent, regularization
-- Decision trees, random forests, XGBoost, SVM, clustering, dimensionality reduction
-- `08-end-to-end-project/` contains complete ML pipeline (data → features → model → deployment suggestions)
+| Domain | Algorithms | Applications |
+|:-------|:-----------|:-------------|
+| **Linear Models** | OLS, Ridge, Lasso, ElasticNet | Regression, Feature Selection |
+| **Classification** | Logistic Regression, SVM, KNN | Binary/Multi-class Classification |
+| **Tree Models** | Decision Tree, Random Forest, GBDT | Structured Data Modeling |
+| **Ensemble** | Bagging, Boosting, Stacking, XGBoost, LightGBM | Competition Winners |
+| **Dim Reduction** | PCA, t-SNE, UMAP, K-Means, DBSCAN | Visualization, Clustering |
 
-### 02 · Neural Networks
+### Deep Learning
 
-- Sequential vs Functional API, callback system, TensorBoard
-- `03-custom-models-training/` demonstrates custom Layer/Loss and training loops
-- `04-data-loading-preprocessing/` focuses on `tf.data`, data augmentation & mixed precision
+| Domain | Techniques | Key Concepts |
+|:-------|:-----------|:-------------|
+| **Optimizers** | SGD, Momentum, Adam, AdamW, LAMB | Convergence, Generalization |
+| **Regularization** | Dropout, BatchNorm, LayerNorm, Weight Decay | Prevent Overfitting |
+| **Initialization** | Xavier, He, Orthogonal | Gradient Stability |
+| **LR Schedule** | Step Decay, Cosine Annealing, Warmup | Training Strategy |
 
-### 03 · Computer Vision
+### Computer Vision
 
-- `01-cnn-basics/`: Convolution/pooling/BN/regularization
-- `02-classic-architectures/`: LeNet → AlexNet → VGG → ResNet → Inception
-- `03-transfer-learning/` & `04-object-detection/`: Transfer learning, detection, visualization, Grad-CAM
+**CNN Architecture Evolution**:
+```
+LeNet (1998) → AlexNet (2012) → VGG (2014) → GoogLeNet (2014) → ResNet (2015)
+                                                                      ↓
+                        ViT (2020) ← EfficientNet (2019) ← DenseNet (2016)
+```
 
-### 04 · Sequence Models
+| Task | Models | Description |
+|:-----|:-------|:------------|
+| **Classification** | ResNet, EfficientNet, ViT | ImageNet SOTA |
+| **Detection** | YOLO, Faster R-CNN, DETR | Real-time Detection |
+| **Segmentation** | U-Net, DeepLab, Mask R-CNN | Pixel-level Classification |
+| **Transfer Learning** | Fine-tuning, Feature Extraction | Few-shot Learning |
 
-- `01-rnn-basics/`: RNN/LSTM/GRU fundamentals
-- `03-text-processing/`: IMDB Chinese sentiment analysis, word embeddings, attention
-- `05-sequence-to-sequence/`: Transformer, machine translation, CTC
+### Natural Language Processing
 
-### 05 · Advanced Topics
+**Transformer Architecture** *(Vaswani et al., 2017)*:
 
-- Functional API DAG, multi-input/multi-output
-- Callback & TensorBoard monitoring strategies
-- Hyperparameter search, model compression, deployment approaches
+$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
 
-### 06 · Generative Models
+| Task | Models | Applications |
+|:-----|:-------|:-------------|
+| **Text Classification** | BERT, RoBERTa | Sentiment, Intent |
+| **Sequence Labeling** | BiLSTM-CRF, BERT-NER | Named Entity Recognition |
+| **Text Generation** | GPT, T5 | Summarization, Dialogue |
+| **Translation** | Transformer, mBART | Multilingual Translation |
 
-- AutoEncoder / VAE / GAN / DCGAN / Style Transfer / Text Generation
-- Complementary charts & notebooks in `activation-functions & loss-functions/` can be directly invoked
+### Generative Models
 
-### 08 · Theory Notes
+| Type | Models | Applications |
+|:-----|:-------|:-------------|
+| **VAE** | Variational Autoencoder | Image Generation, Representation |
+| **GAN** | DCGAN, WGAN, StyleGAN | Image Synthesis, Style Transfer |
+| **Diffusion** | DDPM, Stable Diffusion | High-quality Generation |
+| **Neural Art** | DeepDream, Neural Style Transfer | Artistic Creation |
 
-- `activation-functions/activation-functions-complete.md`: 30+ activation functions comparison
-- `loss-functions/loss-functions-complete.md`: Comprehensive loss functions for regression/classification/ranking/advanced
-- `architectures/`: Network topology, regularization, optimizer quick reference
+### Reinforcement Learning
 
-### 09 · Practical Projects
+| Category | Algorithms | Key Features |
+|:---------|:-----------|:-------------|
+| **Value-Based** | Q-Learning, DQN, Double DQN, Dueling DQN | Experience Replay, Target Network |
+| **Policy Gradient** | REINFORCE, PPO, TRPO, A3C | Direct Policy Optimization |
+| **Actor-Critic** | A2C, SAC, TD3 | Combines Value and Policy |
+| **Model-Based** | Dyna-Q, World Models, MuZero | Environment Modeling |
 
-- **ML Basics**: Titanic survival prediction, Otto classification, customer segmentation
-- **CV**: MNIST CNN, cats vs dogs, CIFAR10, object detection, RSNA medical imaging
-- **NLP**: LSTM sentiment analysis, Transformer text classification/NER, chatbot
-- **Time Series**: Temperature, sales, stock prediction (LSTM + Prophet)
-- **Recommender Systems**: MovieLens NCF, collaborative filtering, hybrid strategies
-- **Generative AI**: DCGAN image generation, LSTM text generation, style transfer
-- **Kaggle Solutions**: RSNA 2023/2024, Feedback-Prize, American Express
+**Bellman Optimality Equation**:
+
+$$Q^*(s, a) = \mathbb{E}\left[r + \gamma \max_{a'} Q^*(s', a') \mid s, a\right]$$
 
 ---
 
-## 🔧 Tools & Quality System
+## Tech Stack
 
-- `utils/common.py`: Random seeds, device detection, timers, dataset splitting
-- `utils/visualization.py`: Training curves, confusion matrices, error case visualization
-- `docs/NOTEBOOK_QUALITY_REPORT.md`: Records each notebook's execution status, dependency versions, output screenshots
-- `docs/CONTENT_AUDIT_COMPLETION_REPORT.md` & `migration_log.json`: Tracks mapping from Chinese to English directory structure
-- `docs/OPTIMIZATION_REPORT.md`: Lists each major refactoring and scores
+<div align="center">
+
+| Deep Learning | Data Science | Development |
+|:-------------:|:------------:|:-----------:|
+| ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.13+-FF6F00?style=flat-square&logo=tensorflow&logoColor=white) | ![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.3+-F7931E?style=flat-square&logo=scikit-learn&logoColor=white) | ![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white) |
+| ![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?style=flat-square&logo=pytorch&logoColor=white) | ![Pandas](https://img.shields.io/badge/Pandas-2.0+-150458?style=flat-square&logo=pandas&logoColor=white) | ![Jupyter](https://img.shields.io/badge/Jupyter-Lab_4+-F37626?style=flat-square&logo=jupyter&logoColor=white) |
+| ![Keras](https://img.shields.io/badge/Keras-3.x-D00000?style=flat-square&logo=keras&logoColor=white) | ![NumPy](https://img.shields.io/badge/NumPy-1.24+-013243?style=flat-square&logo=numpy&logoColor=white) | ![Docker](https://img.shields.io/badge/Docker-24+-2496ED?style=flat-square&logo=docker&logoColor=white) |
+
+</div>
 
 ---
 
 ## 🚀 Quick Start
 
 ```bash
-# Clone
+# Clone repository
 git clone https://github.com/zimingttkx/AI-Practices.git
 cd AI-Practices
 
-# Create & activate environment
+# Create environment
 conda create -n ai-practices python=3.10 -y
 conda activate ai-practices
 
-# Install core dependencies
+# Install dependencies
 pip install -r requirements.txt
 
-# For GPU / Kaggle solutions
-python -m pip install -U torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-pip install tensorflow==2.13.1
-pip install -r 09-practical-projects/requirements.txt
+# Launch Jupyter
+jupyter lab
 ```
 
-### Example: Run MNIST CNN
+### Hardware Requirements
 
-```bash
-cd 09-practical-projects/02_计算机视觉项目/01_MNIST手写数字识别_CNN入门
-python src/data.py --download
-python src/train.py --model improved_cnn --epochs 20
-python src/evaluate.py --checkpoint runs/improved_cnn.best.pt
+| Component | Minimum | Recommended |
+|:----------|:-------:|:-----------:|
+| CPU | 4 cores | 8+ cores |
+| RAM | 8 GB | 32 GB |
+| GPU | GTX 1060 | RTX 3080+ |
+| Storage | 50 GB | 200 GB SSD |
+
+---
+
+## 🏆 Competition Results
+
+<div align="center">
+
+| Competition | Rank | Medal | Year |
+|:------------|:----:|:-----:|:----:|
+| **Feedback Prize - ELL** | Top 1% | 🥇 Gold | 2023 |
+| **RSNA Abdominal Trauma** | Top 1% | 🥇 Gold | 2023 |
+| American Express Default | Top 5% | 🥈 Silver | 2022 |
+| RSNA Lumbar Spine | Top 10% | 🥉 Bronze | 2024 |
+
+</div>
+
+---
+
+## Citation
+
+```bibtex
+@misc{ai-practices2024,
+  author       = {zimingttkx},
+  title        = {AI-Practices: A Systematic Approach to AI Research and Engineering},
+  year         = {2024},
+  publisher    = {GitHub},
+  howpublished = {\url{https://github.com/zimingttkx/AI-Practices}}
+}
 ```
 
 ---
 
-## 📅 Update Timeline
+## License
 
-```mermaid
-timeline
-    title Release & Evolution
-    2023-Q4 : Foundations v1 · Established Python/ML 8 chapters
-    2024-Q1 : Deep Learning & CV modules launched
-    2024-Q3 : Practical projects expanded to 15+
-    2025-Q1 : Full repository refactored to English directory structure, migration log online
-    2025-Q3 : Kaggle gold medal solutions integrated, quality audit system completed
-    2025-Q4 : README 2.0 + code statistics dashboard
-```
-
-**Upcoming Tasks**
-
-- [ ] Complete `08-theory-notes/optimizers/` optimizer comparison table
-- [ ] Add training logs & performance curves to `03-computer-vision/02-classic-architectures/`
-- [ ] Add Transformer inference scripts to `04-sequence-models/05-sequence-to-sequence/`
-- [ ] Update `09-practical-projects/05_Kaggle竞赛项目/` with 2024-2025 latest competition reviews
+This project is licensed under the **MIT License** - see [LICENSE](LICENSE) for details.
 
 ---
 
-## 🤝 Contributing
+<div align="center">
 
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+**If this project helps you, please give it a ⭐ Star!**
 
----
+[![Report Bug](https://img.shields.io/badge/Report-Bug-red?style=for-the-badge)](https://github.com/zimingttkx/AI-Practices/issues)
+[![Request Feature](https://img.shields.io/badge/Request-Feature-blue?style=for-the-badge)](https://github.com/zimingttkx/AI-Practices/issues)
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
-
----
-
-## 🙌 Acknowledgments & References
-
-- [PyTorch](https://github.com/pytorch/pytorch) / [TensorFlow](https://github.com/tensorflow/tensorflow) / [Keras](https://github.com/keras-team/keras) / [JAX](https://github.com/google/jax): Primary deep learning frameworks
-- [scikit-learn](https://github.com/scikit-learn/scikit-learn) / [XGBoost](https://github.com/dmlc/xgboost) / [LightGBM](https://github.com/microsoft/LightGBM) / [CatBoost](https://github.com/catboost/catboost): Classic ML baselines
-- [Hugging Face Transformers](https://github.com/huggingface/transformers): NLP model & tokenizer reproduction foundation
-- [Albumentations](https://github.com/albumentations-team/albumentations) / [OpenMMLab MMDetection](https://github.com/open-mmlab/mmdetection): Computer vision augmentation & detection reference implementations
-- [Kaggle Official Repository](https://github.com/Kaggle/kaggle-api) & community kernels: Provide real datasets & competition script inspiration
-- [Matplotlib](https://github.com/matplotlib/matplotlib) / [Seaborn](https://github.com/mwaskom/seaborn) / [Plotly](https://github.com/plotly/plotly.py): Primary visualization tools
-
-If you use AI-Practices in your learning or research, feel free to share your results or suggest improvements in Issues.
-
-**AI-Practices · Maintained with ❤️ + curiosity.**
+</div>
