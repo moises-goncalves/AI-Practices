@@ -23,11 +23,15 @@
 ├── 04-time-series/            # 时间序列
 │   ├── 01-temperature-prediction-lstm/ # 温度预测
 │   └── 02-stock-prediction-lstm/      # 股票预测
-└── 05-kaggle-competitions/    # Kaggle 竞赛
-    ├── 01-American-Express-Default-Prediction/
-    ├── 02-Feedback-ELL-1st-Place/
-    ├── 03-RSNA-2023-1st-Place/
-    └── 04-RSNA-2024-Lumbar-Spine/
+├── 05-kaggle-competitions/    # Kaggle 竞赛
+│   ├── 01-American-Express-Default-Prediction/
+│   ├── 02-Feedback-ELL-1st-Place/
+│   ├── 03-RSNA-2023-1st-Place/
+│   └── 04-RSNA-2024-Lumbar-Spine/
+└── 06-reinforcement-learning/ # 强化学习
+    ├── 01-flappy-bird-dqn/            # Flappy Bird DQN
+    ├── 02-dino-run-dqn/               # Chrome Dino DQN
+    └── 03-stock-trading-rl/           # 股票交易RL
 ```
 
 ---
@@ -56,6 +60,13 @@
 | 股票预测 | 时序 | LSTM、特征工程 |
 | Kaggle 竞赛 | 综合 | 顶级方案复现 |
 
+### 强化学习 (2-4 周)
+| 项目 | 类型 | 核心技术 |
+|------|------|----------|
+| Flappy Bird DQN | 游戏AI | DQN、经验回放 |
+| Chrome Dino DQN | 游戏AI | DQN、浏览器自动化 |
+| 股票交易RL | 金融 | DQN、A2C |
+
 ---
 
 ## 学习路径
@@ -64,6 +75,7 @@
 入门: Titanic → MNIST → 情感分析
 进阶: Otto → SVM文本 → NER → 温度预测
 高级: 翻译 → 股票 → Kaggle方案
+强化学习: Flappy Bird → Chrome Dino → 股票交易RL
 ```
 
 ---
@@ -86,3 +98,15 @@ project-name/
 ---
 
 [返回主页](../README.md) | [项目实施指南](../docs/guides/PROJECTS_GUIDE.md)
+
+---
+
+## 致谢
+
+强化学习实战项目参考了以下优秀的开源项目：
+
+- [Flappy-bird-deep-Q-learning-pytorch](https://github.com/uvipen/Flappy-bird-deep-Q-learning-pytorch) by Viet Nguyen
+- [DinoRunTutorial](https://github.com/Paperspace/DinoRunTutorial) by Paperspace
+- [FinRL-Tutorials](https://github.com/AI4Finance-Foundation/FinRL-Tutorials) by AI4Finance Foundation
+
+感谢这些项目的作者们的开源贡献！
