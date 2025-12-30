@@ -1,13 +1,19 @@
-# 工具库
-
-> 强化学习常用工具和框架
+# 强化学习工具库
 
 ## Gymnasium
 
-标准化的强化学习环境接口，支持经典控制、Atari 游戏等多种环境。
+OpenAI Gym/Gymnasium环境使用指南。
+
+```python
+import gymnasium as gym
+env = gym.make('CartPole-v1')
+```
 
 ## TF-Agents
 
-TensorFlow 官方的强化学习库，提供生产级的算法实现。
+TensorFlow强化学习库使用指南。
 
-[返回上级](../README.md)
+```python
+from tf_agents.environments import suite_gym
+env = suite_gym.load('CartPole-v1')
+```
