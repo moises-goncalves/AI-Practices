@@ -95,12 +95,17 @@
 
 ```
 06-generative-models/
-├── 01-autoencoders/
-│   ├── vanilla_ae.ipynb             # 普通自编码器
-│   ├── variational_ae.ipynb         # ✅ 已完成
-│   └── vq_vae.ipynb                 # 向量量化VAE
+├── 01-vae/
+│   ├── README.md                    # ✅ 已完成 (模块知识点)
+│   ├── vanilla_ae.ipynb             # ✅ 已完成 (信息瓶颈、PCA关系)
+│   ├── variational_ae.ipynb         # ✅ 已完成 (ELBO推导)
+│   └── vq_vae.ipynb                 # ✅ 已完成 (离散码本、直通估计器)
 ├── 02-gans/
-│   └── gan_implementation.ipynb     # GAN基础
+│   ├── README.md                    # ✅ 已有
+│   ├── gan_basics.ipynb             # ✅ 已完成 (Nash均衡、Minimax)
+│   ├── dcgan.ipynb                  # ✅ 已完成 (转置卷积、架构设计)
+│   ├── wgan_gp.ipynb                # ✅ 已完成 (Wasserstein距离、GP)
+│   └── GAN网络实现.ipynb            # ✅ 已有
 ├── 03-diffusion-models/
 │   ├── ddpm_basics.ipynb            # ✅ 已完成
 │   ├── ddpm_implementation.ipynb    # ✅ 已完成
